@@ -5,7 +5,7 @@ SOURCES=starlight.c init.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=starlight
 
-all: $(SOURCES) $(EXECUTABLE)
+all: $(SOURCES) $(EXECUTABLE) deploy
 
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
@@ -13,5 +13,7 @@ $(EXECUTABLE): $(OBJECTS)
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
 	
+deploy: starlight
+	cp starlight /home/belial/Roms/Amiga/Uploads
 clean: 
-	rm *.o
+	rm *.o && rm starlight
