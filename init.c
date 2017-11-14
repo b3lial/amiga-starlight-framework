@@ -1,8 +1,8 @@
 #include <clib/exec_protos.h>
 #include <clib/graphics_protos.h>
+#include <stdint.h>
 #include <stdio.h>
 
-#include "include/types.h"
 #include "include/register.h"
 
 uint16_t olddmareq;
@@ -18,8 +18,8 @@ struct Library *gfxbase = 0;
 
 int initSystem(){
     //store data in hardwareregisters ORed with $8000 
-	//(bit 15 is a write-set bit when values are written 
-	//back into the system)
+    //(bit 15 is a write-set bit when values are written 
+    //back into the system)
     olddmareq = REF_REG_16( DMACONR );
     printf("storing DMACONR: 0x%x\n", olddmareq);
     olddmareq |= 0x8000;
