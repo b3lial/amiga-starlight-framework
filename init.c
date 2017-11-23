@@ -13,8 +13,7 @@ uint16_t oldadkcon;
 uint32_t oldview;
 uint32_t oldcopper;
 
-const char* graphics_library_name = "graphics.library";
-struct Library *gfxbase = 0;
+struct Library *GfxBase = 0;
 
 int initSystem(){
     //store data in hardwareregisters ORed with $8000 
@@ -36,18 +35,18 @@ int initSystem(){
     printf("storing ADKCONR: 0x%x\n", oldadkcon);
     oldadkcon |= 0x8000;
     
-    gfxbase = OpenLibrary((const unsigned char*) graphics_library_name, 0);
-    if(gfxbase==0){
-        printf("could not load %s\n", graphics_library_name);
+    GfxBase = OpenLibrary((const unsigned char*) "graphics.library", 0);
+    if(GfxBase==0){
+        printf("could not load %s\n", "graphics.library");
         return 0;
     }
     else{
-        printf("found %s at: 0x%x\n", graphics_library_name, gfxbase);
+        printf("found %s at: 0x%x\n", "graphics.library", GfxBase);
     }
     
-    oldview = *( (uint32_t*) (&(((uint8_t*) gfxbase)[34])) );
+    oldview = *( (uint32_t*) (&(((uint8_t*) GfxBase)[34])) );
     printf("storing oldview: 0x%x\n", oldview);
-    oldcopper = *( (uint32_t*) (&(((uint8_t*) gfxbase)[38])) );
+    oldcopper = *( (uint32_t*) (&(((uint8_t*) GfxBase)[38])) );
     printf("storing oldcopper: 0x%x\n", oldcopper);
     
     LoadView(0);
@@ -84,4 +83,5 @@ void exitSystem(){
     WaitBlit();
     DisownBlitter();
     Permit();
+    CloseLibrary(GfxBase);
 }

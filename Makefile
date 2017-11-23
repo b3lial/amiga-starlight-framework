@@ -1,7 +1,7 @@
 CC=m68k-amigaos-gcc
 CFLAGS = -Wall -Wextra -O2 -Iinclude
 LDFLAGS = -noixemul 
-SOURCES=starlight.c init.c 
+SOURCES=starlight.c init.c utils.c 
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=starlight
 
