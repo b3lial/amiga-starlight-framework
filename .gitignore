@@ -1,3 +1,7 @@
+smakefile
+*.uaem
+*.lnk
+*.info
 tags
 *.o
 starlight

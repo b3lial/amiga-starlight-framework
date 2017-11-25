@@ -1,9 +1,9 @@
 #include <clib/exec_protos.h>
 #include <clib/graphics_protos.h>
-#include <stdint.h>
 #include <stdio.h>
 
-#include "include/register.h"
+#include "customstdint.h"
+#include "register.h"
 
 uint16_t olddmareq;
 uint16_t oldintena;
@@ -15,7 +15,7 @@ uint32_t oldcopper;
 
 struct Library *GfxBase = 0;
 
-int initSystem(){
+int initSystem(void){
     //store data in hardwareregisters ORed with $8000 
     //(bit 15 is a write-set bit when values are written 
     //back into the system)
@@ -34,8 +34,12 @@ int initSystem(){
     oldadkcon = REF_REG_16( ADKCONR );
     printf("storing ADKCONR: 0x%x\n", oldadkcon);
     oldadkcon |= 0x8000;
-    
+   
+#ifdef __SASC
+    GfxBase = OpenLibrary("graphics.library", 0);
+#else
     GfxBase = OpenLibrary((const unsigned char*) "graphics.library", 0);
+#endif
     if(GfxBase==0){
         printf("could not load %s\n", "graphics.library");
         return 0;
@@ -56,16 +60,16 @@ int initSystem(){
     WaitBlit();
     Forbid();
     
-    REF_REG_16( DMACON ) = 0b1000010111100000;
-    REF_REG_16( DMACON ) = 0b0000000000011111;
-    REF_REG_16( INTENA ) = 0b1100000000000000;
-    REF_REG_16( INTENA ) = 0b0011111111111111;
+    REF_REG_16( DMACON ) = 0x85e0; //0b1000010111100000;
+    REF_REG_16( DMACON ) = 0x1f;//0b0000000000011111;
+    REF_REG_16( INTENA ) = 0xC000;//0b1100000000000000;
+    REF_REG_16( INTENA ) = 0x3FFF;//0b0011111111111111;
     
     //exit gracefully
     return 1;
 }
 
-void exitSystem(){
+void exitSystem(void){
     REF_REG_16( DMACON ) = 0x7fff;
     REF_REG_16( DMACON ) = olddmareq;
     REF_REG_16( INTENA ) = 0x7fff;
