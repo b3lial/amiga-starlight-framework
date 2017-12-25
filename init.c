@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "register.h"
+#include "register_dmacon.h"
 
 UWORD olddmareq;
 UWORD oldintena;
@@ -60,10 +61,13 @@ int initSystem(void){
     WaitBlit();
     Forbid();
     
-    REF_REG_16( DMACON ) = 0x85e0; //0b1000010111100000;
-    REF_REG_16( DMACON ) = 0x1f;//0b0000000000011111;
-    REF_REG_16( INTENA ) = 0xC000;//0b1100000000000000;
-    REF_REG_16( INTENA ) = 0x3FFF;//0b0011111111111111;
+    //REF_REG_16( DMACON ) = 0x85e0; //0b1000010111100000;
+    REF_REG_16( DMACON ) = DMACON_SET | BLTPRI | BPLEN | COPEN | BLTEN | SPREN;
+    //REF_REG_16( DMACON ) = 0x1f;   //0b0000000000011111;
+    REF_REG_16( DMACON ) = DSKEN | AUD3EN | AUD2EN | AUD1EN | AUD0EN;
+    
+    REF_REG_16( INTENA ) = 0xC000; //0b1100000000000000;
+    REF_REG_16( INTENA ) = 0x3FFF; //0b0011111111111111;
     
     //exit gracefully
     return 1;
