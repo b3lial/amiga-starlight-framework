@@ -1,9 +1,9 @@
 #ifndef __REGISTER_H__
 #define __REGISTER_H__
 
-#define REF_REG_32(x)  *( (volatile uint32_t*) (BASE + x) )
-#define REF_REG_16(x)  *( (volatile uint16_t*) (BASE + x) )
-#define REF_REG_8(x)   *( (volatile uint8_t*) (BASE + x) )
+#define REF_REG_32(x)  *( (volatile ULONG*) (BASE + x) )
+#define REF_REG_16(x)  *( (volatile UWORD*) (BASE + x) )
+#define REF_REG_8(x)   *( (volatile UBYTE*) (BASE + x) )
 
 #define BASE           0xDFF000
 

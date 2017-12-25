@@ -1,17 +1,17 @@
+#include <exec/types.h>
 #include <clib/exec_protos.h>
 #include <clib/graphics_protos.h>
 #include <stdio.h>
 
-#include "customstdint.h"
 #include "register.h"
 
-uint16_t olddmareq;
-uint16_t oldintena;
-uint16_t oldintreq;
-uint16_t oldadkcon;
+UWORD olddmareq;
+UWORD oldintena;
+UWORD oldintreq;
+UWORD oldadkcon;
 
-uint32_t oldview;
-uint32_t oldcopper;
+ULONG oldview;
+ULONG oldcopper;
 
 struct Library *GfxBase = 0;
 
@@ -48,9 +48,9 @@ int initSystem(void){
         printf("found %s at: 0x%x\n", "graphics.library", GfxBase);
     }
     
-    oldview = *( (uint32_t*) (&(((uint8_t*) GfxBase)[34])) );
+    oldview = *( (ULONG*) (&(((UBYTE*) GfxBase)[34])) );
     printf("storing oldview: 0x%x\n", oldview);
-    oldcopper = *( (uint32_t*) (&(((uint8_t*) GfxBase)[38])) );
+    oldcopper = *( (ULONG*) (&(((UBYTE*) GfxBase)[38])) );
     printf("storing oldcopper: 0x%x\n", oldcopper);
     
     LoadView(0);
