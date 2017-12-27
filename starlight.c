@@ -4,6 +4,7 @@
 #include "init.h"
 #include "register.h"
 #include "utils.h"
+#include "payload_intro.h"
 
 WORD fsmCurrentState = FSM_START;
 WORD fsmNextState = -1;
@@ -18,7 +19,7 @@ int main(void)
                 break;
             
             case FSM_INTRO:
-                fsmNextState = FSM_STOP;
+                fsmNextState = fsmPayloadIntro();
                 break;
             
             case FSM_STOP:
