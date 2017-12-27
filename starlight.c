@@ -1,13 +1,39 @@
+#include <exec/types.h>
+
 #include "starlight.h"
 #include "init.h"
 #include "register.h"
 #include "utils.h"
 
+WORD fsmCurrentState = FSM_START;
+WORD fsmNextState = -1;
+
 int main(void)
 {
-    initSystem();
+    while(fsmCurrentState!=FSM_QUIT){
+        switch(fsmCurrentState){
+            case FSM_START: 
+                initSystem();
+                fsmNextState = FSM_INTRO;
+                break;
+            
+            case FSM_INTRO:
+                fsmNextState = FSM_STOP;
+                break;
+            
+            case FSM_STOP:
+                waitForMouseClick();
+                exitSystem();
+                fsmNextState = FSM_QUIT;
+                break;
+            
+            //something unexcpected happened, we better leave
+            default:
+                exitSystem();
+                fsmNextState = FSM_QUIT;
+                break;
+        }
     
-    waitForMouseClick();
-
-    exitSystem();
+        fsmCurrentState = fsmNextState;        
+    }
 }
