@@ -15,6 +15,8 @@ UWORD oldadkcon;
 ULONG oldview;
 ULONG oldcopper;
 
+ULONG finalMessage = 0;
+
 struct Library *GfxBase = 0;
 
 int initSystem(void){
@@ -96,4 +98,6 @@ void exitSystem(void){
     DisownBlitter();
     Permit();
     CloseLibrary(GfxBase);
+    
+    printf("final message: %d\n", finalMessage);
 }
