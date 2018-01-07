@@ -18,6 +18,8 @@ ULONG oldcopper;
 ULONG finalMessage = 0;
 
 struct Library *GfxBase = 0;
+//DOSBase is already defined in c.o
+struct Library *DOSBase_ = 0; 
 
 int initSystem(void){
     //store data in hardwareregisters ORed with $8000 
@@ -41,8 +43,10 @@ int initSystem(void){
    
 #ifdef __SASC
     GfxBase = OpenLibrary("graphics.library", 0);
+    DOSBase_ = OpenLibrary("dos.library", 0);
 #else
     GfxBase = OpenLibrary((const unsigned char*) "graphics.library", 0);
+    DOSBase_ = OpenLibrary((const unsigned char*) "dos.library", 0);
 #endif
     if(GfxBase==0){
         printf("could not load %s\n", "graphics.library");
@@ -50,6 +54,13 @@ int initSystem(void){
     }
     else{
         printf("found %s at: 0x%x\n", "graphics.library", GfxBase);
+    }
+    if(DOSBase_==0){
+        printf("could not load %s\n", "dos.library");
+        return 0;
+    }
+    else{
+        printf("found %s at: 0x%x\n", "dos.library", DOSBase_);
     }
     
     oldview = *( (ULONG*) (&(((UBYTE*) GfxBase)[34])) );
@@ -98,6 +109,7 @@ void exitSystem(void){
     DisownBlitter();
     Permit();
     CloseLibrary(GfxBase);
+    CloseLibrary(DOSBase_);
     
     printf("final message: %d\n", finalMessage);
 }
