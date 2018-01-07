@@ -12,6 +12,8 @@ WORD fsmNextState = -1;
 int main(void)
 {
     while(fsmCurrentState!=FSM_QUIT){
+        UWORD moduleStatus = NULL;
+        
         switch(fsmCurrentState){
             case FSM_START: 
                 initSystem();
@@ -19,7 +21,13 @@ int main(void)
                 break;
             
             case FSM_INTRO:
-                fsmNextState = fsmPayloadIntro();
+                moduleStatus = fsmPayloadIntro();
+                if(moduleStatus==MODULE_CONTINUE){
+                    fsmNextState = FSM_INTRO;
+                }
+                else{
+                    fsmNextState = FSM_STOP;
+                }
                 break;
             
             case FSM_STOP:

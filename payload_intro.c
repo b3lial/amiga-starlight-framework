@@ -16,16 +16,16 @@ WORD fsmPayloadIntro(void){
     if(!initIntroSuccess){
         initPayloadIntro();
         initIntroSuccess = 1;
-        return FSM_INTRO;
+        return MODULE_CONTINUE;
     }
     else if(!exitIntro){
         executePayloadIntro();
         exitIntro = 1;
-        return FSM_INTRO;
+        return MODULE_CONTINUE;
     }
     else{
         exitPayloadIntro();
-        return FSM_STOP;
+        return MODULE_FINISHED;
     }
 }
 

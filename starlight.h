@@ -6,4 +6,7 @@
 #define FSM_STOP  2
 #define FSM_QUIT  3
 
+#define MODULE_FINISHED 10
+#define MODULE_CONTINUE 11
+
 #endif
