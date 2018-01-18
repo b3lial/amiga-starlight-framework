@@ -6,6 +6,7 @@
 
 #include "payload_intro.h"
 #include "starlight.h"
+#include "utils.h"
 
 WORD initIntroSuccess = 0;
 WORD exitIntro = 0;
