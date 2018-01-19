@@ -41,6 +41,7 @@ void initPayloadIntro(void){
         viewPort.DHeight = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
         viewPort.DWidth = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
         finalMessage = querydims.Nominal.MaxY - querydims.Nominal.MinY;
+        writeLogInt("MaxY Resolution: %d\n", finalMessage);
     }
     else{
     
