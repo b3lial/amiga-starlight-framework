@@ -2,6 +2,7 @@
 #include <dos/dos.h>
 #include <proto/dos.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "utils.h"
 #include "register.h" 
@@ -34,10 +35,12 @@ int initLog(void){
     return 1;    
 }
 
-int writeLogInt(char* formatString, int n){
-    //TODO: Baustelle
+int writeLogInt(const char* formatString, int n){
+#ifdef DEMO_DEBUG
     char str[DEMO_STR_MAX];
-    return 1;
+    sprintf(str, formatString, n);
+    return writeLog(str);
+#endif
 }
 
 int writeLog(char* msg){
