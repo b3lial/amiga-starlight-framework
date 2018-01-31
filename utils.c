@@ -18,11 +18,11 @@ void waitForMouseClick(void){
 
 int initLog(void){
 #ifdef DEMO_DEBUG
-#ifdef __SASC
+//#ifdef __SASC
     BPTR logHandle = Open("ram:starlight-demo.log", MODE_NEWFILE);
-#else
-    BPTR logHandle = Open((const unsigned char*) "ram:starlight-demo.log", MODE_NEWFILE);
-#endif
+//#else
+//    BPTR logHandle = Open((const unsigned char*) "ram:starlight-demo.log", MODE_NEWFILE);
+//#endif
     if(logHandle==NULL){
         return 0;
     }
