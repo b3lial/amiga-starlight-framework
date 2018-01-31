@@ -17,13 +17,9 @@ void waitForMouseClick(void){
     }
 }
 
-int initLog(void){
 #ifdef DEMO_DEBUG
-//#ifdef __SASC
+int initLog(void){
     BPTR logHandle = Open("ram:starlight-demo.log", MODE_NEWFILE);
-//#else
-//    BPTR logHandle = Open((const unsigned char*) "ram:starlight-demo.log", MODE_NEWFILE);
-//#endif
     if(logHandle==NULL){
         return 0;
     }
@@ -31,25 +27,17 @@ int initLog(void){
     Write(logHandle, logMessage, strlen(logMessage));
     
     Close(logHandle);
-#endif
     return 1;    
 }
 
 int writeLogInt(const char* formatString, int n){
-#ifdef DEMO_DEBUG
     char str[DEMO_STR_MAX];
     sprintf(str, formatString, n);
     return writeLog(str);
-#endif
 }
 
 int writeLog(char* msg){
-#ifdef DEMO_DEBUG
-#ifdef __SASC
     BPTR logHandle = Open("ram:starlight-demo.log", MODE_OLDFILE);
-#else
-    BPTR logHandle = Open((const unsigned char*) "ram:starlight-demo.log", MODE_OLDFILE);
-#endif
     if(logHandle==NULL){
         return 0;
     }
@@ -58,6 +46,21 @@ int writeLog(char* msg){
     Write(logHandle, msg, strlen(msg));
     
     Close(logHandle);
-#endif
     return 1;
 }
+#else
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+int initLog(void){
+    return 1;
+}
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+int writeLogInt(const char* formatString, int n){
+    return 1;
+}
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+int writeLog(char* msg){
+    return 1;
+}
+#endif

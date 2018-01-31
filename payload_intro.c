@@ -11,8 +11,6 @@
 WORD initIntroSuccess = 0;
 WORD exitIntro = 0;
 
-extern ULONG finalMessage;
-
 WORD fsmPayloadIntro(void){
     if(!initIntroSuccess){
         initPayloadIntro();
@@ -39,9 +37,9 @@ void initPayloadIntro(void){
                         DTAG_DIMS, modeID ))
     {
         viewPort.DHeight = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
+        writeLogInt("MaxX Resolution: %d\n", querydims.Nominal.MaxX - querydims.Nominal.MinX + 1);
         viewPort.DWidth = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
-        finalMessage = querydims.Nominal.MaxY - querydims.Nominal.MinY;
-        writeLogInt("MaxY Resolution: %d\n", finalMessage);
+        writeLogInt("MaxY Resolution: %d\n", querydims.Nominal.MaxY - querydims.Nominal.MinY + 1);
     }
     else{
     

@@ -15,8 +15,6 @@ UWORD oldadkcon;
 ULONG oldview;
 ULONG oldcopper;
 
-ULONG finalMessage = 0;
-
 struct Library *GfxBase = 0;
 //DOSBase is already defined in c.o
 struct Library *DOSBase_ = 0; 
@@ -41,13 +39,8 @@ int initSystem(void){
     printf("storing ADKCONR: 0x%x\n", oldadkcon);
     oldadkcon |= 0x8000;
    
-#ifdef __SASC
     GfxBase = OpenLibrary("graphics.library", 0);
     DOSBase_ = OpenLibrary("dos.library", 0);
-#else
-    GfxBase = OpenLibrary((const unsigned char*) "graphics.library", 0);
-    DOSBase_ = OpenLibrary((const unsigned char*) "dos.library", 0);
-#endif
     if(GfxBase==0){
         printf("could not load %s\n", "graphics.library");
         return 0;
@@ -110,6 +103,4 @@ void exitSystem(void){
     Permit();
     CloseLibrary(GfxBase);
     CloseLibrary(DOSBase_);
-    
-    printf("final message: %d\n", finalMessage);
 }
