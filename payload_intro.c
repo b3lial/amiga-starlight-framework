@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include <exec/types.h>
-#include <clib/graphics_protos.h>
+#include <proto/graphics.h>
 #include <graphics/displayinfo.h>
 
 #include "payload_intro.h"
