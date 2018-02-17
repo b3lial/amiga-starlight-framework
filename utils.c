@@ -1,8 +1,9 @@
+#include <string.h>
+#include <stdio.h>
+
 #include <exec/types.h>
 #include <dos/dos.h>
 #include <proto/dos.h>
-#include <string.h>
-#include <stdio.h>
 
 #include "utils.h"
 #include "register.h" 

@@ -1,7 +1,7 @@
+#include <stdio.h>
+
 #include <exec/types.h>
 #include <clib/graphics_protos.h>
-#include <graphics/displayinfo.h>
-#include <stdio.h>
 #include <graphics/displayinfo.h>
 
 #include "payload_intro.h"
@@ -30,16 +30,25 @@ WORD fsmPayloadIntro(void){
 
 void initPayloadIntro(void){
     struct DimensionInfo querydims;
+    struct ViewExtra *vextra;
+    struct ViewPortExtra *vpextra;
+    struct MonitorSpec *monspec;
+
     struct ViewPort viewPort;
+    struct BitMap bitMap;
+    struct RasInfo rasInfo;
+    struct ColorMap *cm;
 
     UWORD modeID=DEFAULT_MONITOR_ID | LORES_KEY;
-    if (GetDisplayInfoData( NULL,(UBYTE *)&querydims, sizeof(struct DimensionInfo),
-                        DTAG_DIMS, modeID ))
+    if (GetDisplayInfoData( NULL,(UBYTE *)&querydims, 
+                sizeof(struct DimensionInfo), DTAG_DIMS, modeID ))
     {
         viewPort.DHeight = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
-        writeLogInt("MaxX Resolution: %d\n", querydims.Nominal.MaxX - querydims.Nominal.MinX + 1);
+        writeLogInt("MaxX Resolution: %d\n", querydims.Nominal.MaxX - 
+                querydims.Nominal.MinX + 1);
         viewPort.DWidth = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
-        writeLogInt("MaxY Resolution: %d\n", querydims.Nominal.MaxY - querydims.Nominal.MinY + 1);
+        writeLogInt("MaxY Resolution: %d\n", querydims.Nominal.MaxY - 
+                querydims.Nominal.MinY + 1);
     }
     else{
     

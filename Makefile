@@ -16,4 +16,4 @@ $(EXECUTABLE): $(OBJECTS)
 deploy: starlight
 	cp starlight /home/belial/Roms/Amiga/Uploads
 clean: 
-	rm *.o starlight
+	rm *.o *.lnk *.info starlight

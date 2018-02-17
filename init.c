@@ -1,7 +1,9 @@
-#include <exec/types.h>
-#include <clib/exec_protos.h>
-#include <clib/graphics_protos.h>
 #include <stdio.h>
+
+#include <exec/types.h>
+#include <proto/dos.h>
+#include <proto/graphics.h>
+#include <proto/exec.h>
 
 #include "register.h"
 #include "register_dmacon.h"
@@ -14,10 +16,6 @@ UWORD oldadkcon;
 
 ULONG oldview;
 ULONG oldcopper;
-
-struct Library *GfxBase = 0;
-//DOSBase is already defined in c.o
-struct Library *DOSBase_ = 0; 
 
 int initSystem(void){
     //store data in hardwareregisters ORed with $8000 
@@ -39,8 +37,7 @@ int initSystem(void){
     printf("storing ADKCONR: 0x%x\n", oldadkcon);
     oldadkcon |= 0x8000;
    
-    GfxBase = OpenLibrary("graphics.library", 0);
-    DOSBase_ = OpenLibrary("dos.library", 0);
+    GfxBase = (struct GfxBase*) OpenLibrary("graphics.library", 0);
     if(GfxBase==0){
         printf("could not load %s\n", "graphics.library");
         return 0;
@@ -48,12 +45,14 @@ int initSystem(void){
     else{
         printf("found %s at: 0x%x\n", "graphics.library", GfxBase);
     }
-    if(DOSBase_==0){
+    
+    DOSBase = (struct DosLibrary*) OpenLibrary("dos.library", 0);
+    if(DOSBase==0){
         printf("could not load %s\n", "dos.library");
         return 0;
     }
     else{
-        printf("found %s at: 0x%x\n", "dos.library", DOSBase_);
+        printf("found %s at: 0x%x\n", "dos.library", DOSBase);
     }
     
     oldview = *( (ULONG*) (&(((UBYTE*) GfxBase)[34])) );
@@ -69,7 +68,8 @@ int initSystem(void){
     Forbid();
     
     //REF_REG_16( DMACON ) = 0x85e0; //0b1000010111100000;
-    REF_REG_16( DMACON ) = DMACON_SET | BLTPRI | BPLEN | COPEN | BLTEN | SPREN; //enable
+    REF_REG_16( DMACON ) = DMACON_SET | BLTPRI | BPLEN | COPEN | 
+                           BLTEN | SPREN; //enable
     //REF_REG_16( DMACON ) = 0x1f;   //0b0000000000011111;
     REF_REG_16( DMACON ) = DSKEN | AUD3EN | AUD2EN | AUD1EN | AUD0EN; //disable
     
@@ -77,7 +77,8 @@ int initSystem(void){
     REF_REG_16( INTENA ) = INTENA_SET | INTEN; //enable
     //REF_REG_16( INTENA ) = 0x3FFF; //0b0011111111111111;
     REF_REG_16( INTENA ) = EXTER | DSKSYN | RBF | AUD3 | AUD2 | AUD1 | 
-                           AUD0 | BLIT | VERTB | COPER | PORTS | SOFT | DSKBLK | TBE; //disable
+                           AUD0 | BLIT | VERTB | COPER | PORTS | 
+                           SOFT | DSKBLK | TBE; //disable
     
     //exit gracefully
     return 1;
@@ -101,6 +102,6 @@ void exitSystem(void){
     WaitBlit();
     DisownBlitter();
     Permit();
-    CloseLibrary(GfxBase);
-    CloseLibrary(DOSBase_);
+    CloseLibrary((struct Library*) GfxBase);
+    CloseLibrary((struct Library*) DOSBase);
 }
