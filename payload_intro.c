@@ -40,19 +40,19 @@ void initPayloadIntro(void){
     struct ColorMap *cm;
 
     UWORD modeID=DEFAULT_MONITOR_ID | LORES_KEY;
-    if (GetDisplayInfoData( NULL,(UBYTE *)&querydims, 
+    if (!GetDisplayInfoData( NULL,(UBYTE *)&querydims, 
                 sizeof(struct DimensionInfo), DTAG_DIMS, modeID ))
     {
-        viewPort.DHeight = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
-        writeLogInt("MaxX Resolution: %d\n", querydims.Nominal.MaxX - 
-                querydims.Nominal.MinX + 1);
-        viewPort.DWidth = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
-        writeLogInt("MaxY Resolution: %d\n", querydims.Nominal.MaxY - 
-                querydims.Nominal.MinY + 1);
+        writeLog("Error: Payload Intro, GetDisplayInfoData() returned false");
+        return;
     }
-    else{
-    
-    }
+
+    viewPort.DHeight = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
+    writeLogInt("MaxX Resolution: %d\n", querydims.Nominal.MaxX - 
+            querydims.Nominal.MinX + 1);
+    viewPort.DWidth = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
+    writeLogInt("MaxY Resolution: %d\n", querydims.Nominal.MaxY - 
+            querydims.Nominal.MinY + 1);
 }
 
 void executePayloadIntro(void){
