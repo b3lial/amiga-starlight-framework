@@ -3,9 +3,13 @@
 
 #include <exec/types.h>
 
+#define PAYLOAD_INTRO_INIT 0
+#define PAYLOAD_INTRO_RUNNING 1 
+#define PAYLOAD_INTRO_SHUTDOWN 2
+
 WORD fsmPayloadIntro(void);
 void initPayloadIntro(void);
-void executePayloadIntro(void);
+BOOL executePayloadIntro(void);
 void exitPayloadIntro(void);
 
 #endif

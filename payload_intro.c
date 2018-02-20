@@ -7,25 +7,29 @@
 #include "payload_intro.h"
 #include "starlight.h"
 #include "utils.h"
+#include "init.h"
 
-WORD initIntroSuccess = 0;
-WORD exitIntro = 0;
+WORD payloadIntroState = PAYLOAD_INTRO_INIT;
 
 WORD fsmPayloadIntro(void){
-    if(!initIntroSuccess){
-        initPayloadIntro();
-        initIntroSuccess = 1;
-        return MODULE_CONTINUE;
+    switch(payloadIntroState){
+        case PAYLOAD_INTRO_INIT:
+            initPayloadIntro();
+            payloadIntroState = PAYLOAD_INTRO_RUNNING;
+            break;
+
+        case PAYLOAD_INTRO_RUNNING:
+            if(!executePayloadIntro()){
+                payloadIntroState = PAYLOAD_INTRO_SHUTDOWN;
+            }
+            break;
+
+        case PAYLOAD_INTRO_SHUTDOWN:
+            exitPayloadIntro();
+            return MODULE_FINISHED;
     }
-    else if(!exitIntro){
-        executePayloadIntro();
-        exitIntro = 1;
-        return MODULE_CONTINUE;
-    }
-    else{
-        exitPayloadIntro();
-        return MODULE_FINISHED;
-    }
+    
+    return MODULE_CONTINUE;
 }
 
 void initPayloadIntro(void){
@@ -44,21 +48,19 @@ void initPayloadIntro(void){
                 sizeof(struct DimensionInfo), DTAG_DIMS, modeID ))
     {
         writeLog("Error: Payload Intro, GetDisplayInfoData() returned false");
-        return;
+        exitSystem(); 
     }
 
     viewPort.DHeight = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
-    writeLogInt("MaxX Resolution: %d\n", querydims.Nominal.MaxX - 
-            querydims.Nominal.MinX + 1);
     viewPort.DWidth = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
-    writeLogInt("MaxY Resolution: %d\n", querydims.Nominal.MaxY - 
-            querydims.Nominal.MinY + 1);
+    writeLogInt("viewPort.DHeight: %d\n", viewPort.DHeight);
+    writeLogInt("viewPort.DWidth: %d\n", viewPort.DWidth);
 }
 
-void executePayloadIntro(void){
-    
+BOOL executePayloadIntro(void){
+    return FALSE;
 }
 
 void exitPayloadIntro(void){
-    
+
 }
