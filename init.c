@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 
+#include <dos/dos.h>
+#include <graphics/gfxbase.h>
 #include <exec/types.h>
 #include <proto/dos.h>
 #include <proto/graphics.h>
@@ -8,6 +11,7 @@
 #include "register.h"
 #include "register_dmacon.h"
 #include "register_intena.h"
+#include "utils.h"
 
 UWORD olddmareq;
 UWORD oldintena;
@@ -17,48 +21,36 @@ UWORD oldadkcon;
 ULONG oldview;
 ULONG oldcopper;
 
-int initSystem(void){
+void initSystem(void){
     //store data in hardwareregisters ORed with $8000 
     //(bit 15 is a write-set bit when values are written 
     //back into the system)
     olddmareq = REF_REG_16( DMACONR );
-    printf("storing DMACONR: 0x%x\n", olddmareq);
     olddmareq |= 0x8000;
     
     oldintena = REF_REG_16( INTENAR );
-    printf("storing INTENAR: 0x%x\n", oldintena);
     oldintena |= 0x8000;
     
     oldintreq = REF_REG_16( INTREQR );
-    printf("storing INTREQR: 0x%x\n", oldintreq);
     oldintreq |= 0x8000;
     
     oldadkcon = REF_REG_16( ADKCONR );
-    printf("storing ADKCONR: 0x%x\n", oldadkcon);
     oldadkcon |= 0x8000;
    
-    GfxBase = (struct GfxBase*) OpenLibrary("graphics.library", 0);
+    GfxBase = (struct GfxBase*) OpenLibrary(GRAPHICSNAME, 0);
     if(GfxBase==0){
-        printf("could not load %s\n", "graphics.library");
-        return 0;
-    }
-    else{
-        printf("found %s at: 0x%x\n", "graphics.library", GfxBase);
+        printf("could not load %s\n", GRAPHICSNAME);
+        exit(RETURN_ERROR);
     }
     
-    DOSBase = (struct DosLibrary*) OpenLibrary("dos.library", 0);
+    DOSBase = (struct DosLibrary*) OpenLibrary(DOSNAME, 0);
     if(DOSBase==0){
-        printf("could not load %s\n", "dos.library");
-        return 0;
-    }
-    else{
-        printf("found %s at: 0x%x\n", "dos.library", DOSBase);
+        printf("could not load %s\n", DOSNAME);
+        exit(RETURN_ERROR);
     }
     
     oldview = *( (ULONG*) (&(((UBYTE*) GfxBase)[34])) );
-    printf("storing oldview: 0x%x\n", oldview);
     oldcopper = *( (ULONG*) (&(((UBYTE*) GfxBase)[38])) );
-    printf("storing oldcopper: 0x%x\n", oldcopper);
     
     LoadView(0);
     WaitTOF();
@@ -79,12 +71,15 @@ int initSystem(void){
     REF_REG_16( INTENA ) = EXTER | DSKSYN | RBF | AUD3 | AUD2 | AUD1 | 
                            AUD0 | BLIT | VERTB | COPER | PORTS | 
                            SOFT | DSKBLK | TBE; //disable
-    
-    //exit gracefully
-    return 1;
+
+    initLog();
 }
 
-void exitSystem(void){
+/**
+ * Restore Interrupts, DMA configuration, Copper
+ * and exit program.
+ */
+void exitSystem(BYTE errorCode){
     REF_REG_16( DMACON ) = 0x7fff;
     REF_REG_16( DMACON ) = olddmareq;
     REF_REG_16( INTENA ) = 0x7fff;
@@ -104,4 +99,7 @@ void exitSystem(void){
     Permit();
     CloseLibrary((struct Library*) GfxBase);
     CloseLibrary((struct Library*) DOSBase);
+
+    writeLogInt("Shutdown with return code %d\n", errorCode);
+    exit(errorCode);
 }

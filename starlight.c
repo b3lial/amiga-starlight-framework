@@ -1,4 +1,5 @@
 #include <exec/types.h>
+#include <dos/dos.h>
 
 #include "starlight.h"
 #include "init.h"
@@ -18,9 +19,7 @@ int main(void)
         
         switch(fsmCurrentState){
             case FSM_START:
-                if(!initSystem()){
-                    return 0;
-                }
+                initSystem();
                 fsmNextState = FSM_INTRO;
                 break;
             
@@ -35,21 +34,20 @@ int main(void)
                 break;
             
             case FSM_STOP:
-                waitForMouseClick();
-                exitSystem();
                 fsmNextState = FSM_QUIT;
                 break;
             
             //something unexcpected happened, we better leave
             default:
-                exitSystem();
                 fsmNextState = FSM_QUIT;
+                writeLogInt("Error: Main, unknown fsm status %d\n",
+                        fsmCurrentState);
                 break;
         }
     
         fsmCurrentState = fsmNextState;        
     }
 
-    writeLog("Shutting down\n");
-    return 0;
+    waitForMouseClick();
+    exitSystem(RETURN_OK);
 }

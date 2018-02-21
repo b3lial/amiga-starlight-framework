@@ -3,6 +3,7 @@
 #include <exec/types.h>
 #include <proto/graphics.h>
 #include <graphics/displayinfo.h>
+#include <dos/dos.h>
 
 #include "payload_intro.h"
 #include "starlight.h"
@@ -48,13 +49,15 @@ void initPayloadIntro(void){
                 sizeof(struct DimensionInfo), DTAG_DIMS, modeID ))
     {
         writeLog("Error: Payload Intro, GetDisplayInfoData() returned false");
-        exitSystem(); 
+        exitSystem(RETURN_ERROR); 
     }
 
     viewPort.DHeight = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
     viewPort.DWidth = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
     writeLogInt("viewPort.DHeight: %d\n", viewPort.DHeight);
     writeLogInt("viewPort.DWidth: %d\n", viewPort.DWidth);
+
+    //TODO: implement me
 }
 
 BOOL executePayloadIntro(void){
