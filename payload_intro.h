@@ -11,5 +11,6 @@ WORD fsmPayloadIntro(void);
 void initPayloadIntro(void);
 BOOL executePayloadIntro(void);
 void exitPayloadIntro(void);
+void cleanBitPlanes(struct BitMap*, UBYTE, UWORD, UWORD);
 
 #endif
