@@ -97,6 +97,18 @@ void initPayloadIntro(void){
             exitSystem(RETURN_ERROR); 
         }
     }
+
+    //Init RasInfos
+    rasInfo.BitMap = &bitMap;
+    rasInfo.RxOffset = 0;
+    rasInfo.RyOffset = 0;
+    rasInfo.Next = NULL;
+
+    //Init ViewPort
+    InitVPort(&viewPort);
+    viewPort.RasInfo = &rasInfo;
+    viewPort.DWidth  = width; //TODO: -1?
+    viewPort.DHeight = height; //TODO: -1?
 }
 
 void cleanBitPlanes(struct BitMap* bm, UBYTE bmDepth, 
