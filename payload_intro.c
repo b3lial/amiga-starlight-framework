@@ -11,8 +11,14 @@
 #include "init.h"
 
 WORD payloadIntroState = PAYLOAD_INTRO_INIT;
+
 struct ViewExtra *vextra;
 struct MonitorSpec *monspec;
+
+//playfield 
+UWORD width = 0;
+UWORD height = 0;
+PLANEPTR bitplanes[PAYLOAD_INTRO_DEPTH];
 
 WORD fsmPayloadIntro(void){
     switch(payloadIntroState){
@@ -53,9 +59,8 @@ void initPayloadIntro(void){
         writeLog("Error: Payload Intro, GetDisplayInfoData() returned false");
         exitSystem(RETURN_ERROR); 
     }
-    UBYTE depth = 1; 
-    UWORD width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
-    UWORD height = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
+    width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
+    height = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
     writeLogInt("width: %d\n", width);
     writeLogInt("height: %d\n", height);
 
@@ -82,19 +87,23 @@ void initPayloadIntro(void){
     }
     
     //Create Bitmaps and Bitplanes
-    InitBitMap(&bitMap, depth, width, height);
-    for(UBYTE i=0; i<depth; i++){
-        bitMap.Planes[i] = NULL;
+    InitBitMap(&bitMap, PAYLOAD_INTRO_DEPTH, width, height);
+    for(UBYTE i=0; i<PAYLOAD_INTRO_DEPTH; i++){
+        bitplanes[i] = NULL;
     }
-    for(UBYTE i=0; i<depth; i++)
+    for(UBYTE i=0; i<PAYLOAD_INTRO_DEPTH; i++)
     {
-        bitMap.Planes[i] = (PLANEPTR)AllocRaster(width, height);
-        if (bitMap.Planes[i] == NULL){
+        bitplanes[i] = (PLANEPTR)AllocRaster(width, height);
+
+        if (bitplanes[i] == NULL){
             writeLog("Error: Payload Intro, could not allocate BitPlanes\n");
-            cleanBitPlanes(&bitMap, depth, width, height);
+            cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, width, height);
             GfxFree(vextra);
             CloseMonitor(monspec);
             exitSystem(RETURN_ERROR); 
+        }
+        else {
+            bitMap.Planes[i] = bitplanes[i];
         }
     }
 
@@ -111,12 +120,12 @@ void initPayloadIntro(void){
     viewPort.DHeight = height; //TODO: -1?
 }
 
-void cleanBitPlanes(struct BitMap* bm, UBYTE bmDepth, 
+void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth, 
         UWORD bmWidth, UWORD bmHeight)
 {
     for(UBYTE i=0; i<bmDepth; i++){
-        if((bm->Planes[i]) != NULL){
-            FreeRaster((bm->Planes[i]), bmWidth, bmHeight);
+        if((bmPlanes[i]) != NULL){
+            FreeRaster((bmPlanes[i]), bmWidth, bmHeight);
         }
         else{
             return;
@@ -129,7 +138,7 @@ BOOL executePayloadIntro(void){
 }
 
 void exitPayloadIntro(void){
-    //TODO: Free bitplanes
+    cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, width, height);
     GfxFree(vextra);
     CloseMonitor(monspec);
 }
