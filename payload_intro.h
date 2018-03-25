@@ -8,7 +8,9 @@
 #define PAYLOAD_INTRO_RUNNING 1 
 #define PAYLOAD_INTRO_SHUTDOWN 2
 
-#define PAYLOAD_INTRO_DEPTH 2
+#define PAYLOAD_INTRO_DEPTH  2
+#define PAYLOAD_INTRO_WIDTH  320
+#define PAYLOAD_INTRO_HEIGHT 200
 
 WORD fsmPayloadIntro(void);
 void initPayloadIntro(void);
