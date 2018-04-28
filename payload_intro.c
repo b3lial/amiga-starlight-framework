@@ -1,8 +1,11 @@
 #include <stdio.h>
-
 #include <exec/types.h>
 #include <proto/graphics.h>
+
 #include <graphics/displayinfo.h>
+#include <graphics/gfxbase.h>
+#include <graphics/videocontrol.h>
+
 #include <dos/dos.h>
 
 #include "payload_intro.h"
@@ -14,6 +17,14 @@ WORD payloadIntroState = PAYLOAD_INTRO_INIT;
 struct ViewExtra *vextra = NULL;
 struct MonitorSpec *monspec = NULL;
 PLANEPTR bitplanes[PAYLOAD_INTRO_DEPTH];
+
+struct TagItem vcTags[] =              /* These tags will be passed to the  */
+{                                      /* VideoControl() function to set up */
+    { VTAG_ATTACH_CM_SET, NULL },      /* the extended ViewPort structures  */
+    { VTAG_VIEWPORTEXTRA_SET, NULL },  /* required in Release 2.  The NULL  */
+    { VTAG_NORMAL_DISP_SET, NULL },    /* ti_Data field of these tags must  */
+    { VTAG_END_CM, NULL }              /* be filled in before making the    */
+};                                     /* call to VideoControl().           */
 
 WORD fsmPayloadIntro(void){
     switch(payloadIntroState){
@@ -61,7 +72,7 @@ void initPayloadIntro(void){
             view.Modes |= EXTEND_VSTRUCT;
 
             //Initialize the MonitorSpec field of the ViewExtra
-            monspeck = OpenMonitor(NULL,modeID);
+            monspec = OpenMonitor(NULL,modeID);
             if( monspec ){
                 vextra->Monitor=monspec;
             }
@@ -95,7 +106,7 @@ void initPayloadIntro(void){
             if( vextra ){
                 GfxFree(vextra);
             }
-            if( monspeck ){
+            if( monspec ){
                 CloseMonitor(monspec);
             }
             exitSystem(RETURN_ERROR); 
@@ -129,7 +140,7 @@ void initPayloadIntro(void){
             if (!GetDisplayInfoData( NULL,(UBYTE *)&querydims, 
                 sizeof(struct DimensionInfo), DTAG_DIMS, modeID ))
             {
-                writeLog("Error: Payload Intro, GetDisplayInfoData() returned false");
+                writeLog("Error: Payload Intro, GetDisplayInfoData() returned false\n");
                 exitSystem(RETURN_ERROR); 
             }
             UWORD width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
@@ -137,22 +148,26 @@ void initPayloadIntro(void){
             writeLogInt("width: %d\n", width);
             writeLogInt("height: %d\n", height);
             
-            if( GetDisplayInfoData( NULL , (UBYTE *) &dimquery ,
-                        sizeof(dimquery) , DTAG_DIMS, modeID) )
+            if( GetDisplayInfoData( NULL , (UBYTE *) &querydims ,
+                        sizeof(querydims) , DTAG_DIMS, modeID) )
             {
-                vpextra->DisplayClip = dimquery.Nominal;
+                vpextra->DisplayClip = querydims.Nominal;
 
                 /* Make a DisplayInfo and get ready to attach it */
-                if( !(vcTags[2].ti_Data = (ULONG) FindDisplayInfo(modeID)) )
-                    fail("Could not get DisplayInfo\n");
+                if( !(vcTags[2].ti_Data = (ULONG) FindDisplayInfo(modeID)) ){
+                    writeLog("Error: Could not get DisplayInfo\n");
+                    exitSystem(RETURN_ERROR); 
                 }
+            }
             else
             {
-                fail("Could not get DimensionInfo \n");
+                writeLog("Could not get DimensionInfo \n");
+                exitSystem(RETURN_ERROR); 
             }
         }
         else{
-            fail("Could not get ViewPortExtra\n");
+            writeLog("Could not get ViewPortExtra\n");
+            exitSystem(RETURN_ERROR); 
         }
 
         /* This is for backwards compatibility with, for example,   */
@@ -181,7 +196,7 @@ BOOL executePayloadIntro(void){
 }
 
 void exitPayloadIntro(void){
-    cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, width, height);
+    cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, PAYLOAD_INTRO_HEIGHT);
     GfxFree(vextra);
     CloseMonitor(monspec);
 }
