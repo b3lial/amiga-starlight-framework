@@ -14,17 +14,18 @@
 #include "init.h"
 
 WORD payloadIntroState = PAYLOAD_INTRO_INIT;
+
 struct ViewExtra *vextra = NULL;
 struct MonitorSpec *monspec = NULL;
 PLANEPTR bitplanes[PAYLOAD_INTRO_DEPTH];
 
-struct TagItem vcTags[] =              /* These tags will be passed to the  */
-{                                      /* VideoControl() function to set up */
-    { VTAG_ATTACH_CM_SET, NULL },      /* the extended ViewPort structures  */
-    { VTAG_VIEWPORTEXTRA_SET, NULL },  /* required in Release 2.  The NULL  */
-    { VTAG_NORMAL_DISP_SET, NULL },    /* ti_Data field of these tags must  */
-    { VTAG_END_CM, NULL }              /* be filled in before making the    */
-};                                     /* call to VideoControl().           */
+struct TagItem vcTags[] =
+{
+    { VTAG_ATTACH_CM_SET, NULL },
+    { VTAG_VIEWPORTEXTRA_SET, NULL },
+    { VTAG_NORMAL_DISP_SET, NULL },
+    { VTAG_END_CM, NULL }
+};
 
 WORD fsmPayloadIntro(void){
     switch(payloadIntroState){
@@ -56,6 +57,10 @@ void initPayloadIntro(void){
 
     struct ViewPortExtra *vpextra = NULL;
     struct ColorMap *cm = NULL;
+
+    UBYTE i=0;
+    UWORD width = 0;
+    UWORD height = 0;
 
     //This demo runs in low res, 230x200
     UWORD modeID=DEFAULT_MONITOR_ID | LORES_KEY;
@@ -91,10 +96,10 @@ void initPayloadIntro(void){
     //Create Bitmaps and Bitplanes
     InitBitMap(&bitMap, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 
             PAYLOAD_INTRO_HEIGHT);
-    for(UBYTE i=0; i<PAYLOAD_INTRO_DEPTH; i++){
+    for(i=0; i<PAYLOAD_INTRO_DEPTH; i++){
         bitplanes[i] = NULL;
     }
-    for(UBYTE i=0; i<PAYLOAD_INTRO_DEPTH; i++)
+    for(i=0; i<PAYLOAD_INTRO_DEPTH; i++)
     {
         bitplanes[i] = (PLANEPTR)AllocRaster(PAYLOAD_INTRO_WIDTH, 
                 PAYLOAD_INTRO_HEIGHT);
@@ -143,8 +148,8 @@ void initPayloadIntro(void){
                 writeLog("Error: Payload Intro, GetDisplayInfoData() returned false\n");
                 exitSystem(RETURN_ERROR); 
             }
-            UWORD width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
-            UWORD height = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
+            width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
+            height = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
             writeLogInt("width: %d\n", width);
             writeLogInt("height: %d\n", height);
             
@@ -181,12 +186,11 @@ void initPayloadIntro(void){
 void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth, 
         UWORD bmWidth, UWORD bmHeight)
 {
-    for(UBYTE i=0; i<bmDepth; i++){
+    UBYTE i=0;
+    for(i=0; i<bmDepth; i++){
         if((bmPlanes[i]) != NULL){
             FreeRaster((bmPlanes[i]), bmWidth, bmHeight);
-        }
-        else{
-            return;
+            bmPlanes[i] = NULL;
         }
     }
 }
@@ -197,6 +201,12 @@ BOOL executePayloadIntro(void){
 
 void exitPayloadIntro(void){
     cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, PAYLOAD_INTRO_HEIGHT);
-    GfxFree(vextra);
-    CloseMonitor(monspec);
+    if(vextra){
+        GfxFree(vextra);
+        vextra = NULL;
+    }
+    if(monspec){
+        CloseMonitor(monspec);
+        monspec = NULL;
+    }
 }
