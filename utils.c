@@ -18,6 +18,17 @@ void waitForMouseClick(void){
     }
 }
 
+int mouseClickDetected(void){
+    UBYTE ciaapra = FIR0;
+    ciaapra = *( (volatile UBYTE*) (CIAAPRA) );
+    if (ciaapra & FIR0){
+        return 0;
+    }
+    else{
+        return 1;
+    }
+}
+
 #ifdef DEMO_DEBUG
 int initLog(void){
     BPTR logHandle = Open("ram:starlight-demo.log", MODE_NEWFILE);

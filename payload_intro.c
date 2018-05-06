@@ -186,7 +186,12 @@ void initPayloadIntro(void){
     }
     LoadRGB4(&viewPort, colortable, PAYLOAD_INTRO_COLORS);
 
-    //TODO: ...
+    //Create Copper Instructions
+    MakeVPort( &view, &viewPort );
+    MrgCop( &view );
+
+    //Display the View
+    LoadView(&view);
 }
 
 void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth, 
@@ -202,7 +207,12 @@ void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth,
 }
 
 BOOL executePayloadIntro(void){
-    return FALSE;
+    if(mouseClickDetected()){
+        return FALSE;
+    }
+    else{
+        return TRUE;
+    }
 }
 
 void exitPayloadIntro(void){

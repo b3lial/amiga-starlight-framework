@@ -48,6 +48,5 @@ int main(void)
         fsmCurrentState = fsmNextState;        
     }
 
-    waitForMouseClick();
     exitSystem(RETURN_OK);
 }

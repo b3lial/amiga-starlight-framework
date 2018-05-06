@@ -5,3 +5,4 @@ smakefile
 tags
 *.o
 starlight
+starlight-demo
