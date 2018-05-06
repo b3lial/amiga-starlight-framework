@@ -18,14 +18,8 @@ WORD payloadIntroState = PAYLOAD_INTRO_INIT;
 struct ViewExtra *vextra = NULL;
 struct MonitorSpec *monspec = NULL;
 PLANEPTR bitplanes[PAYLOAD_INTRO_DEPTH];
-
-struct TagItem vcTags[] =
-{
-    { VTAG_ATTACH_CM_SET, NULL },
-    { VTAG_VIEWPORTEXTRA_SET, NULL },
-    { VTAG_NORMAL_DISP_SET, NULL },
-    { VTAG_END_CM, NULL }
-};
+struct ViewPortExtra *vpextra = NULL;
+struct ColorMap *cm = NULL;
 
 WORD fsmPayloadIntro(void){
     switch(payloadIntroState){
@@ -54,11 +48,14 @@ void initPayloadIntro(void){
     struct ViewPort viewPort;
     struct BitMap bitMap;
     struct RasInfo rasInfo;
-
-    struct ViewPortExtra *vpextra = NULL;
-    struct ColorMap *cm = NULL;
-
-    UBYTE i=0;
+    struct TagItem vcTags[] = {
+        { VTAG_ATTACH_CM_SET, NULL },
+        { VTAG_VIEWPORTEXTRA_SET, NULL },
+        { VTAG_NORMAL_DISP_SET, NULL },
+        { VTAG_END_CM, NULL }
+    };
+    UWORD colortable[] = { BLACK, RED, GREEN, BLUE };
+    UWORD i=0;
     UWORD width = 0;
     UWORD height = 0;
 
@@ -83,17 +80,18 @@ void initPayloadIntro(void){
             }
             else{
                 writeLog("Error: Payload Intro, could not get MonitorSpec\n");
-                GfxFree(vextra);
+                exitPayloadIntro();
                 exitSystem(RETURN_ERROR); 
             }    
         }
         else{
             writeLog("Error: Payload Intro, could not get ViewExtra\n");
+            exitPayloadIntro();
             exitSystem(RETURN_ERROR); 
         }
     }
     
-    //Create Bitmaps and Bitplanes
+    //Create Bitmap and add Bitplanes
     InitBitMap(&bitMap, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 
             PAYLOAD_INTRO_HEIGHT);
     for(i=0; i<PAYLOAD_INTRO_DEPTH; i++){
@@ -106,14 +104,7 @@ void initPayloadIntro(void){
 
         if (bitplanes[i] == NULL){
             writeLog("Error: Payload Intro, could not allocate BitPlanes\n");
-            cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 
-                    PAYLOAD_INTRO_HEIGHT);
-            if( vextra ){
-                GfxFree(vextra);
-            }
-            if( monspec ){
-                CloseMonitor(monspec);
-            }
+            exitPayloadIntro();
             exitSystem(RETURN_ERROR); 
         }
         else {
@@ -121,13 +112,13 @@ void initPayloadIntro(void){
         }
     }
 
-    //Init RasInfos
+    //Init RasInfo and add Bitmap
     rasInfo.BitMap = &bitMap;
     rasInfo.RxOffset = 0;
     rasInfo.RyOffset = 0;
     rasInfo.Next = NULL;
 
-    //Init ViewPort
+    //Init ViewPort and add RasInfo
     InitVPort(&viewPort);
     viewPort.RasInfo = &rasInfo;
     viewPort.DWidth  = PAYLOAD_INTRO_WIDTH;
@@ -141,37 +132,32 @@ void initPayloadIntro(void){
         {
             vcTags[1].ti_Data = (ULONG) vpextra;
 
-            /* Initialize the DisplayClip field of the ViewPortExtra */
-            if (!GetDisplayInfoData( NULL,(UBYTE *)&querydims, 
-                sizeof(struct DimensionInfo), DTAG_DIMS, modeID ))
-            {
-                writeLog("Error: Payload Intro, GetDisplayInfoData() returned false\n");
-                exitSystem(RETURN_ERROR); 
-            }
-            width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
-            height = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
-            writeLogInt("width: %d\n", width);
-            writeLogInt("height: %d\n", height);
-            
             if( GetDisplayInfoData( NULL , (UBYTE *) &querydims ,
-                        sizeof(querydims) , DTAG_DIMS, modeID) )
+                        sizeof(struct DimensionInfo) , DTAG_DIMS, modeID) )
             {
+                width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
+                height = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
+                writeLogInt("width: %d\n", width);
+                writeLogInt("height: %d\n", height);
                 vpextra->DisplayClip = querydims.Nominal;
 
                 /* Make a DisplayInfo and get ready to attach it */
                 if( !(vcTags[2].ti_Data = (ULONG) FindDisplayInfo(modeID)) ){
                     writeLog("Error: Could not get DisplayInfo\n");
+                    exitPayloadIntro();
                     exitSystem(RETURN_ERROR); 
                 }
             }
             else
             {
                 writeLog("Could not get DimensionInfo \n");
+                exitPayloadIntro();
                 exitSystem(RETURN_ERROR); 
             }
         }
         else{
             writeLog("Could not get ViewPortExtra\n");
+            exitPayloadIntro();
             exitSystem(RETURN_ERROR); 
         }
 
@@ -179,6 +165,26 @@ void initPayloadIntro(void){
         /* a 1.3 screen saver utility that looks at the Modes field */
         viewPort.Modes = (UWORD) (modeID & 0x0000ffff);
     }
+
+    //Create ColorMap
+    cm = GetColorMap(PAYLOAD_INTRO_COLORS);
+    if(!cm){
+        writeLog("Could not get ColorMap\n");
+        exitPayloadIntro();
+        exitSystem(RETURN_ERROR); 
+    }
+    if(GfxBase->LibNode.lib_Version >= 36){
+        vcTags[0].ti_Data = (ULONG) &viewPort;
+        if( VideoControl(cm,vcTags) ){
+            writeLog("Could not attach extended structures\n");
+            exitPayloadIntro();
+            exitSystem(RETURN_ERROR); 
+        }
+    }
+    else{
+        viewPort.ColorMap = cm;
+    }
+    LoadRGB4(&viewPort, colortable, PAYLOAD_INTRO_COLORS);
 
     //TODO: ...
 }
@@ -200,13 +206,22 @@ BOOL executePayloadIntro(void){
 }
 
 void exitPayloadIntro(void){
-    cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, PAYLOAD_INTRO_HEIGHT);
+    cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 
+            PAYLOAD_INTRO_HEIGHT);
     if(vextra){
         GfxFree(vextra);
         vextra = NULL;
     }
+    if(vpextra){
+        GfxFree(vpextra);
+        vpextra = NULL;
+    }
     if(monspec){
         CloseMonitor(monspec);
         monspec = NULL;
+    }
+    if(cm){
+        FreeColorMap(cm);
+        cm = NULL;
     }
 }

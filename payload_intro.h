@@ -9,8 +9,14 @@
 #define PAYLOAD_INTRO_SHUTDOWN 2
 
 #define PAYLOAD_INTRO_DEPTH  2
+#define PAYLOAD_INTRO_COLORS 4 
 #define PAYLOAD_INTRO_WIDTH  320
 #define PAYLOAD_INTRO_HEIGHT 200
+
+#define BLACK 0x000
+#define RED   0xf00
+#define GREEN 0x0f0
+#define BLUE  0x00f
 
 WORD fsmPayloadIntro(void);
 void initPayloadIntro(void);
