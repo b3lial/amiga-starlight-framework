@@ -17,9 +17,10 @@ WORD payloadIntroState = PAYLOAD_INTRO_INIT;
 
 struct ViewExtra *vextra = NULL;
 struct MonitorSpec *monspec = NULL;
-PLANEPTR bitplanes[PAYLOAD_INTRO_DEPTH];
 struct ViewPortExtra *vpextra = NULL;
 struct ColorMap *cm = NULL;
+PLANEPTR bitplanes[PAYLOAD_INTRO_DEPTH];
+
 
 WORD fsmPayloadIntro(void){
     switch(payloadIntroState){
@@ -43,10 +44,10 @@ WORD fsmPayloadIntro(void){
 }
 
 void initPayloadIntro(void){
-    struct DimensionInfo querydims;
+    struct DimensionInfo querydims = { 0 };
     struct View view;
-    struct ViewPort viewPort;
-    struct BitMap bitMap;
+    struct ViewPort viewPort = { 0 };
+    struct BitMap bitMap = { 0 };
     struct RasInfo rasInfo;
     struct TagItem vcTags[] = {
         { VTAG_ATTACH_CM_SET, NULL },
@@ -55,11 +56,12 @@ void initPayloadIntro(void){
         { VTAG_END_CM, NULL }
     };
     UWORD colortable[] = { BLACK, RED, GREEN, BLUE };
+
     UWORD i=0;
     UWORD width = 0;
     UWORD height = 0;
 
-    //This demo runs in low res, 230x200
+    //This demo runs in low res
     UWORD modeID=DEFAULT_MONITOR_ID | LORES_KEY;
 
     //Create View, 
@@ -118,8 +120,11 @@ void initPayloadIntro(void){
     rasInfo.RyOffset = 0;
     rasInfo.Next = NULL;
 
-    //Init ViewPort and add RasInfo
+    //Init ViewPort and add it to View
     InitVPort(&viewPort);
+    view.ViewPort = &viewPort;
+
+    //Add RasInfo to ViewPort, set ViewPort size
     viewPort.RasInfo = &rasInfo;
     viewPort.DWidth  = PAYLOAD_INTRO_WIDTH;
     viewPort.DHeight = PAYLOAD_INTRO_HEIGHT;
@@ -137,8 +142,8 @@ void initPayloadIntro(void){
             {
                 width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
                 height = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
-                writeLogInt("width: %d\n", width);
-                writeLogInt("height: %d\n", height);
+                writeLogInt("Detected Low Res Width: %d\n", width);
+                writeLogInt("Detected Low Res Height: %d\n", height);
                 vpextra->DisplayClip = querydims.Nominal;
 
                 /* Make a DisplayInfo and get ready to attach it */
@@ -192,6 +197,8 @@ void initPayloadIntro(void){
 
     //Display the View
     LoadView(&view);
+
+
 }
 
 void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth, 
@@ -200,6 +207,7 @@ void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth,
     UBYTE i=0;
     for(i=0; i<bmDepth; i++){
         if((bmPlanes[i]) != NULL){
+            writeLogInt("Freeing BitPlane memory %d\n", i);
             FreeRaster((bmPlanes[i]), bmWidth, bmHeight);
             bmPlanes[i] = NULL;
         }
@@ -208,6 +216,7 @@ void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth,
 
 BOOL executePayloadIntro(void){
     if(mouseClickDetected()){
+        writeLog("Mouse click detected, stopping demo\n");
         return FALSE;
     }
     else{
@@ -219,18 +228,22 @@ void exitPayloadIntro(void){
     cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 
             PAYLOAD_INTRO_HEIGHT);
     if(vextra){
+        writeLog("Freeing ViewExtra memory\n");
         GfxFree(vextra);
         vextra = NULL;
     }
     if(vpextra){
+        writeLog("Freeing ViewPortExtra memory\n");
         GfxFree(vpextra);
         vpextra = NULL;
     }
     if(monspec){
+        writeLog("Freeing Monitor memory\n");
         CloseMonitor(monspec);
         monspec = NULL;
     }
     if(cm){
+        writeLog("Freeing ColorMap memory\n");
         FreeColorMap(cm);
         cm = NULL;
     }
