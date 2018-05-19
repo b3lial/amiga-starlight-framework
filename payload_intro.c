@@ -56,10 +56,7 @@ void initPayloadIntro(void){
         { VTAG_END_CM, NULL }
     };
     UWORD colortable[] = { BLACK, RED, GREEN, BLUE };
-
     UWORD i=0;
-    UWORD width = 0;
-    UWORD height = 0;
 
     //This demo runs in low res
     UWORD modeID=DEFAULT_MONITOR_ID | LORES_KEY;
@@ -140,10 +137,10 @@ void initPayloadIntro(void){
             if( GetDisplayInfoData( NULL , (UBYTE *) &querydims ,
                         sizeof(struct DimensionInfo) , DTAG_DIMS, modeID) )
             {
-                width = querydims.Nominal.MaxX - querydims.Nominal.MinX + 1;
-                height = querydims.Nominal.MaxY - querydims.Nominal.MinY + 1;
-                writeLogInt("Detected Low Res Width: %d\n", width);
-                writeLogInt("Detected Low Res Height: %d\n", height);
+                writeLogInt("Detected Low Res MinX: %d\n", querydims.Nominal.MinX);
+                writeLogInt("Detected Low Res MinY: %d\n", querydims.Nominal.MinY);
+                writeLogInt("Detected Low Res MaxX: %d\n", querydims.Nominal.MaxX);
+                writeLogInt("Detected Low Res MaxY: %d\n", querydims.Nominal.MaxY);
                 vpextra->DisplayClip = querydims.Nominal;
 
                 /* Make a DisplayInfo and get ready to attach it */
