@@ -21,7 +21,32 @@ UWORD oldadkcon;
 ULONG oldview;
 ULONG oldcopper;
 
-void initSystem(void){
+/**
+ * Init system the nice way: Keep AmigaOS running,
+ * just load necessary libs and store old View
+ */
+void initSystemSoft(void){
+    DOSBase = (struct DosLibrary*) OpenLibrary(DOSNAME, 0);
+    if(DOSBase==0){
+        exit(RETURN_ERROR);
+    }
+   
+    GfxBase = (struct GfxBase*) OpenLibrary(GRAPHICSNAME, 0);
+    if(GfxBase==0){
+        printf("could not load %s\n", GRAPHICSNAME);
+        exit(RETURN_ERROR);
+    }
+    
+    oldview = (ULONG) GfxBase->ActiView;
+    initLog();
+}
+
+/**
+ * Init system the hard way with direct hardware access: 
+ * Load necessary libraries, store old copper, old, disable interrupts 
+ * and unused DMA
+ */
+void initSystemRuthless(void){
     //store data in hardwareregisters ORed with $8000 
     //(bit 15 is a write-set bit when values are written 
     //back into the system)
@@ -37,15 +62,14 @@ void initSystem(void){
     oldadkcon = REF_REG_16( ADKCONR );
     oldadkcon |= 0x8000;
    
+    DOSBase = (struct DosLibrary*) OpenLibrary(DOSNAME, 0);
+    if(DOSBase==0){
+        exit(RETURN_ERROR);
+    }
+
     GfxBase = (struct GfxBase*) OpenLibrary(GRAPHICSNAME, 0);
     if(GfxBase==0){
         printf("could not load %s\n", GRAPHICSNAME);
-        exit(RETURN_ERROR);
-    }
-    
-    DOSBase = (struct DosLibrary*) OpenLibrary(DOSNAME, 0);
-    if(DOSBase==0){
-        printf("could not load %s\n", DOSNAME);
         exit(RETURN_ERROR);
     }
     
@@ -76,10 +100,22 @@ void initSystem(void){
 }
 
 /**
+ * Restore old view and exit program
+ */
+void exitSystemSoft(BYTE errorCode){
+    LoadView((struct View*) oldview); 
+    
+    writeLogInt("Shutdown with return code %d\n", errorCode);
+    CloseLibrary((struct Library*) GfxBase);
+    CloseLibrary((struct Library*) DOSBase);
+    exit(errorCode);
+}
+
+/**
  * Restore Interrupts, DMA configuration, Copper
  * and exit program.
  */
-void exitSystem(BYTE errorCode){
+void exitSystemRuthless(BYTE errorCode){
     REF_REG_16( DMACON ) = 0x7fff;
     REF_REG_16( DMACON ) = olddmareq;
     REF_REG_16( INTENA ) = 0x7fff;
@@ -97,9 +133,9 @@ void exitSystem(BYTE errorCode){
     WaitBlit();
     DisownBlitter();
     Permit();
-    CloseLibrary((struct Library*) GfxBase);
-    CloseLibrary((struct Library*) DOSBase);
 
     writeLogInt("Shutdown with return code %d\n", errorCode);
+    CloseLibrary((struct Library*) GfxBase);
+    CloseLibrary((struct Library*) DOSBase);
     exit(errorCode);
 }

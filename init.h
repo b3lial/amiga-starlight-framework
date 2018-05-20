@@ -3,7 +3,10 @@
 
 #include <exec/types.h>
 
-void initSystem(void);
-void exitSystem(BYTE);
+void initSystemRuthless(void);
+void exitSystemRuthless(BYTE);
+
+void initSystemSoft(void);
+void exitSystemSoft(BYTE);
 
 #endif

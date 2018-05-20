@@ -12,14 +12,12 @@ WORD fsmNextState = -1;
 
 int main(void)
 {
-    initLog();
-    
     while(fsmCurrentState!=FSM_QUIT){
         UWORD moduleStatus = NULL;
         
         switch(fsmCurrentState){
             case FSM_START:
-                initSystem();
+                initSystemSoft();
                 fsmNextState = FSM_INTRO;
                 break;
             
@@ -48,5 +46,5 @@ int main(void)
         fsmCurrentState = fsmNextState;        
     }
 
-    exitSystem(RETURN_OK);
+    exitSystemSoft(RETURN_OK);
 }

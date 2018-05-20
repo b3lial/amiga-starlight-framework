@@ -56,10 +56,13 @@ void initPayloadIntro(void){
         { VTAG_END_CM, NULL }
     };
     UWORD colortable[] = { BLACK, RED, GREEN, BLUE };
-    UWORD i=0;
+    
+    UWORD i,j,k = 0;
+    UBYTE patternColor = 0xff;
+    UBYTE *displaymem = NULL;
 
-    //This demo runs in low res
-    UWORD modeID=DEFAULT_MONITOR_ID | LORES_KEY;
+    //This demo runs in pal, low res
+    ULONG modeID=PAL_MONITOR_ID | LORES_KEY;
 
     //Create View, 
     InitView(&view);
@@ -80,13 +83,13 @@ void initPayloadIntro(void){
             else{
                 writeLog("Error: Payload Intro, could not get MonitorSpec\n");
                 exitPayloadIntro();
-                exitSystem(RETURN_ERROR); 
+                exitSystemSoft(RETURN_ERROR); 
             }    
         }
         else{
             writeLog("Error: Payload Intro, could not get ViewExtra\n");
             exitPayloadIntro();
-            exitSystem(RETURN_ERROR); 
+            exitSystemSoft(RETURN_ERROR); 
         }
     }
     
@@ -104,10 +107,36 @@ void initPayloadIntro(void){
         if (bitplanes[i] == NULL){
             writeLog("Error: Payload Intro, could not allocate BitPlanes\n");
             exitPayloadIntro();
-            exitSystem(RETURN_ERROR); 
+            exitSystemSoft(RETURN_ERROR); 
         }
         else {
             bitMap.Planes[i] = bitplanes[i];
+        }
+    }
+    
+    //Init Bitplanes with some Data
+    for(i=0; i<PAYLOAD_INTRO_DEPTH; i++){
+        displaymem = bitMap.Planes[i];
+        for(j=0; j<PAYLOAD_INTRO_HEIGHT; j++){
+            if(j%8==0){
+                if(patternColor==0){
+                    patternColor=0xff;
+                }
+                else{
+                    patternColor=0;
+                }
+            }
+
+            for(k=0; k<PAYLOAD_INTRO_WIDTH/8; k++){
+                if(patternColor==0){
+                    patternColor=0xff;
+                }
+                else{
+                    patternColor=0;
+                }
+                displaymem[j*(PAYLOAD_INTRO_WIDTH/8) + k] = patternColor;
+            
+            }
         }
     }
 
@@ -117,14 +146,12 @@ void initPayloadIntro(void){
     rasInfo.RyOffset = 0;
     rasInfo.Next = NULL;
 
-    //Init ViewPort and add it to View
+    //Init ViewPort, add RasInfo to ViewPort and add ViewPort to View
     InitVPort(&viewPort);
-    view.ViewPort = &viewPort;
-
-    //Add RasInfo to ViewPort, set ViewPort size
     viewPort.RasInfo = &rasInfo;
     viewPort.DWidth  = PAYLOAD_INTRO_WIDTH;
     viewPort.DHeight = PAYLOAD_INTRO_HEIGHT;
+    view.ViewPort = &viewPort;
 
     //Init ViewPortExtra and attach it to ViewPort
     if(GfxBase->LibNode.lib_Version >= 36)
@@ -147,20 +174,20 @@ void initPayloadIntro(void){
                 if( !(vcTags[2].ti_Data = (ULONG) FindDisplayInfo(modeID)) ){
                     writeLog("Error: Could not get DisplayInfo\n");
                     exitPayloadIntro();
-                    exitSystem(RETURN_ERROR); 
+                    exitSystemSoft(RETURN_ERROR); 
                 }
             }
             else
             {
                 writeLog("Could not get DimensionInfo \n");
                 exitPayloadIntro();
-                exitSystem(RETURN_ERROR); 
+                exitSystemSoft(RETURN_ERROR); 
             }
         }
         else{
             writeLog("Could not get ViewPortExtra\n");
             exitPayloadIntro();
-            exitSystem(RETURN_ERROR); 
+            exitSystemSoft(RETURN_ERROR); 
         }
 
         /* This is for backwards compatibility with, for example,   */
@@ -173,14 +200,14 @@ void initPayloadIntro(void){
     if(!cm){
         writeLog("Could not get ColorMap\n");
         exitPayloadIntro();
-        exitSystem(RETURN_ERROR); 
+        exitSystemSoft(RETURN_ERROR); 
     }
     if(GfxBase->LibNode.lib_Version >= 36){
         vcTags[0].ti_Data = (ULONG) &viewPort;
         if( VideoControl(cm,vcTags) ){
             writeLog("Could not attach extended structures\n");
             exitPayloadIntro();
-            exitSystem(RETURN_ERROR); 
+            exitSystemSoft(RETURN_ERROR); 
         }
     }
     else{
@@ -194,8 +221,6 @@ void initPayloadIntro(void){
 
     //Display the View
     LoadView(&view);
-
-
 }
 
 void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth, 
