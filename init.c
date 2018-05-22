@@ -3,7 +3,10 @@
 
 #include <dos/dos.h>
 #include <graphics/gfxbase.h>
+#include <graphics/gfxmacros.h>
 #include <exec/types.h>
+#include <hardware/custom.h>
+#include <hardware/dmabits.h>
 #include <proto/dos.h>
 #include <proto/graphics.h>
 #include <proto/exec.h>
@@ -12,6 +15,8 @@
 #include "register_dmacon.h"
 #include "register_intena.h"
 #include "utils.h"
+
+__far extern struct Custom custom;
 
 UWORD olddmareq;
 UWORD oldintena;
@@ -23,7 +28,7 @@ ULONG oldcopper;
 
 /**
  * Init system the nice way: Keep AmigaOS running,
- * just load necessary libs and store old View
+ * just load necessary libs, disable sprite dma and store old View
  */
 void initSystemSoft(void){
     DOSBase = (struct DosLibrary*) OpenLibrary(DOSNAME, 0);
@@ -37,6 +42,8 @@ void initSystemSoft(void){
         exit(RETURN_ERROR);
     }
     
+    WaitTOF();
+    OFF_SPRITE;
     oldview = (ULONG) GfxBase->ActiView;
     initLog();
 }
@@ -103,6 +110,8 @@ void initSystemRuthless(void){
  * Restore old view and exit program
  */
 void exitSystemSoft(BYTE errorCode){
+    WaitTOF();
+    ON_SPRITE;
     LoadView((struct View*) oldview); 
     
     writeLogInt("Shutdown with return code %d\n", errorCode);
