@@ -17,7 +17,7 @@ int main(void)
         
         switch(fsmCurrentState){
             case FSM_START:
-                initSystemSoft();
+                initSystem(TRUE);
                 fsmNextState = FSM_INTRO;
                 break;
             
@@ -46,5 +46,5 @@ int main(void)
         fsmCurrentState = fsmNextState;        
     }
 
-    exitSystemSoft(RETURN_OK);
+    exitSystem(RETURN_OK);
 }

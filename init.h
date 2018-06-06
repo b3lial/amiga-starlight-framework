@@ -3,6 +3,9 @@
 
 #include <exec/types.h>
 
+void initSystem(BOOL softInit);
+void exitSystem(BYTE);
+
 void initSystemRuthless(void);
 void exitSystemRuthless(BYTE);
 

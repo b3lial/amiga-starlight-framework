@@ -83,13 +83,13 @@ void initPayloadIntro(void){
             else{
                 writeLog("Error: Payload Intro, could not get MonitorSpec\n");
                 exitPayloadIntro();
-                exitSystemSoft(RETURN_ERROR); 
+                exitSystem(RETURN_ERROR); 
             }    
         }
         else{
             writeLog("Error: Payload Intro, could not get ViewExtra\n");
             exitPayloadIntro();
-            exitSystemSoft(RETURN_ERROR); 
+            exitSystem(RETURN_ERROR); 
         }
     }
     
@@ -107,7 +107,7 @@ void initPayloadIntro(void){
         if (bitplanes[i] == NULL){
             writeLog("Error: Payload Intro, could not allocate BitPlanes\n");
             exitPayloadIntro();
-            exitSystemSoft(RETURN_ERROR); 
+            exitSystem(RETURN_ERROR); 
         }
         else {
             bitMap.Planes[i] = bitplanes[i];
@@ -174,20 +174,20 @@ void initPayloadIntro(void){
                 if( !(vcTags[2].ti_Data = (ULONG) FindDisplayInfo(modeID)) ){
                     writeLog("Error: Could not get DisplayInfo\n");
                     exitPayloadIntro();
-                    exitSystemSoft(RETURN_ERROR); 
+                    exitSystem(RETURN_ERROR); 
                 }
             }
             else
             {
                 writeLog("Could not get DimensionInfo \n");
                 exitPayloadIntro();
-                exitSystemSoft(RETURN_ERROR); 
+                exitSystem(RETURN_ERROR); 
             }
         }
         else{
             writeLog("Could not get ViewPortExtra\n");
             exitPayloadIntro();
-            exitSystemSoft(RETURN_ERROR); 
+            exitSystem(RETURN_ERROR); 
         }
 
         /* This is for backwards compatibility with, for example,   */
@@ -200,14 +200,14 @@ void initPayloadIntro(void){
     if(!cm){
         writeLog("Could not get ColorMap\n");
         exitPayloadIntro();
-        exitSystemSoft(RETURN_ERROR); 
+        exitSystem(RETURN_ERROR); 
     }
     if(GfxBase->LibNode.lib_Version >= 36){
         vcTags[0].ti_Data = (ULONG) &viewPort;
         if( VideoControl(cm,vcTags) ){
             writeLog("Could not attach extended structures\n");
             exitPayloadIntro();
-            exitSystemSoft(RETURN_ERROR); 
+            exitSystem(RETURN_ERROR); 
         }
     }
     else{

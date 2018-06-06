@@ -11,6 +11,7 @@
 #include <proto/graphics.h>
 #include <proto/exec.h>
 
+#include "init.h"
 #include "register.h"
 #include "register_dmacon.h"
 #include "register_intena.h"
@@ -22,9 +23,30 @@ UWORD olddmareq;
 UWORD oldintena;
 UWORD oldintreq;
 UWORD oldadkcon;
-
 ULONG oldview;
 ULONG oldcopper;
+
+//remember init method chosen by user
+BOOL hasChosenSoftInit = FALSE;
+
+void initSystem(BOOL softInit){
+    hasChosenSoftInit = softInit;
+    if(softInit){
+        initSystemSoft();
+    }
+    else{
+        initSystemRuthless();
+    }
+}
+
+void exitSystem(BYTE errorCode){
+    if(hasChosenSoftInit){
+        exitSystemSoft(errorCode);
+    }
+    else{
+        exitSystemRuthless(errorCode);
+    }
+}
 
 /**
  * Init system the nice way: Keep AmigaOS running,
@@ -114,7 +136,7 @@ void exitSystemSoft(BYTE errorCode){
     ON_SPRITE;
     LoadView((struct View*) oldview); 
     
-    writeLogInt("Shutdown with return code %d\n", errorCode);
+    writeLogInt("Soft reset shutdown with return code %d\n", errorCode);
     CloseLibrary((struct Library*) GfxBase);
     CloseLibrary((struct Library*) DOSBase);
     exit(errorCode);
@@ -143,7 +165,7 @@ void exitSystemRuthless(BYTE errorCode){
     DisownBlitter();
     Permit();
 
-    writeLogInt("Shutdown with return code %d\n", errorCode);
+    writeLogInt("Ruthless reset shutdown with return code %d\n", errorCode);
     CloseLibrary((struct Library*) GfxBase);
     CloseLibrary((struct Library*) DOSBase);
     exit(errorCode);
