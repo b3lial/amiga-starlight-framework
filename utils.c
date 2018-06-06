@@ -18,61 +18,61 @@ void waitForMouseClick(void){
     }
 }
 
-int mouseClickDetected(void){
+BOOL mouseClickDetected(void){
     UBYTE ciaapra = FIR0;
     ciaapra = *( (volatile UBYTE*) (CIAAPRA) );
     if (ciaapra & FIR0){
-        return 0;
+        return FALSE;
     }
     else{
-        return 1;
+        return TRUE;
     }
 }
 
 #ifdef DEMO_DEBUG
-int initLog(void){
+BOOL initLog(void){
     BPTR logHandle = Open("ram:starlight-demo.log", MODE_NEWFILE);
     if(logHandle==NULL){
-        return 0;
+        return FALSE;
     }
     
     Write(logHandle, logMessage, strlen(logMessage));
     
     Close(logHandle);
-    return 1;    
+    return TRUE;
 }
 
-int writeLogInt(const char* formatString, int n){
+BOOL writeLogInt(const char* formatString, int n){
     char str[DEMO_STR_MAX];
     sprintf(str, formatString, n);
     return writeLog(str);
 }
 
-int writeLog(char* msg){
+BOOL writeLog(char* msg){
     BPTR logHandle = Open("ram:starlight-demo.log", MODE_OLDFILE);
     if(logHandle==NULL){
-        return 0;
+        return FALSE;
     }
     
     Seek(logHandle, 0, OFFSET_END);
     Write(logHandle, msg, strlen(msg));
     
     Close(logHandle);
-    return 1;
+    return TRUE;
 }
 #else
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-int initLog(void){
-    return 1;
+BOOL initLog(void){
+    return TRUE;
 }
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-int writeLogInt(const char* formatString, int n){
-    return 1;
+BOOL writeLogInt(const char* formatString, int n){
+    return TRUE;
 }
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-int writeLog(char* msg){
-    return 1;
+BOOL writeLog(char* msg){
+    return TRUE;
 }
 #endif
