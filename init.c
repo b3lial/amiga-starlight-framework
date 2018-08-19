@@ -12,7 +12,6 @@
 #include <proto/exec.h>
 
 #include "init.h"
-#include "register.h"
 #include "register_dmacon.h"
 #include "register_intena.h"
 #include "utils.h"
@@ -79,16 +78,16 @@ void initSystemRuthless(void){
     //store data in hardwareregisters ORed with $8000 
     //(bit 15 is a write-set bit when values are written 
     //back into the system)
-    olddmareq = REF_REG_16( DMACONR );
+    olddmareq = custom.dmaconr;
     olddmareq |= 0x8000;
     
-    oldintena = REF_REG_16( INTENAR );
+    oldintena = custom.intenar;
     oldintena |= 0x8000;
     
-    oldintreq = REF_REG_16( INTREQR );
+    oldintreq = custom.intreqr;
     oldintreq |= 0x8000;
     
-    oldadkcon = REF_REG_16( ADKCONR );
+    oldadkcon = custom.adkconr;
     oldadkcon |= 0x8000;
    
     DOSBase = (struct DosLibrary*) OpenLibrary(DOSNAME, 0);
@@ -113,15 +112,15 @@ void initSystemRuthless(void){
     Forbid();
     
     //REF_REG_16( DMACON ) = 0x85e0; //0b1000010111100000;
-    REF_REG_16( DMACON ) = DMACON_SET | BLTPRI | BPLEN | COPEN | 
+    custom.dmacon = DMACON_SET | BLTPRI | BPLEN | COPEN | 
                            BLTEN | SPREN; //enable
     //REF_REG_16( DMACON ) = 0x1f;   //0b0000000000011111;
-    REF_REG_16( DMACON ) = DSKEN | AUD3EN | AUD2EN | AUD1EN | AUD0EN; //disable
+    custom.dmacon = DSKEN | AUD3EN | AUD2EN | AUD1EN | AUD0EN; //disable
     
     //REF_REG_16( INTENA ) = 0xC000; //0b1100000000000000;
-    REF_REG_16( INTENA ) = INTENA_SET | INTEN; //enable
+    custom.intena = INTENA_SET | INTEN; //enable
     //REF_REG_16( INTENA ) = 0x3FFF; //0b0011111111111111;
-    REF_REG_16( INTENA ) = EXTER | DSKSYN | RBF | AUD3 | AUD2 | AUD1 | 
+    custom.intena = EXTER | DSKSYN | RBF | AUD3 | AUD2 | AUD1 | 
                            AUD0 | BLIT | VERTB | COPER | PORTS | 
                            SOFT | DSKBLK | TBE; //disable
 
@@ -147,16 +146,16 @@ void exitSystemSoft(BYTE errorCode){
  * and exit program.
  */
 void exitSystemRuthless(BYTE errorCode){
-    REF_REG_16( DMACON ) = 0x7fff;
-    REF_REG_16( DMACON ) = olddmareq;
-    REF_REG_16( INTENA ) = 0x7fff;
-    REF_REG_16( INTENA ) = oldintena;
-    REF_REG_16( INTREQ ) = 0x7fff;
-    REF_REG_16( INTREQ ) = oldintreq;
-    REF_REG_16( ADKCON ) = 0x7fff;
-    REF_REG_16( ADKCON ) = oldadkcon;
+    custom.dmacon = 0x7fff;
+    custom.dmacon = olddmareq;
+    custom.intena = 0x7fff;
+    custom.intena = oldintena;
+    custom.intreq = 0x7fff;
+    custom.intreq = oldintreq;
+    custom.adkcon = 0x7fff;
+    custom.adkcon = oldadkcon;
     
-    REF_REG_32( COP1LCH ) = oldcopper;
+    custom.cop1lc = oldcopper;
     
     LoadView((struct View*) oldview);
     WaitTOF();

@@ -4,24 +4,16 @@
 #include <exec/types.h>
 #include <dos/dos.h>
 #include <proto/dos.h>
+#include <hardware/cia.h>
 
 #include "utils.h"
-#include "register.h" 
 #include "starlight.h"
 
 char* logMessage = "Starlight Demo Logfile\n";
-
-void waitForMouseClick(void){
-    UBYTE ciaapra = FIR0;
-    while(ciaapra & FIR0){
-        ciaapra = *( (volatile UBYTE*) (CIAAPRA) );
-    }
-}
+__far extern struct CIA ciaa;
 
 BOOL mouseClickDetected(void){
-    UBYTE ciaapra = FIR0;
-    ciaapra = *( (volatile UBYTE*) (CIAAPRA) );
-    if (ciaapra & FIR0){
+    if (ciaa.ciapra & CIAF_GAMEPORT0){
         return FALSE;
     }
     else{

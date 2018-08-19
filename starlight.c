@@ -3,7 +3,6 @@
 
 #include "starlight.h"
 #include "init.h"
-#include "register.h"
 #include "utils.h"
 #include "payload_intro.h"
 
