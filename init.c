@@ -109,17 +109,15 @@ void initSystemRuthless(void){
     OwnBlitter();
     WaitBlit();
     Forbid();
-    
-    //REF_REG_16( DMACON ) = 0x85e0; //0b1000010111100000;
+   
+    //set custom dma
     custom.dmacon = DMAF_SETCLR | DMAF_BLITHOG | DMAF_RASTER | DMAF_COPPER | 
         DMAF_BLITTER | DMAF_SPRITE; 
-    //REF_REG_16( DMACON ) = 0x1f;   //0b0000000000011111;
     custom.dmacon = DMAF_DISK | DMAF_AUD3 | DMAF_AUD2 | DMAF_AUD1 | 
         DMAF_AUD0; 
     
-    //REF_REG_16( INTENA ) = 0xC000; //0b1100000000000000;
+    //set custom interrupts
     custom.intena =  INTB_SETCLR | INTB_INTEN; 
-    //REF_REG_16( INTENA ) = 0x3FFF; //0b0011111111111111;
     custom.intena = INTB_EXTER | INTB_DSKSYNC | INTB_RBF | INTB_AUD3 | 
         INTB_AUD2 | INTB_AUD1 | INTB_AUD0 | INTB_BLIT | INTB_VERTB | 
         INTB_COPER | INTB_PORTS | INTB_SOFTINT | INTB_DSKBLK | INTB_TBE; 
