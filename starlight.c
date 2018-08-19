@@ -16,7 +16,7 @@ int main(void)
         
         switch(fsmCurrentState){
             case FSM_START:
-                initSystem(TRUE);
+                initSystem(FALSE);
                 fsmNextState = FSM_INTRO;
                 break;
             

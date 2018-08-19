@@ -7,13 +7,12 @@
 #include <exec/types.h>
 #include <hardware/custom.h>
 #include <hardware/dmabits.h>
+#include <hardware/intbits.h>
 #include <proto/dos.h>
 #include <proto/graphics.h>
 #include <proto/exec.h>
 
 #include "init.h"
-#include "register_dmacon.h"
-#include "register_intena.h"
 #include "utils.h"
 
 __far extern struct Custom custom;
@@ -112,17 +111,18 @@ void initSystemRuthless(void){
     Forbid();
     
     //REF_REG_16( DMACON ) = 0x85e0; //0b1000010111100000;
-    custom.dmacon = DMACON_SET | BLTPRI | BPLEN | COPEN | 
-                           BLTEN | SPREN; //enable
+    custom.dmacon = DMAF_SETCLR | DMAF_BLITHOG | DMAF_RASTER | DMAF_COPPER | 
+        DMAF_BLITTER | DMAF_SPRITE; 
     //REF_REG_16( DMACON ) = 0x1f;   //0b0000000000011111;
-    custom.dmacon = DSKEN | AUD3EN | AUD2EN | AUD1EN | AUD0EN; //disable
+    custom.dmacon = DMAF_DISK | DMAF_AUD3 | DMAF_AUD2 | DMAF_AUD1 | 
+        DMAF_AUD0; 
     
     //REF_REG_16( INTENA ) = 0xC000; //0b1100000000000000;
-    custom.intena = INTENA_SET | INTEN; //enable
+    custom.intena =  INTB_SETCLR | INTB_INTEN; 
     //REF_REG_16( INTENA ) = 0x3FFF; //0b0011111111111111;
-    custom.intena = EXTER | DSKSYN | RBF | AUD3 | AUD2 | AUD1 | 
-                           AUD0 | BLIT | VERTB | COPER | PORTS | 
-                           SOFT | DSKBLK | TBE; //disable
+    custom.intena = INTB_EXTER | INTB_DSKSYNC | INTB_RBF | INTB_AUD3 | 
+        INTB_AUD2 | INTB_AUD1 | INTB_AUD0 | INTB_BLIT | INTB_VERTB | 
+        INTB_COPER | INTB_PORTS | INTB_SOFTINT | INTB_DSKBLK | INTB_TBE; 
 
     initLog();
 }
