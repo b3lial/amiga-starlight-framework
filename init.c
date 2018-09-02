@@ -65,6 +65,7 @@ void initSystemSoft(void){
     WaitTOF();
     OFF_SPRITE;
     oldview = (ULONG) GfxBase->ActiView;
+    LoadView(NULL);
     initLog();
 }
 
@@ -103,7 +104,7 @@ void initSystemRuthless(void){
     oldview = *( (ULONG*) (&(((UBYTE*) GfxBase)[34])) );
     oldcopper = *( (ULONG*) (&(((UBYTE*) GfxBase)[38])) );
     
-    LoadView(0);
+    LoadView(NULL);
     WaitTOF();
     WaitTOF();
     OwnBlitter();

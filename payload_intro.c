@@ -255,31 +255,39 @@ void exitPayloadIntro(void){
     cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 
             PAYLOAD_INTRO_HEIGHT);
     if(vextra){
-        writeLog("Freeing ViewExtra memory\n");
+        writeLogInt("Freeing %d Bytes ViewExtra memory\n", 
+                sizeof(struct ViewExtra));
         GfxFree(vextra);
         vextra = NULL;
     }
     if(vpextra){
-        writeLog("Freeing ViewPortExtra memory\n");
+        writeLogInt("Freeing %d Bytes ViewPortExtra memory\n", 
+                sizeof(struct ViewPortExtra));
         GfxFree(vpextra);
         vpextra = NULL;
     }
     if(monspec){
-        writeLog("Freeing Monitor memory\n");
+        writeLogInt("Freeing %d Bytes Monitor memory\n", 
+                sizeof(struct MonitorSpec));
         CloseMonitor(monspec);
         monspec = NULL;
     }
     if(cm){
-        writeLog("Freeing ColorMap memory\n");
+        writeLogInt("Freeing %d Bytes ColorMap memory\n", 
+                sizeof(struct ColorMap));
         FreeColorMap(cm);
         cm = NULL;
     }
     if(LOFCprList){
-        writeLog("Freeing Copperlist LOFCprList memory\n");
+        writeLogInt("Freeing %d Bytes Copperlist LOFCprList memory\n", 
+                sizeof(struct cprlist));
         FreeCprList(LOFCprList);
+        LOFCprList = NULL;
     }
     if(SHFCprList){
-        writeLog("Freeing Copperlist SHFCprList memory\n");
+        writeLogInt("Freeing %d Bytes Copperlist SHFCprList memory\n",
+                sizeof(struct cprlist));
         FreeCprList(SHFCprList); 
+        SHFCprList = NULL; 
     }
 }
