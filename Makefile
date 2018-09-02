@@ -1,5 +1,5 @@
 CC=m68k-amigaos-gcc
-CFLAGS = -D__far="" -Wall -Wextra -Wno-pointer-sign -O2 
+CFLAGS = -D__far="" -Wall -O2 
 LDFLAGS = -noixemul 
 SOURCES=starlight.c init.c utils.c payload_intro.c
 OBJECTS=$(SOURCES:.c=.o)

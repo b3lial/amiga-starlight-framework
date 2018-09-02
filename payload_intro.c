@@ -44,7 +44,7 @@ WORD fsmPayloadIntro(void){
 }
 
 void initPayloadIntro(void){
-    struct DimensionInfo querydims = { 0 };
+    struct DimensionInfo querydims = { {0} };
     struct View view;
     struct ViewPort viewPort = { 0 };
     struct BitMap bitMap = { 0 };
