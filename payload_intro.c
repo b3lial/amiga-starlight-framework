@@ -15,6 +15,8 @@
 
 WORD payloadIntroState = PAYLOAD_INTRO_INIT;
 
+struct cprlist *LOFCprList = NULL;
+struct cprlist *SHFCprList;
 struct ViewExtra *vextra = NULL;
 struct MonitorSpec *monspec = NULL;
 struct ViewPortExtra *vpextra = NULL;
@@ -218,6 +220,9 @@ void initPayloadIntro(void){
     //Create Copper Instructions
     MakeVPort( &view, &viewPort );
     MrgCop( &view );
+    LOFCprList = view.LOFCprList;
+    SHFCprList = view.SHFCprList;
+    FreeVPortCopLists(&viewPort);
 
     //Display the View
     LoadView(&view);
@@ -268,5 +273,13 @@ void exitPayloadIntro(void){
         writeLog("Freeing ColorMap memory\n");
         FreeColorMap(cm);
         cm = NULL;
+    }
+    if(LOFCprList){
+        writeLog("Freeing Copperlist LOFCprList memory\n");
+        FreeCprList(LOFCprList);
+    }
+    if(SHFCprList){
+        writeLog("Freeing Copperlist SHFCprList memory\n");
+        FreeCprList(SHFCprList); 
     }
 }
