@@ -8,21 +8,14 @@
 
 #include <dos/dos.h>
 
+#include "graphics_controller.h"
 #include "payload_intro.h"
 #include "starlight.h"
 #include "utils.h"
 #include "init.h"
 
 WORD payloadIntroState = PAYLOAD_INTRO_INIT;
-
-struct cprlist *LOFCprList = NULL;
-struct cprlist *SHFCprList;
-struct ViewExtra *vextra = NULL;
-struct MonitorSpec *monspec = NULL;
-struct ViewPortExtra *vpextra = NULL;
-struct ColorMap *cm = NULL;
 PLANEPTR bitplanes[PAYLOAD_INTRO_DEPTH];
-
 
 WORD fsmPayloadIntro(void){
     switch(payloadIntroState){
@@ -46,55 +39,16 @@ WORD fsmPayloadIntro(void){
 }
 
 void initPayloadIntro(void){
-    struct DimensionInfo querydims = { {0} };
-    struct View view;
-    struct ViewPort viewPort = { 0 };
     struct BitMap bitMap = { 0 };
-    struct RasInfo rasInfo;
-    struct TagItem vcTags[] = {
-        { VTAG_ATTACH_CM_SET, NULL },
-        { VTAG_VIEWPORTEXTRA_SET, NULL },
-        { VTAG_NORMAL_DISP_SET, NULL },
-        { VTAG_END_CM, NULL }
-    };
     UWORD colortable[] = { BLACK, RED, GREEN, BLUE };
     
     UWORD i,j,k = 0;
     UBYTE patternColor = 0xff;
     UBYTE *displaymem = NULL;
 
-    //This demo runs in pal, low res
-    ULONG modeID=PAL_MONITOR_ID | LORES_KEY;
+    //Create View and ViewExtra memory structures
+    initPalView(); 
 
-    //Create View, 
-    InitView(&view);
-    
-    //Attach ViewExtra and MonitorSpec to View if possible
-    if(GfxBase->LibNode.lib_Version >= 36)
-    {
-        vextra=GfxNew(VIEW_EXTRA_TYPE); 
-        if( vextra ){
-            GfxAssociate(&view , vextra);
-            view.Modes |= EXTEND_VSTRUCT;
-
-            //Initialize the MonitorSpec field of the ViewExtra
-            monspec = OpenMonitor(NULL,modeID);
-            if( monspec ){
-                vextra->Monitor=monspec;
-            }
-            else{
-                writeLog("Error: Payload Intro, could not get MonitorSpec\n");
-                exitPayloadIntro();
-                exitSystem(RETURN_ERROR); 
-            }    
-        }
-        else{
-            writeLog("Error: Payload Intro, could not get ViewExtra\n");
-            exitPayloadIntro();
-            exitSystem(RETURN_ERROR); 
-        }
-    }
-    
     //Create Bitmap and add Bitplanes
     InitBitMap(&bitMap, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 
             PAYLOAD_INTRO_HEIGHT);
@@ -142,90 +96,12 @@ void initPayloadIntro(void){
         }
     }
 
-    //Init RasInfo and add Bitmap
-    rasInfo.BitMap = &bitMap;
-    rasInfo.RxOffset = 0;
-    rasInfo.RyOffset = 0;
-    rasInfo.Next = NULL;
+    //Use Bitplanes tto create a ViewPort and add it to View
+    addViewPort(&bitMap, colortable, PAYLOAD_INTRO_COLORS, 
+            0, 0, PAYLOAD_INTRO_WIDTH, PAYLOAD_INTRO_HEIGHT);
 
-    //Init ViewPort, add RasInfo to ViewPort and add ViewPort to View
-    InitVPort(&viewPort);
-    viewPort.RasInfo = &rasInfo;
-    viewPort.DWidth  = PAYLOAD_INTRO_WIDTH;
-    viewPort.DHeight = PAYLOAD_INTRO_HEIGHT;
-    view.ViewPort = &viewPort;
-
-    //Init ViewPortExtra and attach it to ViewPort
-    if(GfxBase->LibNode.lib_Version >= 36)
-    {
-        vpextra = GfxNew(VIEWPORT_EXTRA_TYPE);
-        if( vpextra )
-        {
-            vcTags[1].ti_Data = (ULONG) vpextra;
-
-            if( GetDisplayInfoData( NULL , (UBYTE *) &querydims ,
-                        sizeof(struct DimensionInfo) , DTAG_DIMS, modeID) )
-            {
-                writeLogInt("Detected Low Res MinX: %d\n", querydims.Nominal.MinX);
-                writeLogInt("Detected Low Res MinY: %d\n", querydims.Nominal.MinY);
-                writeLogInt("Detected Low Res MaxX: %d\n", querydims.Nominal.MaxX);
-                writeLogInt("Detected Low Res MaxY: %d\n", querydims.Nominal.MaxY);
-                vpextra->DisplayClip = querydims.Nominal;
-
-                /* Make a DisplayInfo and get ready to attach it */
-                if( !(vcTags[2].ti_Data = (ULONG) FindDisplayInfo(modeID)) ){
-                    writeLog("Error: Could not get DisplayInfo\n");
-                    exitPayloadIntro();
-                    exitSystem(RETURN_ERROR); 
-                }
-            }
-            else
-            {
-                writeLog("Could not get DimensionInfo \n");
-                exitPayloadIntro();
-                exitSystem(RETURN_ERROR); 
-            }
-        }
-        else{
-            writeLog("Could not get ViewPortExtra\n");
-            exitPayloadIntro();
-            exitSystem(RETURN_ERROR); 
-        }
-
-        /* This is for backwards compatibility with, for example,   */
-        /* a 1.3 screen saver utility that looks at the Modes field */
-        viewPort.Modes = (UWORD) (modeID & 0x0000ffff);
-    }
-
-    //Create ColorMap
-    cm = GetColorMap(PAYLOAD_INTRO_COLORS);
-    if(!cm){
-        writeLog("Could not get ColorMap\n");
-        exitPayloadIntro();
-        exitSystem(RETURN_ERROR); 
-    }
-    if(GfxBase->LibNode.lib_Version >= 36){
-        vcTags[0].ti_Data = (ULONG) &viewPort;
-        if( VideoControl(cm,vcTags) ){
-            writeLog("Could not attach extended structures\n");
-            exitPayloadIntro();
-            exitSystem(RETURN_ERROR); 
-        }
-    }
-    else{
-        viewPort.ColorMap = cm;
-    }
-    LoadRGB4(&viewPort, colortable, PAYLOAD_INTRO_COLORS);
-
-    //Create Copper Instructions
-    MakeVPort( &view, &viewPort );
-    MrgCop( &view );
-    LOFCprList = view.LOFCprList;
-    SHFCprList = view.SHFCprList;
-    FreeVPortCopLists(&viewPort);
-
-    //Display the View
-    LoadView(&view);
+    //Make View visible
+    startView();
 }
 
 void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth, 
@@ -252,42 +128,8 @@ BOOL executePayloadIntro(void){
 }
 
 void exitPayloadIntro(void){
+    stopView();
+
     cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 
             PAYLOAD_INTRO_HEIGHT);
-    if(vextra){
-        writeLogInt("Freeing %d Bytes ViewExtra memory\n", 
-                sizeof(struct ViewExtra));
-        GfxFree(vextra);
-        vextra = NULL;
-    }
-    if(vpextra){
-        writeLogInt("Freeing %d Bytes ViewPortExtra memory\n", 
-                sizeof(struct ViewPortExtra));
-        GfxFree(vpextra);
-        vpextra = NULL;
-    }
-    if(monspec){
-        writeLogInt("Freeing %d Bytes Monitor memory\n", 
-                sizeof(struct MonitorSpec));
-        CloseMonitor(monspec);
-        monspec = NULL;
-    }
-    if(cm){
-        writeLogInt("Freeing %d Bytes ColorMap memory\n", 
-                sizeof(struct ColorMap));
-        FreeColorMap(cm);
-        cm = NULL;
-    }
-    if(LOFCprList){
-        writeLogInt("Freeing %d Bytes Copperlist LOFCprList memory\n", 
-                sizeof(struct cprlist));
-        FreeCprList(LOFCprList);
-        LOFCprList = NULL;
-    }
-    if(SHFCprList){
-        writeLogInt("Freeing %d Bytes Copperlist SHFCprList memory\n",
-                sizeof(struct cprlist));
-        FreeCprList(SHFCprList); 
-        SHFCprList = NULL; 
-    }
 }
