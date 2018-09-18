@@ -10,7 +10,7 @@
 
 #include "views/intro.h"
 #include "graphics_controller.h"
-#include "starlight.h"
+#include "main.h"
 #include "utils.h"
 #include "init.h"
 

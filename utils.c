@@ -7,7 +7,7 @@
 #include <hardware/cia.h>
 
 #include "utils.h"
-#include "starlight.h"
+#include "main.h"
 
 char* logMessage = "Starlight Demo Logfile\n";
 __far extern struct CIA ciaa;

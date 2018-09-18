@@ -1,7 +1,7 @@
 #include <exec/types.h>
 #include <dos/dos.h>
 
-#include "starlight.h"
+#include "main.h"
 #include "init.h"
 #include "utils.h"
 #include "views/intro.h"
