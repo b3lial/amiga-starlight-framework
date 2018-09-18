@@ -18,10 +18,10 @@
 #define GREEN 0x0f0
 #define BLUE  0x00f
 
-WORD fsmPayloadIntro(void);
-void initPayloadIntro(void);
-BOOL executePayloadIntro(void);
-void exitPayloadIntro(void);
+WORD fsmIntro(void);
+void initIntro(void);
+BOOL executeIntro(void);
+void exitIntro(void);
 void cleanBitPlanes(PLANEPTR*, UBYTE, UWORD, UWORD);
 
 #endif

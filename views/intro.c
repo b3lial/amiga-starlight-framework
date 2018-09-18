@@ -17,28 +17,28 @@
 WORD payloadIntroState = PAYLOAD_INTRO_INIT;
 PLANEPTR bitplanes[PAYLOAD_INTRO_DEPTH];
 
-WORD fsmPayloadIntro(void){
+WORD fsmIntro(void){
     switch(payloadIntroState){
         case PAYLOAD_INTRO_INIT:
-            initPayloadIntro();
+            initIntro();
             payloadIntroState = PAYLOAD_INTRO_RUNNING;
             break;
 
         case PAYLOAD_INTRO_RUNNING:
-            if(!executePayloadIntro()){
+            if(!executeIntro()){
                 payloadIntroState = PAYLOAD_INTRO_SHUTDOWN;
             }
             break;
 
         case PAYLOAD_INTRO_SHUTDOWN:
-            exitPayloadIntro();
+            exitIntro();
             return MODULE_FINISHED;
     }
     
     return MODULE_CONTINUE;
 }
 
-void initPayloadIntro(void){
+void initIntro(void){
     struct BitMap bitMap = { 0 };
     UWORD colortable[] = { BLACK, RED, GREEN, BLUE };
     
@@ -62,7 +62,7 @@ void initPayloadIntro(void){
 
         if (bitplanes[i] == NULL){
             writeLog("Error: Payload Intro, could not allocate BitPlanes\n");
-            exitPayloadIntro();
+            exitIntro();
             exitSystem(RETURN_ERROR); 
         }
         else {
@@ -117,7 +117,7 @@ void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth,
     }
 }
 
-BOOL executePayloadIntro(void){
+BOOL executeIntro(void){
     if(mouseClickDetected()){
         writeLog("Mouse click detected, stopping demo\n");
         return FALSE;
@@ -127,7 +127,7 @@ BOOL executePayloadIntro(void){
     }
 }
 
-void exitPayloadIntro(void){
+void exitIntro(void){
     stopView();
 
     cleanBitPlanes(bitplanes, PAYLOAD_INTRO_DEPTH, PAYLOAD_INTRO_WIDTH, 

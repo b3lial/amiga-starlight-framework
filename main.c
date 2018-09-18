@@ -21,7 +21,7 @@ int main(void)
                 break;
             
             case FSM_INTRO:
-                moduleStatus = fsmPayloadIntro();
+                moduleStatus = fsmIntro();
                 if(moduleStatus==MODULE_CONTINUE){
                     fsmNextState = FSM_INTRO;
                 }
