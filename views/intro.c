@@ -8,8 +8,8 @@
 
 #include <dos/dos.h>
 
+#include "views/intro.h"
 #include "graphics_controller.h"
-#include "payload_intro.h"
 #include "starlight.h"
 #include "utils.h"
 #include "init.h"

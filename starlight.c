@@ -4,7 +4,7 @@
 #include "starlight.h"
 #include "init.h"
 #include "utils.h"
-#include "payload_intro.h"
+#include "views/intro.h"
 
 WORD fsmCurrentState = FSM_START;
 WORD fsmNextState = -1;
