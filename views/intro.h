@@ -1,17 +1,17 @@
-#ifndef __PAYLOAD_INTRO_H__
-#define __PAYLOAD_INTRO_H__
+#ifndef __VIEW_INTRO_H__
+#define __VIEW_INTRO_H__
 
 #include <exec/types.h>
 #include <proto/graphics.h>
 
-#define PAYLOAD_INTRO_INIT 0
-#define PAYLOAD_INTRO_RUNNING 1 
-#define PAYLOAD_INTRO_SHUTDOWN 2
+#define VIEW_INTRO_INIT 0
+#define VIEW_INTRO_RUNNING 1 
+#define VIEW_INTRO_SHUTDOWN 2
 
-#define PAYLOAD_INTRO_DEPTH  2
-#define PAYLOAD_INTRO_COLORS 4 
-#define PAYLOAD_INTRO_WIDTH  320
-#define PAYLOAD_INTRO_HEIGHT 256
+#define VIEW_INTRO_DEPTH  1
+#define VIEW_INTRO_COLORS 2 
+#define VIEW_INTRO_WIDTH  320
+#define VIEW_INTRO_HEIGHT 256
 
 #define BLACK 0x000
 #define RED   0xf00
