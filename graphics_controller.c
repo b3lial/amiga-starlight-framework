@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <exec/types.h>
 #include <exec/memory.h>
+#include <dos/dos.h>
 
 #include <proto/graphics.h>
 #include <proto/exec.h>
@@ -73,6 +74,8 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
         { VTAG_END_CM, NULL }
     };
 
+    writeLogInt("Viewport: %d\n", vpPointer);
+
     if(vpPointer >= MAX_VIEW_PORTS){
         writeLog("No more ViewPorts allowed\n");
         return;
@@ -90,8 +93,8 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
 
     //Init RasInfo and add Bitmap
     rasInfos[vpPointer]->BitMap = bitMap;
-    rasInfos[vpPointer]->RxOffset = x;
-    rasInfos[vpPointer]->RyOffset = y;
+    rasInfos[vpPointer]->RxOffset = 0;
+    rasInfos[vpPointer]->RyOffset = 0;
     rasInfos[vpPointer]->Next = NULL;
 
     //Init ViewPort, add RasInfo to ViewPort and add ViewPort to View
@@ -107,6 +110,8 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
     viewPorts[vpPointer]->RasInfo = rasInfos[vpPointer];
     viewPorts[vpPointer]->DWidth  = width;
     viewPorts[vpPointer]->DHeight = height;
+    viewPorts[vpPointer]->DxOffset = x;
+    viewPorts[vpPointer]->DyOffset = y;
     if(vpPointer==0)
     {
         view->ViewPort = viewPorts[vpPointer];
@@ -183,8 +188,17 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
 }
 
 void startView(void){
+    WORD i;
+
     //Create Copper Instructions
-    MakeVPort( view, viewPorts[0] );
+    for(i=0;i<MAX_VIEW_PORTS;i++){
+        if(viewPorts[i]){
+            MakeVPort( view, viewPorts[i] );
+        }
+        else{
+            break;
+        }
+    }
     MrgCop( view );
 
     //Display the View

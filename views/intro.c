@@ -56,34 +56,34 @@ void initIntro(void){
     //Create Bitmap and add Bitplanes
     InitBitMap(&bitMap1, VIEW_INTRO_DEPTH, VIEW_INTRO_WIDTH, 
             VIEW_INTRO_HEIGHT/2);
-    //InitBitMap(&bitMap2, VIEW_INTRO_DEPTH, VIEW_INTRO_WIDTH, 
-    //        VIEW_INTRO_HEIGHT/2);
+    InitBitMap(&bitMap2, VIEW_INTRO_DEPTH, VIEW_INTRO_WIDTH, 
+            VIEW_INTRO_HEIGHT/2);
     for(i=0; i<VIEW_INTRO_DEPTH; i++){
         bitplanes1[i] = NULL;
-    //    bitplanes2[i] = NULL;
+        bitplanes2[i] = NULL;
     }
     for(i=0; i<VIEW_INTRO_DEPTH; i++)
     {
         bitplanes1[i] = (PLANEPTR)AllocRaster(VIEW_INTRO_WIDTH, 
                 VIEW_INTRO_HEIGHT/2);
-    //    bitplanes2[i] = (PLANEPTR)AllocRaster(VIEW_INTRO_WIDTH, 
-    //            VIEW_INTRO_HEIGHT/2);
+        bitplanes2[i] = (PLANEPTR)AllocRaster(VIEW_INTRO_WIDTH, 
+                VIEW_INTRO_HEIGHT/2);
 
-        if (bitplanes1[i] == NULL /*|| bitplanes2[i] == NULL*/){
+        if (bitplanes1[i] == NULL || bitplanes2[i] == NULL){
             writeLog("Error: Payload Intro, could not allocate BitPlanes\n");
             exitIntro();
             exitSystem(RETURN_ERROR); 
         }
         else {
             bitMap1.Planes[i] = bitplanes1[i];
-    //        bitMap2.Planes[i] = bitplanes2[i];
+            bitMap2.Planes[i] = bitplanes2[i];
         }
     }
     
     //Init Bitplanes with some Data
     for(i=0; i<VIEW_INTRO_DEPTH; i++){
         displaymem1 = bitMap1.Planes[i];
-        //displaymem2 = bitMap2.Planes[i];
+        displaymem2 = bitMap2.Planes[i];
 
         for(j=0; j<VIEW_INTRO_HEIGHT/2; j++){
             if(j%8==0){
@@ -103,7 +103,7 @@ void initIntro(void){
                     patternColor=0;
                 }
                 displaymem1[j*(VIEW_INTRO_WIDTH/8) + k] = patternColor;
-                //displaymem2[j*(VIEW_INTRO_WIDTH/8) + k] = patternColor;
+                displaymem2[j*(VIEW_INTRO_WIDTH/8) + k] = patternColor;
             }
         }
     }
@@ -111,8 +111,8 @@ void initIntro(void){
     //Use Bitplanes to create a ViewPort and add it to View
     addViewPort(&bitMap1, colortable1, VIEW_INTRO_COLORS, 
             0, 0, VIEW_INTRO_WIDTH, VIEW_INTRO_HEIGHT/2);
-    //addViewPort(&bitMap2, colortable2, VIEW_INTRO_COLORS, 
-    //        0, VIEW_INTRO_HEIGHT/2, VIEW_INTRO_WIDTH, VIEW_INTRO_HEIGHT/2);
+    addViewPort(&bitMap2, colortable2, VIEW_INTRO_COLORS, 
+            0, VIEW_INTRO_HEIGHT/2, VIEW_INTRO_WIDTH, VIEW_INTRO_HEIGHT/2);
 
     //Make View visible
     startView();
