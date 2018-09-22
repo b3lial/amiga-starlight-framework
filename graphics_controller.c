@@ -17,7 +17,7 @@
 struct ViewExtra *vextra = NULL;
 struct View *view = NULL;
 struct MonitorSpec *monspec = NULL;
-ULONG modeID=PAL_MONITOR_ID | LORES_KEY;
+ULONG modeID=DEFAULT_MONITOR_ID | LORES_KEY;
 
 UWORD vpPointer = 0;
 struct ViewPort *viewPorts[MAX_VIEW_PORTS];
@@ -157,34 +157,34 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
             stopView();
             exitSystem(RETURN_ERROR); 
         }
+    }
 
-        /* This is for backwards compatibility with, for example,   */
-        /* a 1.3 screen saver utility that looks at the Modes field */
-        viewPorts[vpPointer]->Modes = (UWORD) (modeID & 0x0000ffff);
+    /* This is for backwards compatibility with, for example,   */
+    /* a 1.3 screen saver utility that looks at the Modes field */
+    viewPorts[vpPointer]->Modes = (UWORD) (modeID & 0x0000ffff);
 
-        //Create ColorMap
-        colormaps[vpPointer] = GetColorMap(colortableSize);
-        if(!colormaps[vpPointer]){
-            writeLog("Could not get ColorMap\n");
+    //Create ColorMap
+    colormaps[vpPointer] = GetColorMap(colortableSize);
+    if(!colormaps[vpPointer]){
+        writeLog("Could not get ColorMap\n");
+        stopView();
+        exitSystem(RETURN_ERROR); 
+    }
+
+    if(GfxBase->LibNode.lib_Version >= 36){
+        vcTags[0].ti_Data = (ULONG) viewPorts[vpPointer];
+        if( VideoControl(colormaps[vpPointer], vcTags) ){
+            writeLog("Could not attach extended structures\n");
             stopView();
             exitSystem(RETURN_ERROR); 
         }
-
-        if(GfxBase->LibNode.lib_Version >= 36){
-            vcTags[0].ti_Data = (ULONG) viewPorts[vpPointer];
-            if( VideoControl(colormaps[vpPointer], vcTags) ){
-                writeLog("Could not attach extended structures\n");
-                stopView();
-                exitSystem(RETURN_ERROR); 
-            }
-        }
-        else{
-            viewPorts[vpPointer]->ColorMap = colormaps[vpPointer];
-        }
-        LoadRGB4(viewPorts[vpPointer], colortable, colortableSize);
-        
-        vpPointer++;
     }
+    else{
+        viewPorts[vpPointer]->ColorMap = colormaps[vpPointer];
+    }
+    LoadRGB4(viewPorts[vpPointer], colortable, colortableSize);
+
+    vpPointer++;
 }
 
 void startView(void){

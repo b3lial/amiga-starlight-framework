@@ -112,7 +112,7 @@ void initIntro(void){
     addViewPort(&bitMap1, colortable1, VIEW_INTRO_COLORS, 
             0, 0, VIEW_INTRO_WIDTH, VIEW_INTRO_HEIGHT/2);
     addViewPort(&bitMap2, colortable2, VIEW_INTRO_COLORS, 
-            0, VIEW_INTRO_HEIGHT/2, VIEW_INTRO_WIDTH, VIEW_INTRO_HEIGHT/2);
+            0, VIEW_INTRO_HEIGHT/2+1, VIEW_INTRO_WIDTH, VIEW_INTRO_HEIGHT/2-1);
 
     //Make View visible
     startView();
