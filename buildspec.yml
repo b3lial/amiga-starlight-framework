@@ -7,6 +7,10 @@ phases:
         - cd /opt
         - aws s3 cp s3://codebuild-eu-central-1-4040-3447-3876-build-artifacts/m68k-amigaos-gcc.tar.gz .
         - tar -zxf m68k-amigaos-gcc.tar.gz
+        - dpkg --add-architecture i386
+        - apt-get update
+        - apt-get install libc6:i386 libstdc++6:i386
+        - ls /opt/m68k-amigaos/bin/
         - /opt/m68k-amigaos/bin/m68k-amigaos-gcc --version
         - export PATH=$PATH:/opt/m68k-amigaos/bin
         - cd $OLDDIR
