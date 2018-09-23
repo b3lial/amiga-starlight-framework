@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+        - export OLDDIR=$PWD
+        - cd /opt
+        - aws s3 cp s3://codebuild-eu-central-1-4040-3447-3876-build-artifacts/m68k-amigaos-gcc.tar.gz .
+        - tar -zxf m68k-amigaos-gcc.tar.gz
+        - export PATH=$PATH:/usr/local/bin
+        - cd $OLDDIR
+  pre_build:
+    commands:
+        - echo Nothing to do in the pre_build phase...
+  build:
+    commands:
+        - echo Build started on `date`
+        - make
+  post_build:
+    commands:
+        - echo Build completed on `date`
+artifacts:
+  files:
+        - starlight-gcc-build
