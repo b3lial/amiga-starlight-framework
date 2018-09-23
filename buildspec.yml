@@ -7,7 +7,7 @@ phases:
         - cd /opt
         - aws s3 cp s3://codebuild-eu-central-1-4040-3447-3876-build-artifacts/m68k-amigaos-gcc.tar.gz .
         - tar -zxf m68k-amigaos-gcc.tar.gz
-        - export PATH=$PATH:/usr/local/bin
+        - export PATH=$PATH:/opt/m68k-amigaos/bin
         - cd $OLDDIR
   pre_build:
     commands:
