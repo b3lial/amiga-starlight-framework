@@ -8,7 +8,7 @@ I wanted to try something different: Using a C compiler and the AmigaOS APIs. To
 this little framework which allows me to focus on the demo effects and not the AmigaOS.
 
 ## Features
-Main.c contains a demo project which uses the Starlight Framework. It is impplemented as a finite state machine because I
+Main.c contains a demo project which uses the Starlight Framework. It is implemented as a finite state machine because I
 wanted an easy way to concatenate different effects (text scroller, rotating cube, etc). Each effect is a seperate 
 [View](http://wiki.amigaos.net/wiki/Classic_Graphics_Primitives). The first effect is called intro and resides in 
 views/intro.c. It creates two ViewPorts which display a chessboard and waits for a mouse click to shutdown the process. 
@@ -37,6 +37,10 @@ a ViewPort to the View. Parameters are the raster itself, its color table, posit
 ### Logging
 The method **initLog(void)** can create the logfile *ram:starlight-demo.log*. You can add new lines with **writeLog(char\* msg)**
 and **writeLogInt(const char\* formatString, int n)**
+
+## Download Binary
+Although the current version just shows a chessboard, you can download the the compilation result of the current master
+branch [here](https://s3.eu-central-1.amazonaws.com/codebuild-eu-central-1-4040-3447-3876-output-bucket/starlight-gcc-build).
 
 ## Build
 The Makefile works with [GCC](http://aminet.net/package/dev/gcc/m68k-amigaos-gcc). The code can be compiled with SAS-C as well.
