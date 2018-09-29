@@ -40,7 +40,7 @@ and **writeLogInt(const char\* formatString, int n)**
 
 ## Download Binary
 Although the current version just shows a chessboard, you can download the the compilation result of the current master
-branch [here](https://s3.eu-central-1.amazonaws.com/codebuild-eu-central-1-4040-3447-3876-output-bucket/starlight-gcc-build).
+branch [here](https://s3.eu-central-1.amazonaws.com/codebuild-eu-central-1-4040-3447-3876-output-bucket/amiga/starlight-gcc-build).
 
 ## Build
 The Makefile works with [GCC](http://aminet.net/package/dev/gcc/m68k-amigaos-gcc). The code can be compiled with SAS-C as well.
