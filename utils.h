@@ -2,7 +2,7 @@
 #define __UTILS_H__
 
 BOOL mouseClickDetected(void);
-BOOL writeLogInt(const char* formatString, int n);
+BOOL writeLogFS(const char* formatString, ...);
 BOOL initLog(void);
 BOOL writeLog(char*);
 

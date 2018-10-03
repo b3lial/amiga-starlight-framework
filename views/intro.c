@@ -124,7 +124,7 @@ void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth,
     UBYTE i=0;
     for(i=0; i<bmDepth; i++){
         if((bmPlanes[i]) != NULL){
-            writeLogInt("Freeing BitPlane memory %d\n", i);
+            writeLogFS("Freeing BitPlane memory %d\n", i);
             FreeRaster((bmPlanes[i]), bmWidth, bmHeight);
             bmPlanes[i] = NULL;
         }

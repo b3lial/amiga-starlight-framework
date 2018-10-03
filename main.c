@@ -37,7 +37,7 @@ int main(void)
             //something unexcpected happened, we better leave
             default:
                 fsmNextState = FSM_QUIT;
-                writeLogInt("Error: Main, unknown fsm status %d\n",
+                writeLogFS("Error: Main, unknown fsm status %d\n",
                         fsmCurrentState);
                 break;
         }

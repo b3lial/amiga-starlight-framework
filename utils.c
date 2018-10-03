@@ -1,3 +1,4 @@
+#include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -34,12 +35,21 @@ BOOL initLog(void){
     return TRUE;
 }
 
-BOOL writeLogInt(const char* formatString, int n){
+/**
+ * Write format string into logfile
+ */
+BOOL writeLogFS(const char* formatString, ... ){
     char str[DEMO_STR_MAX];
-    sprintf(str, formatString, n);
+    va_list args;
+    va_start( args, formatString );
+    vsprintf( str , formatString, args );
+    va_end( args );
     return writeLog(str);
 }
 
+/**
+ * Write string into logfile
+ */
 BOOL writeLog(char* msg){
     BPTR logHandle = Open("ram:starlight-demo.log", MODE_OLDFILE);
     if(logHandle==NULL){

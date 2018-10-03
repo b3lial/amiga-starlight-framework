@@ -134,7 +134,7 @@ void exitSystemSoft(BYTE errorCode){
     ON_SPRITE;
     LoadView((struct View*) oldview); 
     
-    writeLogInt("Soft reset shutdown with return code %d\n", errorCode);
+    writeLogFS("Soft reset shutdown with return code %d\n", errorCode);
     CloseLibrary((struct Library*) GfxBase);
     CloseLibrary((struct Library*) DOSBase);
     exit(errorCode);
@@ -163,7 +163,7 @@ void exitSystemRuthless(BYTE errorCode){
     DisownBlitter();
     Permit();
 
-    writeLogInt("Ruthless reset shutdown with return code %d\n", errorCode);
+    writeLogFS("Ruthless reset shutdown with return code %d\n", errorCode);
     CloseLibrary((struct Library*) GfxBase);
     CloseLibrary((struct Library*) DOSBase);
     exit(errorCode);

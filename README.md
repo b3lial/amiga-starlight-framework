@@ -36,7 +36,7 @@ a ViewPort to the View. Parameters are the raster itself, its color table, posit
 
 ### Logging
 The method **initLog(void)** can create the logfile *ram:starlight-demo.log*. You can add new lines with **writeLog(char\* msg)**
-and **writeLogInt(const char\* formatString, int n)**
+and **writeLogFS(const char\* formatString, ...)**
 
 ## Build
 The Makefile works with [GCC](http://aminet.net/package/dev/gcc/m68k-amigaos-gcc). The code can be compiled with SAS-C as well.

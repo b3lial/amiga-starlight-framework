@@ -74,7 +74,7 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
         { VTAG_END_CM, NULL }
     };
 
-    writeLogInt("Viewport: %d\n", vpPointer);
+    writeLogFS("Viewport: %d\n", vpPointer);
 
     if(vpPointer >= MAX_VIEW_PORTS){
         writeLog("No more ViewPorts allowed\n");
@@ -85,7 +85,7 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
     rasInfos[vpPointer] = AllocMem(sizeof(struct RasInfo), MEMF_ANY);
     if(!rasInfos[vpPointer])
     {
-        writeLogInt("Error: Graphics Controller, could not allocate RasInfo %d memory\n", 
+        writeLogFS("Error: Graphics Controller, could not allocate RasInfo %d memory\n", 
                 vpPointer);
         stopView();
         exitSystem(RETURN_ERROR); 
@@ -101,7 +101,7 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
     viewPorts[vpPointer] = AllocMem(sizeof(struct ViewPort), MEMF_ANY);
     if(!viewPorts[vpPointer])
     {
-        writeLogInt("Error: Graphics Controller, could not allocate ViewPort %d memory\n", 
+        writeLogFS("Error: Graphics Controller, could not allocate ViewPort %d memory\n", 
                 vpPointer);
         stopView();
         exitSystem(RETURN_ERROR); 
@@ -132,10 +132,10 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
             if( GetDisplayInfoData( NULL , (UBYTE *) &querydims ,
                         sizeof(struct DimensionInfo) , DTAG_DIMS, modeID) )
             {
-                writeLogInt("Detected Low Res MinX: %d\n", querydims.Nominal.MinX);
-                writeLogInt("Detected Low Res MinY: %d\n", querydims.Nominal.MinY);
-                writeLogInt("Detected Low Res MaxX: %d\n", querydims.Nominal.MaxX);
-                writeLogInt("Detected Low Res MaxY: %d\n", querydims.Nominal.MaxY);
+                writeLogFS("Detected Low Res MinX: %d\n", querydims.Nominal.MinX);
+                writeLogFS("Detected Low Res MinY: %d\n", querydims.Nominal.MinY);
+                writeLogFS("Detected Low Res MaxX: %d\n", querydims.Nominal.MaxX);
+                writeLogFS("Detected Low Res MaxY: %d\n", querydims.Nominal.MaxY);
                 viewPortExtras[vpPointer]->DisplayClip = querydims.Nominal;
 
                 /* Make a DisplayInfo and get ready to attach it */
@@ -153,7 +153,7 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
             }
         }
         else{
-            writeLogInt("Could not get ViewPortExtra %d\n", vpPointer);
+            writeLogFS("Could not get ViewPortExtra %d\n", vpPointer);
             stopView();
             exitSystem(RETURN_ERROR); 
         }
@@ -214,7 +214,7 @@ void stopView(void){
         if(viewPorts[i]){
             FreeVPortCopLists(viewPorts[i]);
 
-            writeLogInt("Freeing %d Bytes ViewPort memory\n", 
+            writeLogFS("Freeing %d Bytes ViewPort memory\n", 
                     sizeof(struct ViewPort));
             FreeMem(viewPorts[i], sizeof(struct ViewPort));
             viewPorts[i] = NULL;
@@ -226,7 +226,7 @@ void stopView(void){
 
     for(i=0;i<MAX_VIEW_PORTS;i++){
         if(rasInfos[i]){
-            writeLogInt("Freeing %d Bytes RasInfo memory\n", 
+            writeLogFS("Freeing %d Bytes RasInfo memory\n", 
                     sizeof(struct RasInfo));
             FreeMem(rasInfos[i], sizeof(struct RasInfo));
             rasInfos[i] = NULL;
@@ -238,7 +238,7 @@ void stopView(void){
     
     for(i=0;i<MAX_VIEW_PORTS;i++){
         if(viewPortExtras[i]){
-            writeLogInt("Freeing %d Bytes ViewPortExtra memory\n", 
+            writeLogFS("Freeing %d Bytes ViewPortExtra memory\n", 
                     sizeof(struct ViewPortExtra));
             GfxFree(viewPortExtras[i]);
             viewPortExtras[i] = NULL;
@@ -250,28 +250,28 @@ void stopView(void){
 
     if(view){
         if(view->LOFCprList){
-            writeLogInt("Freeing %d Bytes Copperlist LOFCprList memory\n", 
+            writeLogFS("Freeing %d Bytes Copperlist LOFCprList memory\n", 
                 sizeof(struct cprlist));
             FreeCprList(view->LOFCprList);
         }
         if(view->SHFCprList){
-            writeLogInt("Freeing %d Bytes Copperlist SHFCprList memory\n",
+            writeLogFS("Freeing %d Bytes Copperlist SHFCprList memory\n",
                 sizeof(struct cprlist));
             FreeCprList(view->SHFCprList); 
         }
         
-        writeLogInt("Freeing %d Bytes View memory\n", sizeof(struct View));
+        writeLogFS("Freeing %d Bytes View memory\n", sizeof(struct View));
         FreeMem(view, sizeof(struct View));
         view = NULL;
     }
     if(vextra){
-        writeLogInt("Freeing %d Bytes ViewExtra memory\n", 
+        writeLogFS("Freeing %d Bytes ViewExtra memory\n", 
                 sizeof(struct ViewExtra));
         GfxFree(vextra);
         vextra = NULL;
     }
     if(monspec){
-        writeLogInt("Freeing %d Bytes Monitor memory\n", 
+        writeLogFS("Freeing %d Bytes Monitor memory\n", 
                 sizeof(struct MonitorSpec));
         CloseMonitor(monspec);
         monspec = NULL;
@@ -279,7 +279,7 @@ void stopView(void){
 
     for(i=0; i<MAX_VIEW_PORTS; i++){
         if(colormaps[i]){
-            writeLogInt("Freeing %d Bytes ColorMap memory\n", 
+            writeLogFS("Freeing %d Bytes ColorMap memory\n", 
                 sizeof(struct ColorMap));
             FreeColorMap(colormaps[i]);
             colormaps[i] = NULL;

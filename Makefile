@@ -13,8 +13,6 @@ $(EXECUTABLE): $(OBJECTS)
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
 	
-#deploy: starlight-gcc-build
-#	cp starlight-gcc-build /home/belial/Roms/Amiga/Uploads
 clean: 
-	rm *.o *.lnk *.info *.uaem starlight starlight-demo starlight-gcc-build \
-		starlight-sasc-build
+	rm *.o views/*.o *.lnk *.info *.uaem starlight starlight-demo \
+		starlight-gcc-build starlight-sasc-build
