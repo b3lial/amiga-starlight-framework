@@ -74,7 +74,7 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
         { VTAG_END_CM, NULL }
     };
 
-    writeLogFS("Viewport: %d\n", vpPointer);
+    writeLogFS("Creating Viewport: %d\n", vpPointer);
 
     if(vpPointer >= MAX_VIEW_PORTS){
         writeLog("No more ViewPorts allowed\n");
@@ -132,10 +132,9 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
             if( GetDisplayInfoData( NULL , (UBYTE *) &querydims ,
                         sizeof(struct DimensionInfo) , DTAG_DIMS, modeID) )
             {
-                writeLogFS("Detected Low Res MinX: %d\n", querydims.Nominal.MinX);
-                writeLogFS("Detected Low Res MinY: %d\n", querydims.Nominal.MinY);
-                writeLogFS("Detected Low Res MaxX: %d\n", querydims.Nominal.MaxX);
-                writeLogFS("Detected Low Res MaxY: %d\n", querydims.Nominal.MaxY);
+                writeLogFS("Detected Resolution: %d,%d,%d,%d\n", 
+                        querydims.Nominal.MinX, querydims.Nominal.MinY, 
+                        querydims.Nominal.MaxX, querydims.Nominal.MaxY);
                 viewPortExtras[vpPointer]->DisplayClip = querydims.Nominal;
 
                 /* Make a DisplayInfo and get ready to attach it */

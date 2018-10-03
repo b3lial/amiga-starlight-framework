@@ -69,7 +69,7 @@ BOOL initLog(void){
 }
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-BOOL writeLogInt(const char* formatString, int n){
+BOOL writeLogFS(const char* formatString, ...){
     return TRUE;
 }
 
