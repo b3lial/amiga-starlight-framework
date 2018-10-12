@@ -10,6 +10,7 @@
 
 #include "views/intro.h"
 #include "graphics_controller.h"
+#include "blob_controller.h"
 #include "main.h"
 #include "utils.h"
 #include "init.h"
@@ -49,6 +50,9 @@ void initIntro(void){
     UBYTE patternColor = 0xff;
     UBYTE *displaymem1 = NULL;
     UBYTE *displaymem2 = NULL;
+
+    //Load Boingball Blob
+    loadBlob("img/ball", 3, 200, 199);
 
     //Create View and ViewExtra memory structures
     initPalView(); 
