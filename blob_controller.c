@@ -30,7 +30,7 @@ struct BitMap* loadBlob(const char* fileName, UBYTE depth, UWORD width,
     
     //Copy file content to raster
     blobBitMap = createBitMap(depth, width, height);
-    if(!blobBitMap == NULL){
+    if(blobBitMap == NULL){
         return NULL;
     }
     planeSize = (width*height)/8;
