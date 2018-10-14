@@ -4,5 +4,6 @@
 #include <exec/types.h>
 
 struct BitMap* loadBlob(const char*, UBYTE, UWORD, UWORD);
+struct BitMap* createBitMap(UBYTE, UWORD, UWORD);
 
 #endif
