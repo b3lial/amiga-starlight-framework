@@ -1,7 +1,7 @@
 CC=m68k-amigaos-gcc
 CFLAGS = -D__far="" -Wall -O2 -I. 
 LDFLAGS = -noixemul 
-SOURCES=main.c init.c utils.c views/intro.c graphics_controller.c \
+SOURCES=main.c init.c utils.c views/twoplanes.c graphics_controller.c \
 		blob_controller.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=starlight-gcc-build
@@ -15,5 +15,5 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $< -o $@
 	
 clean: 
-	rm *.o views/*.o *.lnk *.info *.uaem starlight starlight-demo \
-		starlight-gcc-build starlight-sasc-build
+	rm *.o views/*.o views/*.uaem *.lnk *.info *.uaem starlight \
+		starlight-demo starlight-gcc-build starlight-sasc-build

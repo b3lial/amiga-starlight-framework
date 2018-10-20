@@ -4,7 +4,7 @@
 #include "main.h"
 #include "init.h"
 #include "utils.h"
-#include "views/intro.h"
+#include "views/twoplanes.h"
 
 WORD fsmCurrentState = FSM_START;
 WORD fsmNextState = -1;
@@ -21,7 +21,7 @@ int main(void)
                 break;
             
             case FSM_INTRO:
-                moduleStatus = fsmIntro();
+                moduleStatus = fsmTwoPlanes();
                 if(moduleStatus==MODULE_CONTINUE){
                     fsmNextState = FSM_INTRO;
                 }
