@@ -43,6 +43,7 @@ void initBallBlob(void){
     struct BitMap bitMap0 = { 0 };
     UWORD colortable0[] = { BLACK, RED, GREEN, BLUE, BLACK, RED, GREEN, BLUE };
     UBYTE i = 0;
+    writeLog("== Initialize View: BallBlob ==\n");
 
     //Load Boingball Blob
     loadBlob("img/ball", 3, 200, 199);
@@ -83,8 +84,7 @@ void initBallBlob(void){
 }
 
 BOOL executeBallBlob(void){
-    if(mouseClickDetected()){
-        writeLog("Mouse click detected, stopping demo\n");
+    if(mouseClick()){
         return FALSE;
     }
     else{

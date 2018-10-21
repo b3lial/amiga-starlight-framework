@@ -4,7 +4,8 @@
 #include <graphics/displayinfo.h>
 #include <proto/graphics.h>
 
-BOOL mouseClickDetected(void);
+BOOL mouseClick(void);
+BOOL mouseCiaStatus(void);
 BOOL writeLogFS(const char* formatString, ...);
 BOOL initLog(void);
 BOOL writeLog(char*);

@@ -17,6 +17,7 @@
 WORD payloadTwoPlanesState = VIEW_TWOPLANES_INIT;
 PLANEPTR bitplanes1[VIEW_TWOPLANES_DEPTH];
 PLANEPTR bitplanes2[VIEW_TWOPLANES_DEPTH];
+BOOL mouseDown = FALSE;
 
 WORD fsmTwoPlanes(void){
     switch(payloadTwoPlanesState){
@@ -49,6 +50,7 @@ void initTwoPlanes(void){
     UBYTE patternColor = 0xff;
     UBYTE *displaymem1 = NULL;
     UBYTE *displaymem2 = NULL;
+    writeLog("== Initialize View: TwoPlanes ==\n");
 
     //Create View and ViewExtra memory structures
     initPalView(); 
@@ -119,8 +121,7 @@ void initTwoPlanes(void){
 }
 
 BOOL executeTwoPlanes(void){
-    if(mouseClickDetected()){
-        writeLog("Mouse click detected, stopping demo\n");
+    if(mouseClick()){
         return FALSE;
     }
     else{

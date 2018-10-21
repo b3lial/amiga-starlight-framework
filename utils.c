@@ -10,10 +10,26 @@
 #include "utils.h"
 #include "main.h"
 
+BOOL mousePressed = FALSE;
 char* logMessage = "Starlight Demo Logfile\n";
 __far extern struct CIA ciaa;
 
-BOOL mouseClickDetected(void){
+BOOL mouseClick(void){
+    if(!mousePressed && mouseCiaStatus()){
+        mousePressed = TRUE;
+        return FALSE;
+    }
+    else if (mousePressed && !mouseCiaStatus()){
+        writeLog("Mouse click detected\n");
+        mousePressed = FALSE;
+        return TRUE;
+    }
+    else{
+        return FALSE;
+    }
+}
+
+BOOL mouseCiaStatus(void){
     if (ciaa.ciapra & CIAF_GAMEPORT0){
         return FALSE;
     }
