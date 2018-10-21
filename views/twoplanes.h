@@ -22,6 +22,5 @@ WORD fsmTwoPlanes(void);
 void initTwoPlanes(void);
 BOOL executeTwoPlanes(void);
 void exitTwoPlanes(void);
-void cleanBitPlanes(PLANEPTR*, UBYTE, UWORD, UWORD);
 
 #endif

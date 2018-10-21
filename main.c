@@ -5,6 +5,7 @@
 #include "init.h"
 #include "utils.h"
 #include "views/twoplanes.h"
+#include "views/ballblob.h"
 
 WORD fsmCurrentState = FSM_START;
 WORD fsmNextState = -1;
@@ -17,19 +18,29 @@ int main(void)
         switch(fsmCurrentState){
             case FSM_START:
                 initSystem(TRUE);
-                fsmNextState = FSM_INTRO;
+                fsmNextState = FSM_TWOPLANES;
                 break;
             
-            case FSM_INTRO:
+            case FSM_TWOPLANES:
                 moduleStatus = fsmTwoPlanes();
                 if(moduleStatus==MODULE_CONTINUE){
-                    fsmNextState = FSM_INTRO;
+                    fsmNextState = FSM_TWOPLANES;
+                }
+                else{
+                    fsmNextState = FSM_BALLBLOB;
+                }
+                break;
+            
+            case FSM_BALLBLOB:
+                moduleStatus = fsmBallBlob();
+                if(moduleStatus==MODULE_CONTINUE){
+                    fsmNextState = FSM_BALLBLOB;
                 }
                 else{
                     fsmNextState = FSM_STOP;
                 }
                 break;
-            
+
             case FSM_STOP:
                 fsmNextState = FSM_QUIT;
                 break;

@@ -78,3 +78,19 @@ BOOL writeLog(char* msg){
     return TRUE;
 }
 #endif
+
+/**
+ * Use FreeRaster to free an array of BitPlane memory
+ */
+void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth, 
+        UWORD bmWidth, UWORD bmHeight)
+{
+    UBYTE i=0;
+    for(i=0; i<bmDepth; i++){
+        if((bmPlanes[i]) != NULL){
+            writeLogFS("Freeing BitPlane memory %d\n", i);
+            FreeRaster((bmPlanes[i]), bmWidth, bmHeight);
+            bmPlanes[i] = NULL;
+        }
+    }
+}

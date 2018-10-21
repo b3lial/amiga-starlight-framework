@@ -10,7 +10,6 @@
 
 #include "views/twoplanes.h"
 #include "graphics_controller.h"
-#include "blob_controller.h"
 #include "main.h"
 #include "utils.h"
 #include "init.h"
@@ -50,9 +49,6 @@ void initTwoPlanes(void){
     UBYTE patternColor = 0xff;
     UBYTE *displaymem1 = NULL;
     UBYTE *displaymem2 = NULL;
-
-    //Load Boingball Blob
-    loadBlob("img/ball", 3, 200, 199);
 
     //Create View and ViewExtra memory structures
     initPalView(); 
@@ -120,19 +116,6 @@ void initTwoPlanes(void){
 
     //Make View visible
     startView();
-}
-
-void cleanBitPlanes(PLANEPTR* bmPlanes, UBYTE bmDepth, 
-        UWORD bmWidth, UWORD bmHeight)
-{
-    UBYTE i=0;
-    for(i=0; i<bmDepth; i++){
-        if((bmPlanes[i]) != NULL){
-            writeLogFS("Freeing BitPlane memory %d\n", i);
-            FreeRaster((bmPlanes[i]), bmWidth, bmHeight);
-            bmPlanes[i] = NULL;
-        }
-    }
 }
 
 BOOL executeTwoPlanes(void){
