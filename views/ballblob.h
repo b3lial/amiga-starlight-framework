@@ -13,11 +13,6 @@
 #define VIEW_BALLBLOB_WIDTH  320
 #define VIEW_BALLBLOB_HEIGHT 256
 
-#define BLACK 0x000
-#define RED   0xf00
-#define GREEN 0x0f0
-#define BLUE  0x00f
-
 WORD fsmBallBlob(void);
 void initBallBlob(void);
 BOOL executeBallBlob(void);

@@ -57,9 +57,9 @@ void initTwoPlanes(void){
 
     //Create Bitmap and add Bitplanes
     InitBitMap(&bitMap1, VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 
-            VIEW_TWOPLANES_HEIGHT/2);
+            VIEW_TWOPLANES_BP_HEIGHT);
     InitBitMap(&bitMap2, VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 
-            VIEW_TWOPLANES_HEIGHT/2);
+            VIEW_TWOPLANES_BP_HEIGHT);
     for(i=0; i<VIEW_TWOPLANES_DEPTH; i++){
         bitplanes1[i] = NULL;
         bitplanes2[i] = NULL;
@@ -67,9 +67,9 @@ void initTwoPlanes(void){
     for(i=0; i<VIEW_TWOPLANES_DEPTH; i++)
     {
         bitplanes1[i] = (PLANEPTR)AllocRaster(VIEW_TWOPLANES_WIDTH, 
-                VIEW_TWOPLANES_HEIGHT/2);
+                VIEW_TWOPLANES_BP_HEIGHT);
         bitplanes2[i] = (PLANEPTR)AllocRaster(VIEW_TWOPLANES_WIDTH, 
-                VIEW_TWOPLANES_HEIGHT/2);
+                VIEW_TWOPLANES_BP_HEIGHT);
 
         if (bitplanes1[i] == NULL || bitplanes2[i] == NULL){
             writeLog("Error: Payload TwoPlanes, could not allocate BitPlanes\n");
@@ -87,7 +87,7 @@ void initTwoPlanes(void){
         displaymem1 = bitMap1.Planes[i];
         displaymem2 = bitMap2.Planes[i];
 
-        for(j=0; j<VIEW_TWOPLANES_HEIGHT/2; j++){
+        for(j=0; j<VIEW_TWOPLANES_BP_HEIGHT; j++){
             if(j%8==0){
                 if(patternColor==0){
                     patternColor=0xff;
@@ -112,9 +112,11 @@ void initTwoPlanes(void){
 
     //Use Bitplanes to create a ViewPort and add it to View
     addViewPort(&bitMap1, colortable1, VIEW_TWOPLANES_COLORS, 
-            0, 0, VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_HEIGHT/2);
+            VIEW_TWOPLANES_VP1_X, VIEW_TWOPLANES_VP1_Y, 
+            VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_VP1_HEIGHT);
     addViewPort(&bitMap2, colortable2, VIEW_TWOPLANES_COLORS, 
-            0, VIEW_TWOPLANES_HEIGHT/2+1, VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_HEIGHT/2-1);
+            VIEW_TWOPLANES_VP2_X, VIEW_TWOPLANES_VP2_Y, 
+            VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_VP2_HEIGHT);
 
     //Make View visible
     startView();
