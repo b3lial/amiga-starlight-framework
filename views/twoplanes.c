@@ -64,6 +64,7 @@ void initTwoPlanes(void){
         bitplanes1[i] = NULL;
         bitplanes2[i] = NULL;
     }
+
     for(i=0; i<VIEW_TWOPLANES_DEPTH; i++)
     {
         bitplanes1[i] = (PLANEPTR)AllocRaster(VIEW_TWOPLANES_WIDTH, 

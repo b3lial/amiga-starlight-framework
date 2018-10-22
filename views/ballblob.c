@@ -57,6 +57,7 @@ void initBallBlob(void){
     for(i=0; i<VIEW_BALLBLOB_DEPTH; i++){
         bitplanes0[i] = NULL;
     }
+
     for(i=0; i<VIEW_BALLBLOB_DEPTH; i++)
     {
         bitplanes0[i] = (PLANEPTR)AllocRaster(VIEW_BALLBLOB_WIDTH, 
@@ -68,13 +69,12 @@ void initBallBlob(void){
             exitSystem(RETURN_ERROR); 
         }
         else {
+            BltClear(bitplanes0[i], 
+                    VIEW_BALLBLOB_WIDTH*VIEW_BALLBLOB_HEIGHT/8,1);
             bitMap0.Planes[i] = bitplanes0[i];
         }
     }
     
-    //Init Bitplanes with some Data
-    //TODO: Use blitter to null the shit
-
     //Use Bitplanes to create a ViewPort and add it to View
     addViewPort(&bitMap0, colortable0, VIEW_BALLBLOB_COLORS, 
             0, 0, VIEW_BALLBLOB_WIDTH, VIEW_BALLBLOB_HEIGHT);
