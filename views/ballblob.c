@@ -48,7 +48,7 @@ void initBallBlob(void){
     writeLog("== Initialize View: BallBlob ==\n");
 
     //Load Boingball Blob
-    ballBlob = loadBlob("img/ball", 3, VIEW_BALLBLOB_BALL_WIDTH, 
+    ballBlob = loadBlob("img/square_24x24_3", 3, VIEW_BALLBLOB_BALL_WIDTH, 
             VIEW_BALLBLOB_BALL_HEIGHT);
     if(ballBlob == NULL){
         writeLog("Error: Payload BallBlob, could not load ball blob\n");
