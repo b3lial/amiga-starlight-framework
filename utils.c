@@ -78,6 +78,28 @@ BOOL writeLog(char* msg){
     Close(logHandle);
     return TRUE;
 }
+
+/**
+ * Writes msg and a character array into log file. Maybe not the most
+ * performant implementation but who cares.
+ */
+BOOL writeArrayLog(char* msg, unsigned char* array, UWORD array_length){
+    UWORD i;
+
+    if(array_length<2){
+        return FALSE;
+    }
+    if(!writeLog(msg)){
+        return FALSE;
+    }
+
+    for(i=0; i<array_length-1; i++){
+       writeLogFS("0x%x, ", array[i]); 
+    }
+    writeLogFS("0x%x\n", array[array_length-1]); 
+    return TRUE;
+}
+
 #else
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 BOOL initLog(void){
@@ -91,6 +113,10 @@ BOOL writeLogFS(const char* formatString, ...){
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 BOOL writeLog(char* msg){
+    return TRUE;
+}
+
+BOOL writeArrayLog(char* msg, unsigned char* array, UWORD array_length){
     return TRUE;
 }
 #endif

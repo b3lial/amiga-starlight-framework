@@ -55,6 +55,9 @@ void initBallBlob(void){
         exitBallBlob();
         exitSystem(RETURN_ERROR); 
     }
+    writeArrayLog("First six Bytes of Bitplane 0: ", ballBlob->Planes[0], 6);
+    writeArrayLog("First six Bytes of Bitplane 1: ", ballBlob->Planes[1], 6);
+    writeArrayLog("First six Bytes of Bitplane 2: ", ballBlob->Planes[2], 6);
 
     //Create View and ViewExtra memory structures
     initPalView(); 
