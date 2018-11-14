@@ -55,9 +55,12 @@ void initBallBlob(void){
         exitBallBlob();
         exitSystem(RETURN_ERROR); 
     }
-    writeArrayLog("First six Bytes of Bitplane 0: ", ballBlob->Planes[0], 6);
-    writeArrayLog("First six Bytes of Bitplane 1: ", ballBlob->Planes[1], 6);
-    writeArrayLog("First six Bytes of Bitplane 2: ", ballBlob->Planes[2], 6);
+    writeArrayLog("First six Bytes of Ballblob Bitplane 0: ", 
+            ballBlob->Planes[0], 6);
+    writeArrayLog("First six Bytes of Ballblob Bitplane 1: ", 
+            ballBlob->Planes[1], 6);
+    writeArrayLog("First six Bytes of Ballblob Bitplane 2: ", 
+            ballBlob->Planes[2], 6);
 
     //Create View and ViewExtra memory structures
     initPalView(); 
@@ -93,6 +96,13 @@ void initBallBlob(void){
     //Copy Ball into ViewPort
     BltBitMap(ballBlob, 0, 0, &bitMap0, 0, 0, VIEW_BALLBLOB_BALL_WIDTH, 
             VIEW_BALLBLOB_BALL_HEIGHT, 0xC0, 0xff, 0);
+
+    writeArrayLog("First 64 Bytes of Screen Bitplane 0: ", 
+            bitMap0.Planes[0], 64);
+    writeArrayLog("First 64 Bytes of Screen Bitplane 1: ", 
+            bitMap0.Planes[1], 64);
+    writeArrayLog("First 64 Bytes of Screen Bitplane 2: ", 
+            bitMap0.Planes[2], 64);
 
     //Make View visible
     startView();

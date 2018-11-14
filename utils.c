@@ -94,7 +94,12 @@ BOOL writeArrayLog(char* msg, unsigned char* array, UWORD array_length){
     }
 
     for(i=0; i<array_length-1; i++){
-       writeLogFS("0x%x, ", array[i]); 
+        if(i%5!=0){
+            writeLogFS("0x%x, ", array[i]); 
+        }
+        else{
+            writeLogFS("0x%x\n", array[i]); 
+        }
     }
     writeLogFS("0x%x\n", array[array_length-1]); 
     return TRUE;
