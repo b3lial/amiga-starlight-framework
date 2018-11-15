@@ -48,19 +48,22 @@ void initBallBlob(void){
     writeLog("== Initialize View: BallBlob ==\n");
 
     //Load Boingball Blob
-    ballBlob = loadBlob("img/square_24x24_3", 3, VIEW_BALLBLOB_BALL_WIDTH, 
-            VIEW_BALLBLOB_BALL_HEIGHT);
+    ballBlob = loadBlob("img/square_24x24_3", VIEW_BALLBLOB_DEPTH, 
+            VIEW_BALLBLOB_BALL_WIDTH, VIEW_BALLBLOB_BALL_HEIGHT);
     if(ballBlob == NULL){
         writeLog("Error: Payload BallBlob, could not load ball blob\n");
         exitBallBlob();
         exitSystem(RETURN_ERROR); 
     }
-    writeArrayLog("First six Bytes of Ballblob Bitplane 0: ", 
-            ballBlob->Planes[0], 6);
-    writeArrayLog("First six Bytes of Ballblob Bitplane 1: ", 
-            ballBlob->Planes[1], 6);
-    writeArrayLog("First six Bytes of Ballblob Bitplane 2: ", 
-            ballBlob->Planes[2], 6);
+    writeLogFS("Ballblob BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
+            ballBlob->BytesPerRow, ballBlob->Rows, ballBlob->Flags, 
+            ballBlob->pad);
+    writeArrayLog("72 Bytes of Ballblob Bitplane 0: ", 
+            ballBlob->Planes[0], 72);
+    writeArrayLog("72 Bytes of Ballblob Bitplane 1: ", 
+            ballBlob->Planes[1], 72);
+    writeArrayLog("72 Bytes of Ballblob Bitplane 2: ", 
+            ballBlob->Planes[2], 72);
 
     //Create View and ViewExtra memory structures
     initPalView(); 
@@ -88,6 +91,9 @@ void initBallBlob(void){
             bitMap0.Planes[i] = bitplanes0[i];
         }
     }
+    writeLogFS("Screen BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
+            bitMap0.BytesPerRow, bitMap0.Rows, bitMap0.Flags, 
+            bitMap0.pad);
     
     //Use Bitplanes to create a ViewPort and add it to View
     addViewPort(&bitMap0, colortable0, VIEW_BALLBLOB_COLORS, 
@@ -97,12 +103,8 @@ void initBallBlob(void){
     BltBitMap(ballBlob, 0, 0, &bitMap0, 0, 0, VIEW_BALLBLOB_BALL_WIDTH, 
             VIEW_BALLBLOB_BALL_HEIGHT, 0xC0, 0xff, 0);
 
-    writeArrayLog("First 64 Bytes of Screen Bitplane 0: ", 
-            bitMap0.Planes[0], 64);
-    writeArrayLog("First 64 Bytes of Screen Bitplane 1: ", 
-            bitMap0.Planes[1], 64);
-    writeArrayLog("First 64 Bytes of Screen Bitplane 2: ", 
-            bitMap0.Planes[2], 64);
+    writeArrayLog("120 Bytes Screen Bitplane 0: ", 
+            bitMap0.Planes[0], 120);
 
     //Make View visible
     startView();
