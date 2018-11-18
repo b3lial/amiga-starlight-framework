@@ -2,6 +2,8 @@
 #include <proto/graphics.h>
 #include <exec/memory.h>
 #include <proto/exec.h>
+#include <string.h>
+
 #include "blob_controller.h"
 #include "utils.h"
 
