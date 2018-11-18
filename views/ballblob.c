@@ -17,8 +17,8 @@
 #include "init.h"
 
 WORD payloadBallBlobState = VIEW_BALLBLOB_INIT;
-PLANEPTR bitplanes0[VIEW_BALLBLOB_DEPTH];
 struct BitMap* ballBlob = NULL;
+struct BitMap* bitMap0 = NULL;
 
 WORD fsmBallBlob(void){
     switch(payloadBallBlobState){
@@ -42,9 +42,8 @@ WORD fsmBallBlob(void){
 }
 
 void initBallBlob(void){
-    struct BitMap bitMap0 = { 0 };
     UWORD colortable0[] = { BLACK, RED, GREEN, BLUE, BLACK, RED, GREEN, BLUE };
-    UBYTE i = 0;
+    BYTE i = 0;
     writeLog("\n== Initialize View: BallBlob ==\n");
 
     //Load Boingball Blob
@@ -60,41 +59,24 @@ void initBallBlob(void){
             ballBlob->pad);
 
     //Create View and ViewExtra memory structures
-    initPalView(); 
+    initView(); 
 
     //Create Bitmap and add Bitplanes
-    InitBitMap(&bitMap0, VIEW_BALLBLOB_DEPTH, VIEW_BALLBLOB_WIDTH, 
+    bitMap0 = createBitMap(VIEW_BALLBLOB_DEPTH, VIEW_BALLBLOB_WIDTH,
             VIEW_BALLBLOB_HEIGHT);
     for(i=0; i<VIEW_BALLBLOB_DEPTH; i++){
-        bitplanes0[i] = NULL;
-    }
-
-    for(i=0; i<VIEW_BALLBLOB_DEPTH; i++)
-    {
-        bitplanes0[i] = (PLANEPTR)AllocRaster(VIEW_BALLBLOB_WIDTH, 
-                VIEW_BALLBLOB_HEIGHT);
-
-        if (bitplanes0[i] == NULL){
-            writeLog("Error: Payload BallBlob, could not allocate BitPlanes\n");
-            exitBallBlob();
-            exitSystem(RETURN_ERROR); 
-        }
-        else {
-            BltClear(bitplanes0[i], 
-                    VIEW_BALLBLOB_WIDTH*VIEW_BALLBLOB_HEIGHT/8,1);
-            bitMap0.Planes[i] = bitplanes0[i];
-        }
+        BltClear(bitMap0->Planes[i], (bitMap0->BytesPerRow) * (bitMap0->Rows), 1);
     }
     writeLogFS("Screen BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
-            bitMap0.BytesPerRow, bitMap0.Rows, bitMap0.Flags, 
-            bitMap0.pad);
+            bitMap0->BytesPerRow, bitMap0->Rows, bitMap0->Flags, 
+            bitMap0->pad);
     
     //Use Bitplanes to create a ViewPort and add it to View
-    addViewPort(&bitMap0, colortable0, VIEW_BALLBLOB_COLORS, 
+    addViewPort(bitMap0, colortable0, VIEW_BALLBLOB_COLORS, 
             0, 0, VIEW_BALLBLOB_WIDTH, VIEW_BALLBLOB_HEIGHT);
 
     //Copy Ball into ViewPort
-    BltBitMap(ballBlob, 0, 0, &bitMap0, 0, 0, VIEW_BALLBLOB_BALL_WIDTH, 
+    BltBitMap(ballBlob, 0, 0, bitMap0, 0, 0, VIEW_BALLBLOB_BALL_WIDTH, 
             VIEW_BALLBLOB_BALL_HEIGHT, 0xC0, 0xff, 0);
 
     //Make View visible
@@ -112,7 +94,6 @@ BOOL executeBallBlob(void){
 
 void exitBallBlob(void){
     stopView();
-    cleanBitPlanes(bitplanes0, VIEW_BALLBLOB_DEPTH, VIEW_BALLBLOB_WIDTH, 
-            VIEW_BALLBLOB_HEIGHT);
+    cleanBitMap(bitMap0);
     cleanBitMap(ballBlob);
 }

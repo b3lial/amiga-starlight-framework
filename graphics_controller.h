@@ -10,7 +10,7 @@
 #define GREEN 0x0f0
 #define BLUE  0x00f
 
-void initPalView(void);
+void initView(void);
 void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
         WORD x, WORD y, WORD width, WORD height);
 void startView(void);

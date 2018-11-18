@@ -15,8 +15,8 @@
 #include "init.h"
 
 WORD payloadTwoPlanesState = VIEW_TWOPLANES_INIT;
-PLANEPTR bitplanes1[VIEW_TWOPLANES_DEPTH];
-PLANEPTR bitplanes2[VIEW_TWOPLANES_DEPTH];
+struct BitMap* bitMap0;
+struct BitMap* bitMap1;
 BOOL mouseDown = FALSE;
 
 WORD fsmTwoPlanes(void){
@@ -41,8 +41,6 @@ WORD fsmTwoPlanes(void){
 }
 
 void initTwoPlanes(void){
-    struct BitMap bitMap1 = { 0 };
-    struct BitMap bitMap2 = { 0 };
     UWORD colortable1[] = { BLACK, RED };
     UWORD colortable2[] = { BLACK, BLUE };
     
@@ -53,40 +51,18 @@ void initTwoPlanes(void){
     writeLog("\n== Initialize View: TwoPlanes ==\n");
 
     //Create View and ViewExtra memory structures
-    initPalView(); 
+    initView(); 
 
     //Create Bitmap and add Bitplanes
-    InitBitMap(&bitMap1, VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 
+    bitMap0 = createBitMap(VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 
             VIEW_TWOPLANES_BP_HEIGHT);
-    InitBitMap(&bitMap2, VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 
+    bitMap1 = createBitMap(VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 
             VIEW_TWOPLANES_BP_HEIGHT);
-    for(i=0; i<VIEW_TWOPLANES_DEPTH; i++){
-        bitplanes1[i] = NULL;
-        bitplanes2[i] = NULL;
-    }
-
-    for(i=0; i<VIEW_TWOPLANES_DEPTH; i++)
-    {
-        bitplanes1[i] = (PLANEPTR)AllocRaster(VIEW_TWOPLANES_WIDTH, 
-                VIEW_TWOPLANES_BP_HEIGHT);
-        bitplanes2[i] = (PLANEPTR)AllocRaster(VIEW_TWOPLANES_WIDTH, 
-                VIEW_TWOPLANES_BP_HEIGHT);
-
-        if (bitplanes1[i] == NULL || bitplanes2[i] == NULL){
-            writeLog("Error: Payload TwoPlanes, could not allocate BitPlanes\n");
-            exitTwoPlanes();
-            exitSystem(RETURN_ERROR); 
-        }
-        else {
-            bitMap1.Planes[i] = bitplanes1[i];
-            bitMap2.Planes[i] = bitplanes2[i];
-        }
-    }
     
     //Init Bitplanes with some Data
     for(i=0; i<VIEW_TWOPLANES_DEPTH; i++){
-        displaymem1 = bitMap1.Planes[i];
-        displaymem2 = bitMap2.Planes[i];
+        displaymem1 = bitMap0->Planes[i];
+        displaymem2 = bitMap1->Planes[i];
 
         for(j=0; j<VIEW_TWOPLANES_BP_HEIGHT; j++){
             if(j%8==0){
@@ -112,10 +88,10 @@ void initTwoPlanes(void){
     }
 
     //Use Bitplanes to create a ViewPort and add it to View
-    addViewPort(&bitMap1, colortable1, VIEW_TWOPLANES_COLORS, 
+    addViewPort(bitMap0, colortable1, VIEW_TWOPLANES_COLORS, 
             VIEW_TWOPLANES_VP1_X, VIEW_TWOPLANES_VP1_Y, 
             VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_VP1_HEIGHT);
-    addViewPort(&bitMap2, colortable2, VIEW_TWOPLANES_COLORS, 
+    addViewPort(bitMap1, colortable2, VIEW_TWOPLANES_COLORS, 
             VIEW_TWOPLANES_VP2_X, VIEW_TWOPLANES_VP2_Y, 
             VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_VP2_HEIGHT);
 
@@ -134,9 +110,6 @@ BOOL executeTwoPlanes(void){
 
 void exitTwoPlanes(void){
     stopView();
-
-    cleanBitPlanes(bitplanes1, VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 
-            VIEW_TWOPLANES_HEIGHT/2);
-    cleanBitPlanes(bitplanes2, VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 
-            VIEW_TWOPLANES_HEIGHT/2);
+    cleanBitMap(bitMap0);
+    cleanBitMap(bitMap1);
 }

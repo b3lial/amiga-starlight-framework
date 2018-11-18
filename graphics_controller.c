@@ -25,7 +25,7 @@ struct ViewPortExtra *viewPortExtras[MAX_VIEW_PORTS];
 struct RasInfo *rasInfos[MAX_VIEW_PORTS];
 struct ColorMap *colormaps[MAX_VIEW_PORTS];
 
-void initPalView(void){
+void initView(void){
     //Create View, 
     view = AllocMem(sizeof(struct View), MEMF_ANY); 
     if(!view)
@@ -324,6 +324,9 @@ struct BitMap* createBitMap(UBYTE depth, UWORD width, UWORD height){
     return newBitMap;
 }
 
+/**
+ * Free BitMMap memory and its BitPlanes
+ */
 void cleanBitMap(struct BitMap* bitmap){
     cleanBitPlanes(bitmap->Planes, bitmap->Depth, (bitmap->BytesPerRow)*8,
             bitmap->Rows);
