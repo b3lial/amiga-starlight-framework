@@ -11,6 +11,5 @@ BOOL writeLogFS(const char* formatString, ...);
 BOOL writeArrayLog(char*, unsigned char*, UWORD);
 BOOL initLog(void);
 BOOL writeLog(char*);
-void cleanBitPlanes(PLANEPTR*, UBYTE, UWORD, UWORD);
 
 #endif

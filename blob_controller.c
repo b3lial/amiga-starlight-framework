@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "blob_controller.h"
+#include "graphics_controller.h"
 #include "utils.h"
 
 /**
@@ -56,39 +57,4 @@ struct BitMap* loadBlob(const char* fileName, UBYTE depth, UWORD width,
 
     Close(blobFileHandle);
     return blobBitMap;
-}
-
-/**
- * Allocates memory for bitmap and its bitplanes
- */
-struct BitMap* createBitMap(UBYTE depth, UWORD width, UWORD height){
-    struct BitMap* newBitMap;
-    BYTE i,j = 0;
-
-    writeLogFS("Allocating memory for %dx%dx%d BitMap\n", depth, width, height);
-    //Alloc BitMap structure and init with zero 
-    newBitMap = AllocMem(sizeof(struct BitMap), MEMF_ANY);
-    if(!newBitMap){
-        writeLogFS("Error: Could not allocate Bitmap memory\n");
-        return NULL;
-    }
-    memset(newBitMap, 0, sizeof(struct BitMap));
-    InitBitMap(newBitMap, depth, width, height);
-
-    for(i=0; i<depth; i++){
-        newBitMap->Planes[i] = (PLANEPTR) AllocRaster(
-                (newBitMap->BytesPerRow) * 8, newBitMap->Rows);
-        if(newBitMap->Planes[i] == NULL){
-            //error, free previously allocated memory
-            writeLogFS("Error: Could not allocate Bitplane %d memory\n", i);
-            for(j=i-1; j>=0; j--){
-                FreeRaster(newBitMap->Planes[j], (newBitMap->BytesPerRow) * 8, 
-                    newBitMap->Rows);
-            }
-            FreeMem(newBitMap, sizeof(struct BitMap));
-            return NULL;
-        }
-    }
-
-    return newBitMap;
 }

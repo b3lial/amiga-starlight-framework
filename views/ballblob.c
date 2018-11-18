@@ -58,12 +58,6 @@ void initBallBlob(void){
     writeLogFS("Ballblob BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
             ballBlob->BytesPerRow, ballBlob->Rows, ballBlob->Flags, 
             ballBlob->pad);
-    writeArrayLog("8 Bytes of Ballblob Bitplane 0: ", 
-            ballBlob->Planes[0], 8);
-    writeArrayLog("8 Bytes of Ballblob Bitplane 1: ", 
-            ballBlob->Planes[1], 8);
-    writeArrayLog("8 Bytes of Ballblob Bitplane 2: ", 
-            ballBlob->Planes[2], 8);
 
     //Create View and ViewExtra memory structures
     initPalView(); 
@@ -118,11 +112,7 @@ BOOL executeBallBlob(void){
 
 void exitBallBlob(void){
     stopView();
-
     cleanBitPlanes(bitplanes0, VIEW_BALLBLOB_DEPTH, VIEW_BALLBLOB_WIDTH, 
             VIEW_BALLBLOB_HEIGHT);
-
-    cleanBitPlanes(ballBlob->Planes, VIEW_BALLBLOB_DEPTH, 
-            VIEW_BALLBLOB_BALL_WIDTH, VIEW_BALLBLOB_BALL_HEIGHT);
-    FreeMem(ballBlob, sizeof(struct BitMap));
+    cleanBitMap(ballBlob);
 }
