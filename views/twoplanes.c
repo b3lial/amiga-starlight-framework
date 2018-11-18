@@ -50,7 +50,7 @@ void initTwoPlanes(void){
     UBYTE patternColor = 0xff;
     UBYTE *displaymem1 = NULL;
     UBYTE *displaymem2 = NULL;
-    writeLog("== Initialize View: TwoPlanes ==\n");
+    writeLog("\n== Initialize View: TwoPlanes ==\n");
 
     //Create View and ViewExtra memory structures
     initPalView(); 

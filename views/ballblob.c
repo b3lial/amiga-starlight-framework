@@ -45,7 +45,7 @@ void initBallBlob(void){
     struct BitMap bitMap0 = { 0 };
     UWORD colortable0[] = { BLACK, RED, GREEN, BLUE, BLACK, RED, GREEN, BLUE };
     UBYTE i = 0;
-    writeLog("== Initialize View: BallBlob ==\n");
+    writeLog("\n== Initialize View: BallBlob ==\n");
 
     //Load Boingball Blob
     ballBlob = loadBlob("img/square_24x24_3", VIEW_BALLBLOB_DEPTH, 
@@ -55,15 +55,15 @@ void initBallBlob(void){
         exitBallBlob();
         exitSystem(RETURN_ERROR); 
     }
-    writeLogFS("Ballblob BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
-            ballBlob->BytesPerRow, ballBlob->Rows, ballBlob->Flags, 
-            ballBlob->pad);
-    writeArrayLog("72 Bytes of Ballblob Bitplane 0: ", 
-            ballBlob->Planes[0], 72);
-    writeArrayLog("72 Bytes of Ballblob Bitplane 1: ", 
-            ballBlob->Planes[1], 72);
-    writeArrayLog("72 Bytes of Ballblob Bitplane 2: ", 
-            ballBlob->Planes[2], 72);
+    //writeLogFS("Ballblob BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
+    //        ballBlob->BytesPerRow, ballBlob->Rows, ballBlob->Flags, 
+    //        ballBlob->pad);
+    writeArrayLog("8 Bytes of Ballblob Bitplane 0: ", 
+            ballBlob->Planes[0], 8);
+    writeArrayLog("8 Bytes of Ballblob Bitplane 1: ", 
+            ballBlob->Planes[1], 8);
+    writeArrayLog("8 Bytes of Ballblob Bitplane 2: ", 
+            ballBlob->Planes[2], 8);
 
     //Create View and ViewExtra memory structures
     initPalView(); 
@@ -91,9 +91,9 @@ void initBallBlob(void){
             bitMap0.Planes[i] = bitplanes0[i];
         }
     }
-    writeLogFS("Screen BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
-            bitMap0.BytesPerRow, bitMap0.Rows, bitMap0.Flags, 
-            bitMap0.pad);
+    //writeLogFS("Screen BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
+    //        bitMap0.BytesPerRow, bitMap0.Rows, bitMap0.Flags, 
+    //        bitMap0.pad);
     
     //Use Bitplanes to create a ViewPort and add it to View
     addViewPort(&bitMap0, colortable0, VIEW_BALLBLOB_COLORS, 

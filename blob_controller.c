@@ -26,14 +26,15 @@ struct BitMap* loadBlob(const char* fileName, UBYTE depth, UWORD width,
     //Get file size
     Seek(blobFileHandle, 0, OFFSET_END);
     fileSize = Seek(blobFileHandle, 0, OFFSET_BEGINNING);
-    writeLogFS("Blob %s has size %d\n", fileName, fileSize);
+    writeLogFS("Blob %s has file size %d\n", fileName, fileSize);
     
     //Copy file content to raster
     blobBitMap = createBitMap(depth, width, height);
     if(blobBitMap == NULL){
         return NULL;
     }
-    planeSize = (width*height)/8;
+    planeSize = (blobBitMap->Rows) * (blobBitMap->BytesPerRow);
+    writeLogFS("Calculated plane size: %d\n", planeSize);
     for(i=0; i<depth; i++){
         dataRead = Read(blobFileHandle, blobBitMap->Planes[i], planeSize); 
         if(dataRead==-1){
@@ -61,7 +62,7 @@ struct BitMap* loadBlob(const char* fileName, UBYTE depth, UWORD width,
 struct BitMap* createBitMap(UBYTE depth, UWORD width, UWORD height){
     struct BitMap* newBitMap;
     BYTE i,j = 0;
-    
+
     writeLogFS("Allocating memory for %dx%dx%d BitMap\n", depth, width, height);
     //Alloc BitMap structure and init with zero 
     newBitMap = AllocMem(sizeof(struct BitMap), MEMF_ANY);
@@ -73,12 +74,14 @@ struct BitMap* createBitMap(UBYTE depth, UWORD width, UWORD height){
     InitBitMap(newBitMap, depth, width, height);
 
     for(i=0; i<depth; i++){
-        newBitMap->Planes[i] = (PLANEPTR) AllocRaster(width, height);
+        newBitMap->Planes[i] = (PLANEPTR) AllocRaster(
+                (newBitMap->BytesPerRow) * 8, newBitMap->Rows);
         if(newBitMap->Planes[i] == NULL){
             //error, free previously allocated memory
             writeLogFS("Error: Could not allocate Bitplane %d memory\n", i);
             for(j=i-1; j>=0; j--){
-                FreeRaster(newBitMap->Planes[j], width, height);
+                FreeRaster(newBitMap->Planes[j], (newBitMap->BytesPerRow) * 8, 
+                    newBitMap->Rows);
             }
             FreeMem(newBitMap, sizeof(struct BitMap));
             return NULL;
