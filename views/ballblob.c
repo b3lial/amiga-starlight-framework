@@ -55,9 +55,9 @@ void initBallBlob(void){
         exitBallBlob();
         exitSystem(RETURN_ERROR); 
     }
-    //writeLogFS("Ballblob BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
-    //        ballBlob->BytesPerRow, ballBlob->Rows, ballBlob->Flags, 
-    //        ballBlob->pad);
+    writeLogFS("Ballblob BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
+            ballBlob->BytesPerRow, ballBlob->Rows, ballBlob->Flags, 
+            ballBlob->pad);
     writeArrayLog("8 Bytes of Ballblob Bitplane 0: ", 
             ballBlob->Planes[0], 8);
     writeArrayLog("8 Bytes of Ballblob Bitplane 1: ", 
@@ -91,9 +91,9 @@ void initBallBlob(void){
             bitMap0.Planes[i] = bitplanes0[i];
         }
     }
-    //writeLogFS("Screen BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
-    //        bitMap0.BytesPerRow, bitMap0.Rows, bitMap0.Flags, 
-    //        bitMap0.pad);
+    writeLogFS("Screen BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
+            bitMap0.BytesPerRow, bitMap0.Rows, bitMap0.Flags, 
+            bitMap0.pad);
     
     //Use Bitplanes to create a ViewPort and add it to View
     addViewPort(&bitMap0, colortable0, VIEW_BALLBLOB_COLORS, 
@@ -102,9 +102,6 @@ void initBallBlob(void){
     //Copy Ball into ViewPort
     BltBitMap(ballBlob, 0, 0, &bitMap0, 0, 0, VIEW_BALLBLOB_BALL_WIDTH, 
             VIEW_BALLBLOB_BALL_HEIGHT, 0xC0, 0xff, 0);
-
-    writeArrayLog("120 Bytes Screen Bitplane 0: ", 
-            bitMap0.Planes[0], 120);
 
     //Make View visible
     startView();

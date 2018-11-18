@@ -1,7 +1,7 @@
 #ifndef __STARLIGHT_H__
 #define __STARLIGHT_H__
 
-#define DEMO_STR_MAX 60
+#define DEMO_STR_MAX 120
 #define DEMO_DEBUG
 
 #define FSM_START 0
