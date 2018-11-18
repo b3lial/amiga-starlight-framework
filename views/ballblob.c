@@ -18,7 +18,7 @@
 
 WORD payloadBallBlobState = VIEW_BALLBLOB_INIT;
 struct BitMap* ballBlob = NULL;
-struct BitMap* bitMap0 = NULL;
+struct BitMap* ballBlobScreen = NULL;
 
 WORD fsmBallBlob(void){
     switch(payloadBallBlobState){
@@ -62,21 +62,22 @@ void initBallBlob(void){
     initView(); 
 
     //Create Bitmap and add Bitplanes
-    bitMap0 = createBitMap(VIEW_BALLBLOB_DEPTH, VIEW_BALLBLOB_WIDTH,
+    ballBlobScreen = createBitMap(VIEW_BALLBLOB_DEPTH, VIEW_BALLBLOB_WIDTH,
             VIEW_BALLBLOB_HEIGHT);
     for(i=0; i<VIEW_BALLBLOB_DEPTH; i++){
-        BltClear(bitMap0->Planes[i], (bitMap0->BytesPerRow) * (bitMap0->Rows), 1);
+        BltClear(ballBlobScreen->Planes[i], 
+                (ballBlobScreen->BytesPerRow) * (ballBlobScreen->Rows), 1);
     }
     writeLogFS("Screen BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
-            bitMap0->BytesPerRow, bitMap0->Rows, bitMap0->Flags, 
-            bitMap0->pad);
+            ballBlobScreen->BytesPerRow, ballBlobScreen->Rows, 
+            ballBlobScreen->Flags, ballBlobScreen->pad);
     
     //Use Bitplanes to create a ViewPort and add it to View
-    addViewPort(bitMap0, colortable0, VIEW_BALLBLOB_COLORS, 
+    addViewPort(ballBlobScreen, colortable0, VIEW_BALLBLOB_COLORS, 
             0, 0, VIEW_BALLBLOB_WIDTH, VIEW_BALLBLOB_HEIGHT);
 
     //Copy Ball into ViewPort
-    BltBitMap(ballBlob, 0, 0, bitMap0, 0, 0, VIEW_BALLBLOB_BALL_WIDTH, 
+    BltBitMap(ballBlob, 0, 0, ballBlobScreen, 0, 0, VIEW_BALLBLOB_BALL_WIDTH, 
             VIEW_BALLBLOB_BALL_HEIGHT, 0xC0, 0xff, 0);
 
     //Make View visible
@@ -94,6 +95,6 @@ BOOL executeBallBlob(void){
 
 void exitBallBlob(void){
     stopView();
-    cleanBitMap(bitMap0);
+    cleanBitMap(ballBlobScreen);
     cleanBitMap(ballBlob);
 }

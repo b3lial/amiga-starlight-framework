@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <exec/types.h>
 #include <exec/memory.h>
 #include <dos/dos.h>
