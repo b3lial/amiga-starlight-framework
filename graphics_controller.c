@@ -17,7 +17,7 @@
 struct ViewExtra *vextra = NULL;
 struct View *view = NULL;
 struct MonitorSpec *monspec = NULL;
-ULONG modeID=DEFAULT_MONITOR_ID | LORES_KEY;
+ULONG modeID=PAL_MONITOR_ID | LORES_KEY;
 
 UWORD vpPointer = 0;
 struct ViewPort *viewPorts[MAX_VIEW_PORTS];
