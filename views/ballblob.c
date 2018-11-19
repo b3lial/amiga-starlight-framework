@@ -47,7 +47,7 @@ void initBallBlob(void){
     writeLog("\n== Initialize View: BallBlob ==\n");
 
     //Load Boingball Blob
-    ballBlob = loadBlob("img/square_24x24_3", VIEW_BALLBLOB_DEPTH, 
+    ballBlob = loadBlob("img/ball_207_207_3.RAW", VIEW_BALLBLOB_DEPTH, 
             VIEW_BALLBLOB_BALL_WIDTH, VIEW_BALLBLOB_BALL_HEIGHT);
     if(ballBlob == NULL){
         writeLog("Error: Payload BallBlob, could not load ball blob\n");
@@ -61,7 +61,7 @@ void initBallBlob(void){
     //Create View and ViewExtra memory structures
     initView(); 
 
-    //Create Bitmap and add Bitplanes
+    //Create Bitmap for Boing Ball
     ballBlobScreen = createBitMap(VIEW_BALLBLOB_DEPTH, VIEW_BALLBLOB_WIDTH,
             VIEW_BALLBLOB_HEIGHT);
     for(i=0; i<VIEW_BALLBLOB_DEPTH; i++){
@@ -77,7 +77,7 @@ void initBallBlob(void){
             0, 0, VIEW_BALLBLOB_WIDTH, VIEW_BALLBLOB_HEIGHT);
 
     //Copy Ball into ViewPort
-    BltBitMap(ballBlob, 0, 0, ballBlobScreen, 0, 0, VIEW_BALLBLOB_BALL_WIDTH, 
+    BltBitMap(ballBlob, 0, 0, ballBlobScreen, 60, 20, VIEW_BALLBLOB_BALL_WIDTH, 
             VIEW_BALLBLOB_BALL_HEIGHT, 0xC0, 0xff, 0);
 
     //Make View visible
