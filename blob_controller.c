@@ -9,6 +9,32 @@
 #include "utils.h"
 
 /**
+ * Loads a set of unsigned words from file and copies them into
+ * an array to use them as input for background color registers
+ */
+BOOL loadColorMap(char* fileName, UWORD* map, UBYTE mapLength){
+    LONG dataRead = 0;
+    BPTR mapFileHandle = NULL;
+    writeLogFS("Trying to load color table %s\n", fileName);
+
+    //Open input file
+    mapFileHandle = Open(fileName, MODE_OLDFILE);
+    if(!mapFileHandle){
+        writeLogFS("Error: Could not read %s\n", fileName);
+        return FALSE;
+    }
+
+    dataRead = Read(mapFileHandle, map, mapLength*2); 
+    if(dataRead==-1){
+        writeLogFS("Error: Could not read from color map input file\n");
+        Close(mapFileHandle);
+        return FALSE;
+    }
+    Close(mapFileHandle);
+    return TRUE;
+}
+
+/**
  * Load non-interlaced graphic blob from file system and copy it into bitplances
  */
 struct BitMap* loadBlob(const char* fileName, UBYTE depth, UWORD width, 
