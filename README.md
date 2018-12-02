@@ -10,8 +10,9 @@ this little framework which allows me to focus on the demo effects and not the A
 ## Features
 Main.c contains a demo project which uses the Starlight Framework. It is implemented as a finite state machine because I
 wanted an easy way to concatenate different effects (text scroller, rotating cube, etc). Each effect is a seperate 
-[View](http://wiki.amigaos.net/wiki/Classic_Graphics_Primitives). The first effect is called intro and resides in 
-views/intro.c. It creates two ViewPorts which display a chessboard and waits for a mouse click to shutdown the process. 
+[View](http://wiki.amigaos.net/wiki/Classic_Graphics_Primitives). The first effect is called twoplanes and resides in 
+views/twoplanes.c. It creates two ViewPorts which display a chessboard and waits for a mouse click to switch
+to the next View ballblob. Ballblob loads a boing ball image into memory and displays it on screen.  
 The following features are provided by my framework:
 
 ### Initialisation
