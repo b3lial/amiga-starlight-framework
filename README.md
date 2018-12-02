@@ -28,15 +28,26 @@ When your program has finished, a call to **exitSystemSoft(BYTE errorCode)** res
 ### Graphics
 The graphics controller allows you to create a view, add ViewPorts to the View, display the View and destroy the View freeing
 the previously allocated memory:
-* **initPalView(void)**: Creates a low resolution screen.
+* **initView(void)**: Creates a low resolution screen.
 * **addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize, WORD x, WORD y, WORD width, WORD height)**: Adds
 a ViewPort to the View. Parameters are the raster itself, its color table, position of the raster on screen and its size.
 * **startView(void)**: Merges the copper list and displays the previously created View.
 * **stopView(void)**: Frees memory and destroys the current View.
+* **struct BitMap\* createBitMap(UBYTE depth, UWORD width, UWORD height)**: Allocate memory for BitMap structure and its bitplanes.
+* **void cleanBitMap(struct BitMap\*)**: Free memory of a BitMap structure and its bitplanes. 
+* **void cleanBitPlanes(PLANEPTR\* planes, UBYTE depth, UWORD width, UWORD height): Free btplane array memory. Called by **cleanBitMap()**.
+
+### Bitmaps
+You can load non-interlaced images as Bitmaps into memory and blit the results into your ViewPorts:
+* **struct BitMap\* loadBlob(const char\* image, UBYTE size, UWORD width, UWORD height)**: Allocate memory for a BitMap structure. 
+Load the image into this BitMap and return it to caller.
+* **BOOL loadColorMap(char\* fileName, UWORD\* map, UBYTE mapLength)**: Load a set of bytes from file **fileName** into **map** 
+which represents a color map for a previously loaded image. 
 
 ### Logging
-The method **initLog(void)** can create the logfile *ram:starlight-demo.log*. You can add new lines with **writeLog(char\* msg)**
-and **writeLogFS(const char\* formatString, ...)**
+The method **initLog(void)** creates the logfile *ram:starlight-demo.log*. You can add new lines with **writeLog(char\* msg)**
+and **writeLogFS(const char\* formatString, ...)**. A sequence of bytes can be written to the log file using
+**writeArrayLog(char\* logmsg, unsigned char\* array, UWORD length)**.
 
 ## Download Binary
 Although the current version just shows a chessboard, you can download the the compilation result of the current master
