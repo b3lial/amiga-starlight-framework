@@ -5,10 +5,12 @@
 
 #define MAX_VIEW_PORTS 5
 
-#define BLACK 0x000
-#define RED   0xf00
-#define GREEN 0x0f0
-#define BLUE  0x00f
+#define BLACK     0x000
+#define RED       0xf00
+#define DARKRED   0x100
+#define GREEN     0x0f0
+#define BLUE      0x00f
+#define DARKBLUE  0x001
 
 void initView(void);
 void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
