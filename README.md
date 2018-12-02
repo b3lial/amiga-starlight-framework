@@ -35,7 +35,7 @@ a ViewPort to the View. Parameters are the raster itself, its color table, posit
 * **stopView(void)**: Frees memory and destroys the current View.
 * **struct BitMap\* createBitMap(UBYTE depth, UWORD width, UWORD height)**: Allocate memory for BitMap structure and its bitplanes.
 * **void cleanBitMap(struct BitMap\*)**: Free memory of a BitMap structure and its bitplanes. 
-* **void cleanBitPlanes(PLANEPTR\* planes, UBYTE depth, UWORD width, UWORD height): Free btplane array memory. Called by **cleanBitMap()**.
+* **void cleanBitPlanes(PLANEPTR\* planes, UBYTE depth, UWORD width, UWORD height)**: Free bitplane array memory. Called by **cleanBitMap()**.
 
 ### Bitmaps
 You can load non-interlaced images as Bitmaps into memory and blit the results into your ViewPorts:
