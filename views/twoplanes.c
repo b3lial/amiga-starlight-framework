@@ -18,9 +18,13 @@ WORD payloadTwoPlanesState = VIEW_TWOPLANES_INIT;
 struct BitMap* bitMap0;
 struct BitMap* bitMap1;
 BOOL mouseDown = FALSE;
+extern struct ViewPort *viewPorts[MAX_VIEW_PORTS];
+
 UWORD colortable1[] = { BLACK, DARKRED }; 
 UWORD colortable2[] = { BLACK, DARKBLUE }; 
-extern struct ViewPort *viewPorts[MAX_VIEW_PORTS];
+WORD redCounter = 0x0100;
+WORD blueCounter = 0x0001;
+UBYTE dimCounter = 0;
 
 WORD fsmTwoPlanes(void){
     switch(payloadTwoPlanesState){
@@ -102,24 +106,24 @@ void initTwoPlanes(void){
 
 BOOL executeTwoPlanes(void){
     //change colors of chess board
-    WORD redCounter = 0x0100;
-    WORD blueCounter = 0x0001;
-    colortable1[1]+=redCounter;
-    writeLogFS("Red: 0x%x\n", colortable1[1]);
-    if(colortable1[1] == 0x0F00 || colortable1[1] == 0x0000){
-        redCounter = -redCounter;
-        writeLogFS("Inverting Red Counter: %d\n", redCounter);
-        
+    if(dimCounter==2){
+        colortable1[1]+=redCounter;
+        if(colortable1[1] == 0x0F00 || colortable1[1] == 0x0000){
+            redCounter = -redCounter;
+        }
+        colortable2[1]+=blueCounter;
+        if(colortable2[1] == 0x000F || colortable2[1] == 0x0000){
+            blueCounter = -blueCounter;
+        }
+        WaitTOF();
+        LoadRGB4(viewPorts[0], colortable1, VIEW_TWOPLANES_COLORS); 
+        LoadRGB4(viewPorts[1], colortable2, VIEW_TWOPLANES_COLORS); 
+        dimCounter=0;
     }
-    colortable2[1]+=blueCounter;
-    writeLogFS("Blue: 0x%x\n", colortable2[1]);
-    if(colortable2[1] == 0x000F || colortable2[1] == 0x0000){
-        blueCounter = -blueCounter;
-        writeLogFS("Inverting Blue Counter: %d\n", blueCounter);
+    else{
+        WaitTOF();
+        dimCounter++;
     }
-    WaitTOF();
-    LoadRGB4(viewPorts[0], colortable1, VIEW_TWOPLANES_COLORS); 
-    LoadRGB4(viewPorts[1], colortable2, VIEW_TWOPLANES_COLORS); 
 
     //abort upon mouse click
     if(mouseClick()){
