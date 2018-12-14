@@ -6,16 +6,11 @@
 #include <graphics/displayinfo.h>
 #include <graphics/gfxbase.h>
 #include <graphics/videocontrol.h>
-
 #include <dos/dos.h>
 
-#include "views/ballblob.h"
-#include "graphics_controller.h"
-#include "bitmap_controller.h"
-#include "blob_controller.h"
+#include "starlight/starlight.h"
+#include "ballblob.h"
 #include "main.h"
-#include "utils.h"
-#include "init.h"
 
 WORD payloadBallBlobState = VIEW_BALLBLOB_INIT;
 struct BitMap* ballBlob = NULL;

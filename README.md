@@ -10,8 +10,8 @@ this little framework which allows me to focus on the demo effects and not the A
 ## Features
 Main.c contains a demo project which uses the Starlight Framework. It is implemented as a finite state machine because I
 wanted an easy way to concatenate different effects (text scroller, rotating cube, etc). Each effect is a seperate 
-[View](http://wiki.amigaos.net/wiki/Classic_Graphics_Primitives). The first effect is called twoplanes and resides in 
-views/twoplanes.c. It creates two ViewPorts which display a chessboard and waits for a mouse click to switch
+[View](http://wiki.amigaos.net/wiki/Classic_Graphics_Primitives). The first effect is called twoplanes. 
+It creates two ViewPorts which display a colour changing chessboard and waits for a mouse click to switch
 to the next View ballblob. Ballblob loads a boing ball image into memory and displays it on screen.  
 The following features are provided by my framework:
 
@@ -34,11 +34,14 @@ the previously allocated memory:
 a ViewPort to the View. Parameters are the raster itself, its color table, position of the raster on screen and its size.
 * **startView(void)**: Merges the copper list and displays the previously created View.
 * **stopView(void)**: Frees memory and destroys the current View.
+
+### Bitmaps
+Simple functions to create or delete Bitmaps and their corresponding bitplanes.
 * **struct BitMap\* createBitMap(UBYTE depth, UWORD width, UWORD height)**: Allocate memory for BitMap structure and its bitplanes.
 * **void cleanBitMap(struct BitMap\*)**: Free memory of a BitMap structure and its bitplanes. 
 * **void cleanBitPlanes(PLANEPTR\* planes, UBYTE depth, UWORD width, UWORD height)**: Free bitplane array memory. Called by **cleanBitMap()**.
 
-### Bitmaps
+### Image Blobs
 You can load non-interlaced images as Bitmaps into memory and blit the results into your ViewPorts:
 * **struct BitMap\* loadBlob(const char\* image, UBYTE size, UWORD width, UWORD height)**: Allocate memory for a BitMap structure. 
 Load the image into this BitMap and return it to caller.

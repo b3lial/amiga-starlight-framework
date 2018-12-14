@@ -1,8 +1,5 @@
-#ifndef __STARLIGHT_H__
-#define __STARLIGHT_H__
-
-#define DEMO_STR_MAX 120
-#define DEMO_DEBUG
+#ifndef __MAIN_H__
+#define __MAIN_H__
 
 #define FSM_START 0
 #define FSM_TWOPLANES 1

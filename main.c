@@ -1,11 +1,10 @@
 #include <exec/types.h>
 #include <dos/dos.h>
 
+#include "starlight/starlight.h"
+#include "twoplanes.h"
+#include "ballblob.h"
 #include "main.h"
-#include "init.h"
-#include "utils.h"
-#include "views/twoplanes.h"
-#include "views/ballblob.h"
 
 WORD fsmCurrentState = FSM_START;
 WORD fsmNextState = -1;

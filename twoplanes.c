@@ -8,12 +8,13 @@
 
 #include <dos/dos.h>
 
-#include "views/twoplanes.h"
-#include "graphics_controller.h"
-#include "bitmap_controller.h"
+#include "starlight/graphics_controller.h"
+#include "starlight/bitmap_controller.h"
+#include "starlight/utils.h"
+#include "starlight/init.h"
+
 #include "main.h"
-#include "utils.h"
-#include "init.h"
+#include "twoplanes.h"
 
 WORD payloadTwoPlanesState = VIEW_TWOPLANES_INIT;
 struct BitMap* bitMap0;
