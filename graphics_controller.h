@@ -18,8 +18,4 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
 void startView(void);
 void stopView(void);
 
-struct BitMap* createBitMap(UBYTE, UWORD, UWORD);
-void cleanBitPlanes(PLANEPTR*, UBYTE, UWORD, UWORD);
-void cleanBitMap(struct BitMap*);
-
 #endif

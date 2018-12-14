@@ -6,6 +6,7 @@
 
 #include "blob_controller.h"
 #include "graphics_controller.h"
+#include "bitmap_controller.h"
 #include "utils.h"
 
 /**

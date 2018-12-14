@@ -10,6 +10,7 @@
 
 #include "views/twoplanes.h"
 #include "graphics_controller.h"
+#include "bitmap_controller.h"
 #include "main.h"
 #include "utils.h"
 #include "init.h"

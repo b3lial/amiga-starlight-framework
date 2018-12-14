@@ -2,7 +2,7 @@ CC=m68k-amigaos-gcc
 CFLAGS = -D__far="" -Wall -O2 -I. 
 LDFLAGS = -noixemul 
 SOURCES=main.c init.c utils.c views/twoplanes.c graphics_controller.c \
-		blob_controller.c views/ballblob.c
+		blob_controller.c bitmap_controller.c views/ballblob.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=starlight-gcc-build
 
