@@ -55,9 +55,7 @@ and **writeLogFS(const char\* formatString, ...)**. A sequence of bytes can be w
 
 ## Download Binary
 You can download the the compilation result of the current master
-branch [here](https://s3.eu-central-1.amazonaws.com/codebuild-eu-central-1-4040-3447-3876-output-bucket/amiga/starlight-gcc-build).
-Packaging not yet implemented on my build server, therefore you have to add ball_207_207_3.RAW and ball_207_207_3.CMAP before
-execution.
+branch [here](https://s3.eu-central-1.amazonaws.com/codebuild-eu-central-1-4040-3447-3876-output-bucket/amiga/starlight-demo.tar.gz).
 
 ## Build
 The Makefile works with [GCC](http://aminet.net/package/dev/gcc/m68k-amigaos-gcc). The code can be compiled with SAS-C as well.
