@@ -24,6 +24,10 @@ phases:
   post_build:
     commands:
         - echo Build completed on `date`
+        - mkdir starlight-demo
+        - cp starlight-gcc-build starlight-demo/
+        - cp -r img/ starlight-demo/
+        - tar -czvf starlight-demo.tar.gz starlight-demo/
 artifacts:
   files:
-        - starlight-gcc-build
+        - starlight-demo.tar.gz
