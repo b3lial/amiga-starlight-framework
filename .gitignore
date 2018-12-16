@@ -3,7 +3,6 @@
 *.info
 tags
 *.o
-starlight
 starlight-gcc-build
 starlight-sasc-build
 starlight-demo
