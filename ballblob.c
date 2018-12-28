@@ -70,7 +70,7 @@ void initBallBlob(void){
             ballBlobScreen->Flags, ballBlobScreen->pad);
     
     //Add previously created BitMap to ViewPort so its shown on Screen
-    addViewPort(ballBlobScreen, colortable0, VIEW_BALLBLOB_COLORS, 
+    addViewPort(ballBlobScreen, NULL, colortable0, VIEW_BALLBLOB_COLORS, 
             0, 0, VIEW_BALLBLOB_WIDTH, VIEW_BALLBLOB_HEIGHT);
 
     //Copy Ball into ViewPort

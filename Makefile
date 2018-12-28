@@ -16,4 +16,5 @@ $(EXECUTABLE): $(OBJECTS)
 	
 clean: 
 	rm *.o starlight/*.o starlight/*.uaem *.lnk *.info *.uaem starlight \
-		starlight-demo starlight-gcc-build starlight-sasc-build
+		starlight-demo starlight-gcc-build starlight-sasc-build \
+		views/*.o views/*.uaem

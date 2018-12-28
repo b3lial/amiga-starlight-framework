@@ -18,6 +18,7 @@ struct View *view = NULL;
 struct MonitorSpec *monspec = NULL;
 ULONG modeID=PAL_MONITOR_ID | LORES_KEY;
 
+struct DoubleBufferControl dbControl = { 0 };
 UWORD vpPointer = 0;
 struct ViewPort *viewPorts[MAX_VIEW_PORTS];
 struct ViewPortExtra *viewPortExtras[MAX_VIEW_PORTS];
@@ -33,6 +34,9 @@ void initView(void){
         exitSystem(RETURN_ERROR); 
     }
     InitView(view);
+
+    //reset double buffer if previously used
+    dbControl.active = FALSE; 
     
     //Attach ViewExtra and MonitorSpec to View if possible
     if(GfxBase->LibNode.lib_Version >= 36)
@@ -63,8 +67,9 @@ void initView(void){
     vpPointer = 0;
 }
 
-void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
-        WORD x, WORD y, WORD width, WORD height){
+void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer, 
+        UWORD *colortable, WORD colortableSize, WORD x, WORD y, WORD width, 
+        WORD height){
     struct DimensionInfo querydims = { {0} };
     struct TagItem vcTags[] = {
         { VTAG_ATTACH_CM_SET, NULL },
@@ -78,6 +83,20 @@ void addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize,
     if(vpPointer >= MAX_VIEW_PORTS){
         writeLog("No more ViewPorts allowed\n");
         return;
+    }
+
+    //Is this a double buffered ViewPort?
+    if(dbControl.active && doubleBuffer!=NULL){
+        writeLog("Error: Only one double buffered ViewPort allowed\n");
+        stopView();
+        exitSystem(RETURN_ERROR); 
+    }
+    else if(!dbControl.active && doubleBuffer!=NULL){
+        writeLog("Double buffered ViewPort detected\n");
+        dbControl.active = TRUE;
+        dbControl.bm0 = bitMap;
+        dbControl.bm1 = doubleBuffer;
+        dbControl.index = vpPointer;
     }
 
     //Alloc memory for RasInfo struct
@@ -246,16 +265,46 @@ void stopView(void){
         }
     }
 
+    //we have to handle two cases here: single buffered and
+    //double buffered
     if(view){
-        if(view->LOFCprList){
-            writeLogFS("Freeing %d Bytes Copperlist LOFCprList memory\n", 
-                sizeof(struct cprlist));
-            FreeCprList(view->LOFCprList);
+        if(dbControl.active){
+            if(dbControl.LOFCprList0){
+                writeLogFS("Freeing %d Bytes Copperlist LOFCprList0 memory\n", 
+                    sizeof(struct cprlist));
+                FreeCprList(dbControl.LOFCprList0);
+                dbControl.LOFCprList0 = NULL;
+            }
+            if(dbControl.SHFCprList0){
+                writeLogFS("Freeing %d Bytes Copperlist SHFCprList0 memory\n",
+                    sizeof(struct cprlist));
+                FreeCprList(dbControl.SHFCprList0); 
+                dbControl.SHFCprList0 = NULL;
+            }
+            if(dbControl.LOFCprList1){
+                writeLogFS("Freeing %d Bytes Copperlist LOFCprList1 memory\n", 
+                    sizeof(struct cprlist));
+                FreeCprList(dbControl.LOFCprList1);
+                dbControl.LOFCprList1 = NULL;
+            }
+            if(dbControl.SHFCprList1){
+                writeLogFS("Freeing %d Bytes Copperlist SHFCprList1 memory\n",
+                    sizeof(struct cprlist));
+                FreeCprList(dbControl.SHFCprList1); 
+                dbControl.SHFCprList1 = NULL;
+            }
         }
-        if(view->SHFCprList){
-            writeLogFS("Freeing %d Bytes Copperlist SHFCprList memory\n",
-                sizeof(struct cprlist));
-            FreeCprList(view->SHFCprList); 
+        else{
+            if(view->LOFCprList){
+                writeLogFS("Freeing %d Bytes Copperlist LOFCprList memory\n", 
+                    sizeof(struct cprlist));
+                FreeCprList(view->LOFCprList);
+            }
+            if(view->SHFCprList){
+                writeLogFS("Freeing %d Bytes Copperlist SHFCprList memory\n",
+                    sizeof(struct cprlist));
+                FreeCprList(view->SHFCprList); 
+            }
         }
         
         writeLogFS("Freeing %d Bytes View memory\n", sizeof(struct View));
