@@ -218,6 +218,24 @@ void startView(void){
     }
     MrgCop( view );
 
+    //Create two Copper lists if double buffering is active
+    if(dbControl.active){
+        //store copper lists for bm0
+        dbControl.LOFCprList0 = view->LOFCprList;
+        dbControl.SHFCprList0 = view->SHFCprList;
+        //create and store copper lists for bm1
+        view->LOFCprList = NULL;
+        view->SHFCprList = NULL;
+        rasInfos[dbControl.index]->BitMap = dbControl.bm1;
+        MakeVPort( view, viewPorts[dbControl.index] );
+        MrgCop( view );
+        dbControl.LOFCprList1 = view->LOFCprList;
+        dbControl.SHFCprList1 = view->SHFCprList;
+        //initially, use copper lists for bm0 
+        view->LOFCprList = dbControl.LOFCprList0;
+        view->SHFCprList = dbControl.SHFCprList0;
+    }
+
     //Display the View
     LoadView( view );
 }
