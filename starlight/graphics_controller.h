@@ -18,6 +18,7 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
         WORD height);
 void startView(void);
 void stopView(void);
+void changeBuffer(UBYTE);
 
 struct DoubleBufferControl{
     BOOL active;

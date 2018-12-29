@@ -240,6 +240,24 @@ void startView(void){
     LoadView( view );
 }
 
+void changeBuffer(UBYTE bufferIndex){
+    if(!dbControl.active){
+       writeLog("Error: Can not swap buffer because no double buffering is active\n"); 
+       return;
+    }
+
+    WaitTOF();
+    if(bufferIndex==0){
+        view->LOFCprList = dbControl.LOFCprList0;
+        view->SHFCprList = dbControl.SHFCprList0;
+    }
+    else{
+        view->LOFCprList = dbControl.LOFCprList1;
+        view->SHFCprList = dbControl.SHFCprList1;
+    }
+    LoadView( view );
+}
+
 void stopView(void){
     WORD i;
     WaitTOF();
