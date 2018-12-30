@@ -6,6 +6,7 @@
 #define MAX_VIEW_PORTS 5
 
 #define BLACK     0x000
+#define WHITE     0xfff
 #define RED       0xf00
 #define DARKRED   0x100
 #define GREEN     0x0f0

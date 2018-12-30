@@ -4,7 +4,7 @@
 
 OBJS= starlight/graphics_controller.o starlight/bitmap_controller.o \
 	  starlight/blob_controller.o starlight/init.o main.o starlight/utils.o \
-	  ballblob.o twoplanes.o
+	  ballblob.o twoplanes.o doublebuffer.o
 
 starlight-sasc-build: $(OBJS)
    sc link to starlight-sasc-build with <<
@@ -26,6 +26,8 @@ starlight/utils.o: starlight/utils.c starlight/starlight.h
 twoplanes.o: twoplanes.c twoplanes.h
 
 ballblob.o: ballblob.c ballblob.h
+
+doublebuffer.o: doublebuffer.c doublebuffer.h
 
 
 

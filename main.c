@@ -4,6 +4,7 @@
 #include "starlight/starlight.h"
 #include "twoplanes.h"
 #include "ballblob.h"
+#include "doublebuffer.h"
 #include "main.h"
 
 WORD fsmCurrentState = FSM_START;
@@ -34,6 +35,16 @@ int main(void)
                 moduleStatus = fsmBallBlob();
                 if(moduleStatus==MODULE_CONTINUE){
                     fsmNextState = FSM_BALLBLOB;
+                }
+                else{
+                    fsmNextState = FSM_DOUBLEBUFFER;
+                }
+                break;
+
+            case FSM_DOUBLEBUFFER:
+                moduleStatus = fsmDoubleBuffer();
+                if(moduleStatus==MODULE_CONTINUE){
+                    fsmNextState = FSM_DOUBLEBUFFER;
                 }
                 else{
                     fsmNextState = FSM_STOP;

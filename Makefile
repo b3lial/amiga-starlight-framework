@@ -2,7 +2,8 @@ CC=m68k-amigaos-gcc
 CFLAGS = -D__far="" -DDEMO_DEBUG -Wall -O2 -I. 
 LDFLAGS = -noixemul 
 SOURCES=main.c ballblob.c twoplanes.c starlight/utils.c  starlight/graphics_controller.c \
-		starlight/blob_controller.c starlight/bitmap_controller.c starlight/init.c
+		starlight/blob_controller.c starlight/bitmap_controller.c starlight/init.c \
+		doublebuffer.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=starlight-gcc-build
 
