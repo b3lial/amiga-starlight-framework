@@ -13,10 +13,11 @@
 #include "main.h"
 
 WORD payloadDoubleBufferState = VIEW_DOUBLEBUFFER_INIT;
-struct BitMap* doubleBufferScreen = NULL;
+struct BitMap* doubleBufferScreen0 = NULL;
+struct BitMap* doubleBufferScreen1 = NULL;
 
 UBYTE squarePointer = 0;
-UBYTE direction = 1;
+BYTE direction = 1;
 UBYTE currentBitmap = 0;
 
 WORD fsmDoubleBuffer(void){
@@ -49,32 +50,65 @@ void initDoubleBuffer(void){
     initView(); 
 
     //Create Bitmap for ViewPort
-    doubleBufferScreen = createBitMap(VIEW_DOUBLEBUFFER_DEPTH, VIEW_DOUBLEBUFFER_WIDTH,
-            VIEW_DOUBLEBUFFER_HEIGHT);
+    doubleBufferScreen0 = createBitMap(VIEW_DOUBLEBUFFER_DEPTH, 
+            VIEW_DOUBLEBUFFER_WIDTH, VIEW_DOUBLEBUFFER_HEIGHT);
+    doubleBufferScreen1 = createBitMap(VIEW_DOUBLEBUFFER_DEPTH, 
+            VIEW_DOUBLEBUFFER_WIDTH, VIEW_DOUBLEBUFFER_HEIGHT);
     for(i=0; i<VIEW_DOUBLEBUFFER_DEPTH; i++){
-        BltClear(doubleBufferScreen->Planes[i], 
-                (doubleBufferScreen->BytesPerRow) * (doubleBufferScreen->Rows), 1);
+        BltClear(doubleBufferScreen0->Planes[i], 
+                (doubleBufferScreen0->BytesPerRow) * (doubleBufferScreen0->Rows), 1);
+        BltClear(doubleBufferScreen1->Planes[i], 
+                (doubleBufferScreen1->BytesPerRow) * (doubleBufferScreen1->Rows), 1);
     }
-    writeLogFS("Screen BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
-            doubleBufferScreen->BytesPerRow, doubleBufferScreen->Rows, 
-            doubleBufferScreen->Flags, doubleBufferScreen->pad);
+    writeLogFS("Screen BitMap 0: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
+            doubleBufferScreen0->BytesPerRow, doubleBufferScreen0->Rows, 
+            doubleBufferScreen0->Flags, doubleBufferScreen0->pad);
+    writeLogFS("Screen BitMap 1: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
+            doubleBufferScreen1->BytesPerRow, doubleBufferScreen1->Rows, 
+            doubleBufferScreen1->Flags, doubleBufferScreen1->pad);
     
     //Add previously created BitMap to ViewPort so its shown on Screen
-    addViewPort(doubleBufferScreen, NULL, colortable0, VIEW_DOUBLEBUFFER_COLORS, 
-            0, 0, VIEW_DOUBLEBUFFER_WIDTH, VIEW_DOUBLEBUFFER_HEIGHT);
+    addViewPort(doubleBufferScreen0, doubleBufferScreen1, colortable0, 
+            VIEW_DOUBLEBUFFER_COLORS, 0, 0, VIEW_DOUBLEBUFFER_WIDTH, 
+            VIEW_DOUBLEBUFFER_HEIGHT);
 
     //Make View visible
     startView();
 }
 
 BOOL executeDoubleBuffer(void){    
-    WaitTOF();
-    WaitTOF();
-    if(squarePointer<30){
-        drawRect(doubleBufferScreen, 0, squarePointer, squarePointer, 32);
-        squarePointer++; 
+    BYTE i = 0;
+    struct BitMap* bitmap;
+    struct BitMap* old;
+
+    //chose next bitmap
+    if(currentBitmap == 0){
+        bitmap = doubleBufferScreen1;
+        old = doubleBufferScreen0;
+    }
+    else{
+        bitmap = doubleBufferScreen0;
+        old = doubleBufferScreen1;
     }
 
+    //draw and flip buffer
+    drawRect(bitmap, 0, squarePointer, squarePointer, 32);
+    currentBitmap ^= 1;
+    changeBuffer(currentBitmap);
+    for(i=0; i<VIEW_DOUBLEBUFFER_DEPTH; i++){
+        BltClear(old->Planes[i], (old->BytesPerRow) * (old->Rows), 1);
+    }
+
+    //check whether we change animation direction
+    if(squarePointer==60 && direction == 1){
+        direction = -1;
+    }
+    else if(squarePointer == 0 && direction == -1){
+        direction = 1;
+    }
+    squarePointer+=direction;
+
+    //abort this view?
     if(mouseClick()){
         return FALSE;
     }
@@ -85,7 +119,8 @@ BOOL executeDoubleBuffer(void){
 
 void exitDoubleBuffer(void){
     stopView();
-    cleanBitMap(doubleBufferScreen);
+    cleanBitMap(doubleBufferScreen0);
+    cleanBitMap(doubleBufferScreen1);
 }
 
 void drawRect(struct BitMap* bitmap, UBYTE planeIndex, 
