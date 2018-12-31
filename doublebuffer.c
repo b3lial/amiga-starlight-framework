@@ -15,6 +15,10 @@
 WORD payloadDoubleBufferState = VIEW_DOUBLEBUFFER_INIT;
 struct BitMap* doubleBufferScreen = NULL;
 
+UBYTE squarePointer = 0;
+UBYTE direction = 1;
+UBYTE currentBitmap = 0;
+
 WORD fsmDoubleBuffer(void){
     switch(payloadDoubleBufferState){
         case VIEW_DOUBLEBUFFER_INIT:
@@ -63,7 +67,14 @@ void initDoubleBuffer(void){
     startView();
 }
 
-BOOL executeDoubleBuffer(void){
+BOOL executeDoubleBuffer(void){    
+    WaitTOF();
+    WaitTOF();
+    if(squarePointer<30){
+        drawRect(doubleBufferScreen, 0, squarePointer, squarePointer, 32);
+        squarePointer++; 
+    }
+
     if(mouseClick()){
         return FALSE;
     }
@@ -75,4 +86,59 @@ BOOL executeDoubleBuffer(void){
 void exitDoubleBuffer(void){
     stopView();
     cleanBitMap(doubleBufferScreen);
+}
+
+void drawRect(struct BitMap* bitmap, UBYTE planeIndex, 
+        UWORD xPos, UWORD yPos, UWORD size){
+    PLANEPTR plane = bitmap->Planes[planeIndex];
+    UWORD startX = xPos / 8;
+    UWORD endX = (xPos + size) / 8;
+    UWORD endY = yPos + size;
+    UWORD x,y;
+    UBYTE firstX = getFirstByte(xPos);
+    UBYTE lastX = getLastByte(xPos + size);
+
+    for(y=yPos; y<endY; y++){
+        for(x=startX; x<endX; x++){
+            if(x==startX){
+                plane[y*bitmap->BytesPerRow + x] |= firstX;
+            }
+            else if(x==endX-1){
+                plane[y*bitmap->BytesPerRow + x] |= lastX;
+            }
+            else {
+                plane[y*bitmap->BytesPerRow + x] = 0xff;
+            }
+        }
+    }
+
+    return;
+}
+
+UBYTE getFirstByte(UWORD x){
+    switch(x % 8){
+        case 0: return 0xff;
+        case 1: return 0x7f;
+        case 2: return 0x3f;
+        case 3: return 0x1f;
+        case 4: return 0x0f;
+        case 5: return 0x07;
+        case 6: return 0x03;
+        case 7: return 0x01;
+    }
+    return 0xff;
+}
+
+UBYTE getLastByte(UWORD x){
+    switch(x % 8){
+        case 0: return 0x00;
+        case 1: return 0x80;
+        case 2: return 0xC0;
+        case 3: return 0xE0;
+        case 4: return 0xF0;
+        case 5: return 0xF8;
+        case 6: return 0xFC;
+        case 7: return 0xFE;
+    }
+    return 0x00;
 }

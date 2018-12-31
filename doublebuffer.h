@@ -18,4 +18,9 @@ void initDoubleBuffer(void);
 BOOL executeDoubleBuffer(void);
 void exitDoubleBuffer(void);
 
+void drawRect(struct BitMap* bitmap, UBYTE planeIndex, 
+        UWORD xPos, UWORD yPos, UWORD size);
+UBYTE getFirstByte(UWORD x);
+UBYTE getLastByte(UWORD x);
+
 #endif
