@@ -13,6 +13,8 @@
 #define VIEW_DOUBLEBUFFER_WIDTH  320
 #define VIEW_DOUBLEBUFFER_HEIGHT 256
 
+#define VIEW_DOUBLEBUFFER_SQUARESIZE 32
+
 WORD fsmDoubleBuffer(void);
 void initDoubleBuffer(void);
 BOOL executeDoubleBuffer(void);

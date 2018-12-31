@@ -16,8 +16,10 @@ WORD payloadDoubleBufferState = VIEW_DOUBLEBUFFER_INIT;
 struct BitMap* doubleBufferScreen0 = NULL;
 struct BitMap* doubleBufferScreen1 = NULL;
 
-UBYTE squarePointer = 0;
-BYTE direction = 1;
+UWORD squarePointerX = 0;
+UWORD squarePointerY = 0;
+BYTE directionX = 1;
+BYTE directionY = 1;
 UBYTE currentBitmap = 0;
 
 WORD fsmDoubleBuffer(void){
@@ -92,7 +94,8 @@ BOOL executeDoubleBuffer(void){
     }
 
     //draw and flip buffer
-    drawRect(bitmap, 0, squarePointer, squarePointer, 32);
+    drawRect(bitmap, 0, squarePointerX, squarePointerY, 
+            VIEW_DOUBLEBUFFER_SQUARESIZE);
     currentBitmap ^= 1;
     changeBuffer(currentBitmap);
     for(i=0; i<VIEW_DOUBLEBUFFER_DEPTH; i++){
@@ -100,13 +103,23 @@ BOOL executeDoubleBuffer(void){
     }
 
     //check whether we change animation direction
-    if(squarePointer==60 && direction == 1){
-        direction = -1;
+    if(squarePointerX==VIEW_DOUBLEBUFFER_WIDTH-VIEW_DOUBLEBUFFER_SQUARESIZE-1 
+            && directionX == 1){
+        directionX = -1;
     }
-    else if(squarePointer == 0 && direction == -1){
-        direction = 1;
+    else if(squarePointerX == 0 && directionX == -1){
+        directionX = 1;
     }
-    squarePointer+=direction;
+    squarePointerX+=directionX;
+
+    if(squarePointerY==VIEW_DOUBLEBUFFER_HEIGHT-VIEW_DOUBLEBUFFER_SQUARESIZE-1 
+            && directionY == 1){
+        directionY = -1;
+    }
+    else if(squarePointerY == 0 && directionY == -1){
+        directionY = 1;
+    }
+    squarePointerY+=directionY;
 
     //abort this view?
     if(mouseClick()){
