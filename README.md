@@ -1,18 +1,21 @@
 # amiga-starlight-framework
-C Framework on top of AmigaOS which provides APIs for easy View/ViewPort creation and logging functionality. 
+C Framework on top of AmigaOS to setup screen, video buffer, load images from file and logging functionality.
+Avoids direct hardware access and uses AmigaOS APIs.
 
 ## Description
 As a kid, I loved the Amiga but was not able to write code for this platform. In 2017, I planned a little demo project 
 and read lots of tutorials. Nearly everybody used assembler and direct hardware access. Although this produced amazing demos,
 I wanted to try something different: Using a C compiler and the AmigaOS APIs. To speed up development, I am working at 
-this little framework which allows me to focus on the demo effects and not the AmigaOS.
+this little framework which allows me to create video buffers, load images, etc. with a few lines of C code
+and therefore to focus on the demo effects and not the Amiga hardware.
 
 ## Features
 Main.c contains a demo project which uses the Starlight Framework. It is implemented as a finite state machine because I
 wanted an easy way to concatenate different effects (text scroller, rotating cube, etc). Each effect is a seperate 
-[View](http://wiki.amigaos.net/wiki/Classic_Graphics_Primitives). The first effect is called twoplanes. 
-It creates two ViewPorts which display a colour changing chessboard and waits for a mouse click to switch
-to the next View ballblob. Ballblob loads a boing ball image into memory and displays it on screen.  
+[View](http://wiki.amigaos.net/wiki/Classic_Graphics_Primitives) and called after a mouse click:
+* TwoPlanes demonstrates how to create two ViewPorts and change color sets at runtime.
+* Ballblob loads a boing ball image into memory and displays it on screen. It demonstrates image loading from file.
+* DoubleBuffer moves a square around the screen. It demonstrates how to use double video buffering.
 The following features are provided by my framework:
 
 ### Initialisation
@@ -30,10 +33,11 @@ When your program has finished, a call to **exitSystemSoft(BYTE errorCode)** res
 The graphics controller allows you to create a view, add ViewPorts to the View, display the View and destroy the View freeing
 the previously allocated memory:
 * **initView(void)**: Creates a low resolution screen.
-* **addViewPort(struct BitMap *bitMap, UWORD *colortable, WORD colortableSize, WORD x, WORD y, WORD width, WORD height)**: Adds
+* **addViewPort(struct BitMap *bitMap, struct BitMap *dBuffer, UWORD *colortable, WORD colortableSize, WORD x, WORD y, WORD width, WORD height)**: Adds
 a ViewPort to the View. Parameters are the raster itself, its color table, position of the raster on screen and its size.
 * **startView(void)**: Merges the copper list and displays the previously created View.
 * **stopView(void)**: Frees memory and destroys the current View.
+* **changeBuffer(UBYTE bufferIndex)**: Display first or second video buffer. 
 
 ### Bitmaps
 Simple functions to create or delete Bitmaps and their corresponding bitplanes.
