@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include <exec/types.h>
 #include <proto/graphics.h>
 #include <proto/exec.h>

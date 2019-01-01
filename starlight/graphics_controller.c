@@ -236,8 +236,8 @@ void startView(void){
         view->SHFCprList = dbControl.SHFCprList0;
     }
 
-    //Display the View
     LoadView( view );
+    WaitTOF();
 }
 
 void changeBuffer(UBYTE bufferIndex){
@@ -246,7 +246,6 @@ void changeBuffer(UBYTE bufferIndex){
        return;
     }
 
-    WaitTOF();
     if(bufferIndex==0){
         view->LOFCprList = dbControl.LOFCprList0;
         view->SHFCprList = dbControl.SHFCprList0;
@@ -256,12 +255,13 @@ void changeBuffer(UBYTE bufferIndex){
         view->SHFCprList = dbControl.SHFCprList1;
     }
     LoadView( view );
+    WaitTOF();
 }
 
 void stopView(void){
     WORD i;
-    WaitTOF();
     LoadView(NULL);
+    WaitTOF();
 
     for(i=0;i<MAX_VIEW_PORTS;i++){
         if(viewPorts[i]){
