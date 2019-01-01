@@ -140,7 +140,7 @@ void drawRect(struct BitMap* bitmap, UBYTE planeIndex,
         UWORD xPos, UWORD yPos, UWORD size){
     PLANEPTR plane = bitmap->Planes[planeIndex];
     UWORD startX = xPos / 8;
-    UWORD endX = (xPos + size) / 8;
+    UWORD endX = ((xPos + size) / 8) + 1;
     UWORD endY = yPos + size;
     UWORD x,y;
     UBYTE firstX = getFirstByte(xPos);
@@ -151,7 +151,7 @@ void drawRect(struct BitMap* bitmap, UBYTE planeIndex,
             if(x==startX){
                 plane[y*bitmap->BytesPerRow + x] |= firstX;
             }
-            else if(x==endX-1){
+            else if(x==endX -1){
                 plane[y*bitmap->BytesPerRow + x] |= lastX;
             }
             else {
