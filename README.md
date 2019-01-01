@@ -16,6 +16,7 @@ wanted an easy way to concatenate different effects (text scroller, rotating cub
 * TwoPlanes demonstrates how to create two ViewPorts and change color sets at runtime.
 * Ballblob loads a boing ball image into memory and displays it on screen. It demonstrates image loading from file.
 * DoubleBuffer moves a square around the screen. It demonstrates how to use double video buffering.
+
 The following features are provided by my framework:
 
 ### Initialisation
