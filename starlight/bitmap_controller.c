@@ -20,7 +20,7 @@ struct BitMap* createBitMap(UBYTE depth, UWORD width, UWORD height){
     //Alloc BitMap structure and init with zero 
     newBitMap = AllocMem(sizeof(struct BitMap), MEMF_ANY);
     if(!newBitMap){
-        writeLogFS("Error: Could not allocate Bitmap memory\n");
+        writeLog("Error: Could not allocate Bitmap memory\n");
         return NULL;
     }
     memset(newBitMap, 0, sizeof(struct BitMap));
