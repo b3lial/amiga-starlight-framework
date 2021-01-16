@@ -190,7 +190,7 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
     //Create ColorMap
     colormaps[vpPointer] = GetColorMap(colortableSize);
     if(!colormaps[vpPointer]){
-        writeLog("Could not get ColorMap\n");
+        writeLogFS("Could not get ColorMap with size of %d\n", colortableSize);
         stopView();
         exitSystem(RETURN_ERROR); 
     }

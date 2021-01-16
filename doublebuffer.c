@@ -71,8 +71,8 @@ void initDoubleBuffer(void){
             doubleBufferScreen1->Flags, doubleBufferScreen1->pad);
     
     //Add previously created BitMap to ViewPort so its shown on Screen
-    addViewPort(doubleBufferScreen0, doubleBufferScreen1, colortable0, FALSE,
-            VIEW_DOUBLEBUFFER_COLORS, 0, 0, VIEW_DOUBLEBUFFER_WIDTH, 
+    addViewPort(doubleBufferScreen0, doubleBufferScreen1, colortable0,
+            VIEW_DOUBLEBUFFER_COLORS, FALSE, 0, 0, VIEW_DOUBLEBUFFER_WIDTH, 
             VIEW_DOUBLEBUFFER_HEIGHT);
 
     //Make View visible
