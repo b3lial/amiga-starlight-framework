@@ -34,8 +34,8 @@ When your program has finished, a call to **exitSystemSoft(BYTE errorCode)** res
 The graphics controller allows you to create a view, add ViewPorts to the View, display the View and destroy the View freeing
 the previously allocated memory:
 * **initView(void)**: Creates a low resolution screen.
-* **addViewPort(struct BitMap *bitMap, struct BitMap *dBuffer, UWORD *colortable, WORD colortableSize, BOOL colormap32support, WORD x, WORD y, WORD width, WORD height)**: Adds
-a ViewPort to the View. Parameters are the raster itself, its color table, position of the raster on screen and its size. Colormap32Support uses AGA for 24 bit color depth.
+* **addViewPort(struct BitMap *bitMap, struct BitMap *dBuffer, UWORD *colortable, WORD colortableSize, BOOL colormap32support, WORD x, WORD y, WORD width, WORD height, rX, rY)**: Adds
+a ViewPort to the View. Parameters are the raster itself, its color table, position of the raster on screen and its size. Colormap32Support uses AGA for 24 bit color depth. Relative x and y coordinates can be used to set the position of a bitmap to the view port.
 * **startView(void)**: Merges the copper list and displays the previously created View.
 * **stopView(void)**: Frees memory and destroys the current View.
 * **changeBuffer(UBYTE bufferIndex)**: Display first or second video buffer. 
