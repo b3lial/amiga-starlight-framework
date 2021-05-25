@@ -252,7 +252,6 @@ void startView(void){
         view->SHFCprList = dbControl.SHFCprList0;
     }
 
-    WaitTOF();
     LoadView( view );
     WaitTOF();
 }

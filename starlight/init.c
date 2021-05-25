@@ -63,10 +63,11 @@ void initSystemSoft(void){
         exit(RETURN_ERROR);
     }
     
-    WaitTOF();
-    OFF_SPRITE;
     oldview = (ULONG) GfxBase->ActiView;
     LoadView(NULL);
+    WaitTOF();
+    WaitTOF();
+    OFF_SPRITE;
     initLog();
 }
 
