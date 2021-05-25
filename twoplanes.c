@@ -97,10 +97,10 @@ void initTwoPlanes(void){
     //Use Bitplanes to create a ViewPort and add it to View
     addViewPort(bitMap0, NULL, colortable1, VIEW_TWOPLANES_COLORS, FALSE,
             VIEW_TWOPLANES_VP1_X, VIEW_TWOPLANES_VP1_Y, 
-            VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_VP1_HEIGHT);
+            VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_VP1_HEIGHT, 0, 0);
     addViewPort(bitMap1, NULL, colortable2, VIEW_TWOPLANES_COLORS, FALSE, 
             VIEW_TWOPLANES_VP2_X, VIEW_TWOPLANES_VP2_Y, 
-            VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_VP2_HEIGHT);
+            VIEW_TWOPLANES_WIDTH, VIEW_TWOPLANES_VP2_HEIGHT, 0, 0);
 
     //Make View visible
     startView();
