@@ -16,7 +16,8 @@
 void initView(void);
 void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer, 
         void *colortable, UWORD colortableSize, BOOL useColorMap32,
-		UWORD x, UWORD y, UWORD width, UWORD height);
+		UWORD x, UWORD y, UWORD width, UWORD height, UWORD rxOffset,
+        UWORD ryOffset);
 void startView(void);
 void stopView(void);
 void changeBuffer(UBYTE);

@@ -59,10 +59,10 @@ BOOL loadColorMap32(char* fileName, ULONG* map, UWORD colorAmount){
     //we need a buffer which contains the input file for further processing
     buffer = AllocMem(colorAmount * sizeof(ULONG), MEMF_ANY);
     if(!buffer){
-    	writeLog("Error: Could not allocate memory for 32 bit color table input file\n");
+    	writeLog("Error: Could not allocate memory for 32 bit color table input file buffer\n");
     	return FALSE;
     }
-    writeLogFS("Allocated %d bytes for 32 bit color table input file\n",
+    writeLogFS("Allocated %d bytes for 32 bit color table input file buffer\n",
     		colorAmount * sizeof(ULONG));
 
     //reuse loadColorMap() because as a first step we need its content in a buffer
