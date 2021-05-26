@@ -20,7 +20,7 @@ WORD payloadTwoPlanesState = VIEW_TWOPLANES_INIT;
 struct BitMap* bitMap0;
 struct BitMap* bitMap1;
 BOOL mouseDown = FALSE;
-extern struct ViewPort *viewPorts[MAX_VIEW_PORTS];
+extern struct ViewData vd;
 
 UWORD colortable1[] = { BLACK, DARKRED }; 
 UWORD colortable2[] = { BLACK, DARKBLUE }; 
@@ -118,8 +118,8 @@ BOOL executeTwoPlanes(void){
             blueCounter = -blueCounter;
         }
         WaitTOF();
-        LoadRGB4(viewPorts[0], colortable1, VIEW_TWOPLANES_COLORS); 
-        LoadRGB4(viewPorts[1], colortable2, VIEW_TWOPLANES_COLORS); 
+        LoadRGB4(vd.viewPorts[0], colortable1, VIEW_TWOPLANES_COLORS); 
+        LoadRGB4(vd.viewPorts[1], colortable2, VIEW_TWOPLANES_COLORS); 
         dimCounter=0;
     }
     else{

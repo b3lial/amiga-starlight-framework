@@ -13,43 +13,35 @@
 
 #include "starlight/starlight.h"
 
-struct ViewExtra *vextra = NULL;
-struct View *view = NULL;
-struct MonitorSpec *monspec = NULL;
-ULONG modeID=PAL_MONITOR_ID | LORES_KEY;
-
-struct DoubleBufferControl dbControl = { 0 };
 UWORD vpPointer = 0;
-struct ViewPort *viewPorts[MAX_VIEW_PORTS];
-struct ViewPortExtra *viewPortExtras[MAX_VIEW_PORTS];
-struct RasInfo *rasInfos[MAX_VIEW_PORTS];
-struct ColorMap *colormaps[MAX_VIEW_PORTS];
+const ULONG modeID=PAL_MONITOR_ID | LORES_KEY;
+struct ViewData vd;
 
 void initView(void){
     //Create View, 
-    view = AllocMem(sizeof(struct View), MEMF_ANY); 
-    if(!view)
+    vd.view = AllocMem(sizeof(struct View), MEMF_ANY); 
+    if(!vd.view)
     {
         writeLog("Error: Graphics Controller, could not allocate View memory\n");
         exitSystem(RETURN_ERROR); 
     }
-    InitView(view);
+    InitView(vd.view);
 
     //reset double buffer if previously used
-    dbControl.active = FALSE; 
+    vd.dbControl.active = FALSE; 
     
     //Attach ViewExtra and MonitorSpec to View if possible
     if(GfxBase->LibNode.lib_Version >= 36)
     {
-        vextra=GfxNew(VIEW_EXTRA_TYPE); 
-        if( vextra ){
-            GfxAssociate(view , vextra);
-            view->Modes |= EXTEND_VSTRUCT;
+        vd.vextra=GfxNew(VIEW_EXTRA_TYPE); 
+        if( vd.vextra ){
+            GfxAssociate(vd.view , vd.vextra);
+            vd.view->Modes |= EXTEND_VSTRUCT;
 
             //Initialize the MonitorSpec field of the ViewExtra
-            monspec = OpenMonitor(NULL,modeID);
-            if( monspec ){
-                vextra->Monitor=monspec;
+            vd.monspec = OpenMonitor(NULL,modeID);
+            if( vd.monspec ){
+                vd.vextra->Monitor = vd.monspec;
             }
             else{
                 writeLog("Error: Payload Intro, could not get MonitorSpec\n");
@@ -94,22 +86,22 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
     }
 
     //Is this a double buffered ViewPort?
-    if(dbControl.active && doubleBuffer!=NULL){
+    if(vd.dbControl.active && doubleBuffer!=NULL){
         writeLog("Error: Only one double buffered ViewPort allowed\n");
         stopView();
         exitSystem(RETURN_ERROR); 
     }
-    else if(!dbControl.active && doubleBuffer!=NULL){
+    else if(!vd.dbControl.active && doubleBuffer!=NULL){
         writeLog("Double buffered ViewPort detected\n");
-        dbControl.active = TRUE;
-        dbControl.bm0 = bitMap;
-        dbControl.bm1 = doubleBuffer;
-        dbControl.index = vpPointer;
+        vd.dbControl.active = TRUE;
+        vd.dbControl.bm0 = bitMap;
+        vd.dbControl.bm1 = doubleBuffer;
+        vd.dbControl.index = vpPointer;
     }
 
     //Alloc memory for RasInfo struct
-    rasInfos[vpPointer] = AllocMem(sizeof(struct RasInfo), MEMF_ANY);
-    if(!rasInfos[vpPointer])
+    vd.rasInfos[vpPointer] = AllocMem(sizeof(struct RasInfo), MEMF_ANY);
+    if(!vd.rasInfos[vpPointer])
     {
         writeLogFS("Error: Graphics Controller, could not allocate RasInfo %d memory\n", 
                 vpPointer);
@@ -118,42 +110,42 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
     }
 
     //Init RasInfo and add Bitmap
-    rasInfos[vpPointer]->BitMap = bitMap;
-    rasInfos[vpPointer]->RxOffset = rxOffset;
-    rasInfos[vpPointer]->RyOffset = ryOffset;
-    rasInfos[vpPointer]->Next = NULL;
+    vd.rasInfos[vpPointer]->BitMap = bitMap;
+    vd.rasInfos[vpPointer]->RxOffset = rxOffset;
+    vd.rasInfos[vpPointer]->RyOffset = ryOffset;
+    vd.rasInfos[vpPointer]->Next = NULL;
 
     //Init ViewPort, add RasInfo to ViewPort and add ViewPort to View
-    viewPorts[vpPointer] = AllocMem(sizeof(struct ViewPort), MEMF_ANY);
-    if(!viewPorts[vpPointer])
+    vd.viewPorts[vpPointer] = AllocMem(sizeof(struct ViewPort), MEMF_ANY);
+    if(!vd.viewPorts[vpPointer])
     {
         writeLogFS("Error: Graphics Controller, could not allocate ViewPort %d memory\n", 
                 vpPointer);
         stopView();
         exitSystem(RETURN_ERROR); 
     }
-    InitVPort(viewPorts[vpPointer]);
-    viewPorts[vpPointer]->RasInfo = rasInfos[vpPointer];
-    viewPorts[vpPointer]->DWidth  = width;
-    viewPorts[vpPointer]->DHeight = height;
-    viewPorts[vpPointer]->DxOffset = x;
-    viewPorts[vpPointer]->DyOffset = y;
+    InitVPort(vd.viewPorts[vpPointer]);
+    vd.viewPorts[vpPointer]->RasInfo = vd.rasInfos[vpPointer];
+    vd.viewPorts[vpPointer]->DWidth  = width;
+    vd.viewPorts[vpPointer]->DHeight = height;
+    vd.viewPorts[vpPointer]->DxOffset = x;
+    vd.viewPorts[vpPointer]->DyOffset = y;
     if(vpPointer==0)
     {
-        view->ViewPort = viewPorts[vpPointer];
+        vd.view->ViewPort = vd.viewPorts[vpPointer];
     }
     else
     {
-        viewPorts[vpPointer-1]->Next = viewPorts[vpPointer];
+        vd.viewPorts[vpPointer-1]->Next = vd.viewPorts[vpPointer];
     }
 
     //Init ViewPortExtra and attach it to ViewPort
     if(GfxBase->LibNode.lib_Version >= 36)
     {
-        viewPortExtras[vpPointer] = GfxNew(VIEWPORT_EXTRA_TYPE);
-        if( viewPortExtras[vpPointer] )
+        vd.viewPortExtras[vpPointer] = GfxNew(VIEWPORT_EXTRA_TYPE);
+        if( vd.viewPortExtras[vpPointer] )
         {
-            vcTags[1].ti_Data = (ULONG) viewPortExtras[vpPointer];
+            vcTags[1].ti_Data = (ULONG) vd.viewPortExtras[vpPointer];
 
             if( GetDisplayInfoData( NULL , (UBYTE *) &querydims ,
                         sizeof(struct DimensionInfo) , DTAG_DIMS, modeID) )
@@ -161,7 +153,7 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
                 writeLogFS("Detected Display Resolution: %d,%d,%d,%d\n", 
                         querydims.Nominal.MinX, querydims.Nominal.MinY, 
                         querydims.Nominal.MaxX, querydims.Nominal.MaxY);
-                viewPortExtras[vpPointer]->DisplayClip = querydims.Nominal;
+                vd.viewPortExtras[vpPointer]->DisplayClip = querydims.Nominal;
 
                 /* Make a DisplayInfo and get ready to attach it */
                 if( !(vcTags[2].ti_Data = (ULONG) FindDisplayInfo(modeID)) ){
@@ -186,35 +178,35 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
 
     /* This is for backwards compatibility with, for example,   */
     /* a 1.3 screen saver utility that looks at the Modes field */
-    viewPorts[vpPointer]->Modes = (UWORD) (modeID & 0x0000ffff);
+    vd.viewPorts[vpPointer]->Modes = (UWORD) (modeID & 0x0000ffff);
 
     //Create ColorMap
-    colormaps[vpPointer] = GetColorMap(colortableSize);
-    if(!colormaps[vpPointer]){
+    vd.colormaps[vpPointer] = GetColorMap(colortableSize);
+    if(!vd.colormaps[vpPointer]){
         writeLog("Could not get ColorMap\n");
         stopView();
         exitSystem(RETURN_ERROR); 
     }
-    writeLogFS("Created a ColorMap with type %d\n", colormaps[vpPointer]->Type);
+    writeLogFS("Created a ColorMap with type %d\n", vd.colormaps[vpPointer]->Type);
 
     if(GfxBase->LibNode.lib_Version >= 36){
-        vcTags[0].ti_Data = (ULONG) viewPorts[vpPointer];
-        if( VideoControl(colormaps[vpPointer], vcTags) ){
+        vcTags[0].ti_Data = (ULONG) vd.viewPorts[vpPointer];
+        if( VideoControl(vd.colormaps[vpPointer], vcTags) ){
             writeLog("Could not attach extended structures\n");
             stopView();
             exitSystem(RETURN_ERROR); 
         }
     }
     else{
-        viewPorts[vpPointer]->ColorMap = colormaps[vpPointer];
+        vd.viewPorts[vpPointer]->ColorMap = vd.colormaps[vpPointer];
     }
 
     //colormap loading is different for normal 4 bit colors and 32 bit colors
     if(!useColorMap32){
-    	LoadRGB4(viewPorts[vpPointer], (UWORD*) colortable, colortableSize);
+    	LoadRGB4(vd.viewPorts[vpPointer], (UWORD*) colortable, colortableSize);
     }
     else{
-    	LoadRGB32(viewPorts[vpPointer], (ULONG*) colortable);
+    	LoadRGB32(vd.viewPorts[vpPointer], (ULONG*) colortable);
     }
 
     vpPointer++;
@@ -225,52 +217,52 @@ void startView(void){
 
     //Create Copper Instructions
     for(i=0;i<MAX_VIEW_PORTS;i++){
-        if(viewPorts[i]){
-            MakeVPort( view, viewPorts[i] );
+        if(vd.viewPorts[i]){
+            MakeVPort( vd.view, vd.viewPorts[i] );
         }
         else{
             break;
         }
     }
-    MrgCop( view );
+    MrgCop( vd.view );
 
     //Create two Copper lists if double buffering is active
-    if(dbControl.active){
+    if(vd.dbControl.active){
         //store copper lists for bm0
-        dbControl.LOFCprList0 = view->LOFCprList;
-        dbControl.SHFCprList0 = view->SHFCprList;
+        vd.dbControl.LOFCprList0 = vd.view->LOFCprList;
+        vd.dbControl.SHFCprList0 = vd.view->SHFCprList;
         //create and store copper lists for bm1
-        view->LOFCprList = NULL;
-        view->SHFCprList = NULL;
-        rasInfos[dbControl.index]->BitMap = dbControl.bm1;
-        MakeVPort( view, viewPorts[dbControl.index] );
-        MrgCop( view );
-        dbControl.LOFCprList1 = view->LOFCprList;
-        dbControl.SHFCprList1 = view->SHFCprList;
+        vd.view->LOFCprList = NULL;
+        vd.view->SHFCprList = NULL;
+        vd.rasInfos[vd.dbControl.index]->BitMap = vd.dbControl.bm1;
+        MakeVPort( vd.view, vd.viewPorts[vd.dbControl.index] );
+        MrgCop( vd.view );
+        vd.dbControl.LOFCprList1 = vd.view->LOFCprList;
+        vd.dbControl.SHFCprList1 = vd.view->SHFCprList;
         //initially, use copper lists for bm0 
-        view->LOFCprList = dbControl.LOFCprList0;
-        view->SHFCprList = dbControl.SHFCprList0;
+        vd.view->LOFCprList = vd.dbControl.LOFCprList0;
+        vd.view->SHFCprList = vd.dbControl.SHFCprList0;
     }
 
-    LoadView( view );
+    LoadView( vd.view );
     WaitTOF();
 }
 
 void changeBuffer(UBYTE bufferIndex){
-    if(!dbControl.active){
+    if(!vd.dbControl.active){
        writeLog("Error: Can not swap buffer because no double buffering is active\n"); 
        return;
     }
 
     if(bufferIndex==0){
-        view->LOFCprList = dbControl.LOFCprList0;
-        view->SHFCprList = dbControl.SHFCprList0;
+        vd.view->LOFCprList = vd.dbControl.LOFCprList0;
+        vd.view->SHFCprList = vd.dbControl.SHFCprList0;
     }
     else{
-        view->LOFCprList = dbControl.LOFCprList1;
-        view->SHFCprList = dbControl.SHFCprList1;
+        vd.view->LOFCprList = vd.dbControl.LOFCprList1;
+        vd.view->SHFCprList = vd.dbControl.SHFCprList1;
     }
-    LoadView( view );
+    LoadView( vd.view );
     WaitTOF();
 }
 
@@ -280,13 +272,13 @@ void stopView(void){
     WaitTOF();
 
     for(i=0;i<MAX_VIEW_PORTS;i++){
-        if(viewPorts[i]){
-            FreeVPortCopLists(viewPorts[i]);
+        if(vd.viewPorts[i]){
+            FreeVPortCopLists(vd.viewPorts[i]);
 
             writeLogFS("Freeing %d Bytes ViewPort memory\n", 
                     sizeof(struct ViewPort));
-            FreeMem(viewPorts[i], sizeof(struct ViewPort));
-            viewPorts[i] = NULL;
+            FreeMem(vd.viewPorts[i], sizeof(struct ViewPort));
+            vd.viewPorts[i] = NULL;
         }
         else{
             break;
@@ -294,11 +286,11 @@ void stopView(void){
     }
 
     for(i=0;i<MAX_VIEW_PORTS;i++){
-        if(rasInfos[i]){
+        if(vd.rasInfos[i]){
             writeLogFS("Freeing %d Bytes RasInfo memory\n", 
                     sizeof(struct RasInfo));
-            FreeMem(rasInfos[i], sizeof(struct RasInfo));
-            rasInfos[i] = NULL;
+            FreeMem(vd.rasInfos[i], sizeof(struct RasInfo));
+            vd.rasInfos[i] = NULL;
         }
         else{
             break;
@@ -306,11 +298,11 @@ void stopView(void){
     }
     
     for(i=0;i<MAX_VIEW_PORTS;i++){
-        if(viewPortExtras[i]){
+        if(vd.viewPortExtras[i]){
             writeLogFS("Freeing %d Bytes ViewPortExtra memory\n", 
                     sizeof(struct ViewPortExtra));
-            GfxFree(viewPortExtras[i]);
-            viewPortExtras[i] = NULL;
+            GfxFree(vd.viewPortExtras[i]);
+            vd.viewPortExtras[i] = NULL;
         }
         else{
             break;
@@ -319,69 +311,69 @@ void stopView(void){
 
     //we have to handle two cases here: single buffered and
     //double buffered
-    if(view){
-        if(dbControl.active){
-            if(dbControl.LOFCprList0){
+    if(vd.view){
+        if(vd.dbControl.active){
+            if(vd.dbControl.LOFCprList0){
                 writeLogFS("Freeing %d Bytes Copperlist LOFCprList0 memory\n", 
                     sizeof(struct cprlist));
-                FreeCprList(dbControl.LOFCprList0);
-                dbControl.LOFCprList0 = NULL;
+                FreeCprList(vd.dbControl.LOFCprList0);
+                vd.dbControl.LOFCprList0 = NULL;
             }
-            if(dbControl.SHFCprList0){
+            if(vd.dbControl.SHFCprList0){
                 writeLogFS("Freeing %d Bytes Copperlist SHFCprList0 memory\n",
                     sizeof(struct cprlist));
-                FreeCprList(dbControl.SHFCprList0); 
-                dbControl.SHFCprList0 = NULL;
+                FreeCprList(vd.dbControl.SHFCprList0); 
+                vd.dbControl.SHFCprList0 = NULL;
             }
-            if(dbControl.LOFCprList1){
+            if(vd.dbControl.LOFCprList1){
                 writeLogFS("Freeing %d Bytes Copperlist LOFCprList1 memory\n", 
                     sizeof(struct cprlist));
-                FreeCprList(dbControl.LOFCprList1);
-                dbControl.LOFCprList1 = NULL;
+                FreeCprList(vd.dbControl.LOFCprList1);
+                vd.dbControl.LOFCprList1 = NULL;
             }
-            if(dbControl.SHFCprList1){
+            if(vd.dbControl.SHFCprList1){
                 writeLogFS("Freeing %d Bytes Copperlist SHFCprList1 memory\n",
                     sizeof(struct cprlist));
-                FreeCprList(dbControl.SHFCprList1); 
-                dbControl.SHFCprList1 = NULL;
+                FreeCprList(vd.dbControl.SHFCprList1); 
+                vd.dbControl.SHFCprList1 = NULL;
             }
         }
         else{
-            if(view->LOFCprList){
+            if(vd.view->LOFCprList){
                 writeLogFS("Freeing %d Bytes Copperlist LOFCprList memory\n", 
                     sizeof(struct cprlist));
-                FreeCprList(view->LOFCprList);
+                FreeCprList(vd.view->LOFCprList);
             }
-            if(view->SHFCprList){
+            if(vd.view->SHFCprList){
                 writeLogFS("Freeing %d Bytes Copperlist SHFCprList memory\n",
                     sizeof(struct cprlist));
-                FreeCprList(view->SHFCprList); 
+                FreeCprList(vd.view->SHFCprList); 
             }
         }
         
         writeLogFS("Freeing %d Bytes View memory\n", sizeof(struct View));
-        FreeMem(view, sizeof(struct View));
-        view = NULL;
+        FreeMem(vd.view, sizeof(struct View));
+        vd.view = NULL;
     }
-    if(vextra){
+    if(vd.vextra){
         writeLogFS("Freeing %d Bytes ViewExtra memory\n", 
                 sizeof(struct ViewExtra));
-        GfxFree(vextra);
-        vextra = NULL;
+        GfxFree(vd.vextra);
+        vd.vextra = NULL;
     }
-    if(monspec){
+    if(vd.monspec){
         writeLogFS("Freeing %d Bytes Monitor memory\n", 
                 sizeof(struct MonitorSpec));
-        CloseMonitor(monspec);
-        monspec = NULL;
+        CloseMonitor(vd.monspec);
+        vd.monspec = NULL;
     }
 
     for(i=0; i<MAX_VIEW_PORTS; i++){
-        if(colormaps[i]){
+        if(vd.colormaps[i]){
             writeLogFS("Freeing %d Bytes ColorMap memory\n", 
                 sizeof(struct ColorMap));
-            FreeColorMap(colormaps[i]);
-            colormaps[i] = NULL;
+            FreeColorMap(vd.colormaps[i]);
+            vd.colormaps[i] = NULL;
         }
         else{
             break;
