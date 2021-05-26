@@ -73,6 +73,7 @@ void initSystemSoft(void){
     }
     
     oldview = (ULONG) GfxBase->ActiView;
+    WaitTOF();
     LoadView(NULL);
     WaitTOF();
     WaitTOF();
@@ -115,6 +116,7 @@ void initSystemRuthless(void){
     oldview = *( (ULONG*) (&(((UBYTE*) GfxBase)[34])) );
     oldcopper = *( (ULONG*) (&(((UBYTE*) GfxBase)[38])) );
     
+    WaitTOF();
     LoadView(NULL);
     WaitTOF();
     WaitTOF();
@@ -165,6 +167,7 @@ void exitSystemRuthless(BYTE errorCode){
     
     custom.cop1lc = oldcopper;
     
+    WaitTOF();
     LoadView((struct View*) oldview);
     WaitTOF();
     WaitTOF();

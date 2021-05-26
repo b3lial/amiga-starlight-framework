@@ -249,6 +249,7 @@ void startView(void){
         vd.view->SHFCprList = vd.dbControl.SHFCprList0;
     }
 
+    WaitTOF();
     LoadView( vd.view );
     WaitTOF();
 
@@ -272,6 +273,8 @@ void changeBuffer(UBYTE bufferIndex){
         vd.view->LOFCprList = vd.dbControl.LOFCprList1;
         vd.view->SHFCprList = vd.dbControl.SHFCprList1;
     }
+
+    WaitTOF();
     LoadView( vd.view );
     WaitTOF();
 }
