@@ -58,7 +58,7 @@ void initTwoPlanes(void){
     writeLog("\n== Initialize View: TwoPlanes ==\n");
 
     //Create View and ViewExtra memory structures
-    initView(); 
+    createNewView(); 
 
     //Create Bitmap and add Bitplanes
     bitMap0 = createBitMap(VIEW_TWOPLANES_DEPTH, VIEW_TWOPLANES_WIDTH, 

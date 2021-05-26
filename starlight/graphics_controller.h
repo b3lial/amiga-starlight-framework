@@ -13,7 +13,7 @@
 #define BLUE      0x00f
 #define DARKBLUE  0x001
 
-void initView(void);
+void createNewView(void);
 void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer, 
         void *colortable, UWORD colortableSize, BOOL useColorMap32,
 		UWORD x, UWORD y, UWORD width, UWORD height, UWORD rxOffset,

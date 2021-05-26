@@ -50,7 +50,7 @@ void initDoubleBuffer(void){
     writeLog("\n== Initialize View: DoubleBuffer ==\n");
 
     //Create View and ViewExtra memory structures
-    initView(); 
+    createNewView(); 
 
     //Create Bitmap for ViewPort
     doubleBufferScreen0 = createBitMap(VIEW_DOUBLEBUFFER_DEPTH, 

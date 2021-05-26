@@ -16,8 +16,24 @@
 UWORD vpPointer = 0;
 const ULONG modeID=PAL_MONITOR_ID | LORES_KEY;
 struct ViewData vd;
+struct ViewData oldVd;
 
-void initView(void){
+/**
+ * Create a new PAL View and backup the old View structure
+ * pointers. Afterwards, you can add ViewPorts and finally
+ * display the new View with startView(). 
+ */
+void createNewView(void){
+    // Abort, if an old View exists which was not deleted before
+    if(oldVd.view){
+        writeLog("Error: Graphics Controller, create new View because old View exists\n");
+        exitSystem(RETURN_ERROR); 
+    }
+
+    // Backup current View into old View and delete current View structure
+    oldVd = vd;
+    memset(&vd, 0, sizeof(struct ViewData));
+
     //Create View, 
     vd.view = AllocMem(sizeof(struct View), MEMF_ANY); 
     if(!vd.view)

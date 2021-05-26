@@ -56,7 +56,7 @@ void initBallBlob(void){
     loadColorMap("img/ball_207_207_3.CMAP", colortable0, VIEW_BALLBLOB_COLORS); 
 
     //Create View and ViewExtra memory structures
-    initView(); 
+    createNewView(); 
 
     //Create Bitmap for ViewPort
     ballBlobScreen = createBitMap(VIEW_BALLBLOB_DEPTH, VIEW_BALLBLOB_WIDTH,
