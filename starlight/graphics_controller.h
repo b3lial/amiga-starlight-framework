@@ -13,15 +13,6 @@
 #define BLUE      0x00f
 #define DARKBLUE  0x001
 
-void createNewView(void);
-void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer, 
-        void *colortable, UWORD colortableSize, BOOL useColorMap32,
-		UWORD x, UWORD y, UWORD width, UWORD height, UWORD rxOffset,
-        UWORD ryOffset);
-void startView(void);
-void stopView(void);
-void changeBuffer(UBYTE);
-
 struct DoubleBufferControl{
     BOOL active;
     UBYTE index;
@@ -43,5 +34,15 @@ struct ViewData{
     struct RasInfo *rasInfos[MAX_VIEW_PORTS];
     struct ColorMap *colormaps[MAX_VIEW_PORTS];
 };
+
+void createNewView(void);
+void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer, 
+        void *colortable, UWORD colortableSize, BOOL useColorMap32,
+		UWORD x, UWORD y, UWORD width, UWORD height, UWORD rxOffset,
+        UWORD ryOffset);
+void startView(void);
+void deleteView(struct ViewData*);
+void deleteAllViews(void);
+void changeBuffer(UBYTE);
 
 #endif

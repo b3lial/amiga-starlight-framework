@@ -137,7 +137,6 @@ BOOL executeTwoPlanes(void){
 }
 
 void exitTwoPlanes(void){
-    stopView();
     cleanBitMap(bitMap0);
     cleanBitMap(bitMap1);
 }

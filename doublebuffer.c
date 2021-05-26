@@ -132,7 +132,6 @@ BOOL executeDoubleBuffer(void){
 }
 
 void exitDoubleBuffer(void){
-    stopView();
     cleanBitMap(doubleBufferScreen0);
     cleanBitMap(doubleBufferScreen1);
 }

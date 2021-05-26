@@ -45,6 +45,15 @@ void exitSystem(BYTE errorCode){
     else{
         exitSystemRuthless(errorCode);
     }
+
+    // we switched back to the old view, so we can now delete
+    // the previously created ones
+    deleteAllViews();
+
+    // final cleanup and we're gone
+    CloseLibrary((struct Library*) GfxBase);
+    CloseLibrary((struct Library*) DOSBase);
+    exit(errorCode);
 }
 
 /**
@@ -135,11 +144,9 @@ void exitSystemSoft(BYTE errorCode){
     WaitTOF();
     ON_SPRITE;
     LoadView((struct View*) oldview); 
+    WaitTOF();
     
     writeLogFS("Soft reset shutdown with return code %d\n", errorCode);
-    CloseLibrary((struct Library*) GfxBase);
-    CloseLibrary((struct Library*) DOSBase);
-    exit(errorCode);
 }
 
 /**
@@ -166,7 +173,4 @@ void exitSystemRuthless(BYTE errorCode){
     Permit();
 
     writeLogFS("Ruthless reset shutdown with return code %d\n", errorCode);
-    CloseLibrary((struct Library*) GfxBase);
-    CloseLibrary((struct Library*) DOSBase);
-    exit(errorCode);
 }

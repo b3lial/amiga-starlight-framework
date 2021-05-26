@@ -91,7 +91,6 @@ BOOL executeBallBlob(void){
 }
 
 void exitBallBlob(void){
-    stopView();
     cleanBitMap(ballBlobScreen);
     cleanBitMap(ballBlob);
 }
