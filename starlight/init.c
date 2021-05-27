@@ -143,8 +143,14 @@ void initSystemRuthless(void){
  * Restore old view and exit program
  */
 void exitSystemSoft(BYTE errorCode){
+    // null view and double wait for dma before dma access
+    WaitTOF();
+    LoadView(NULL);
+    WaitTOF();
     WaitTOF();
     ON_SPRITE;
+
+    // sprite dma working, now we can restore the workbench
     LoadView((struct View*) oldview); 
     WaitTOF();
     
@@ -156,6 +162,13 @@ void exitSystemSoft(BYTE errorCode){
  * and exit program.
  */
 void exitSystemRuthless(BYTE errorCode){
+    // null view and double wait for dma before dma access
+    WaitTOF();
+    LoadView(NULL);
+    WaitTOF();
+    WaitTOF();
+
+    // activate dma and interrupts
     custom.dmacon = 0x7fff;
     custom.dmacon = olddmareq;
     custom.intena = 0x7fff;
@@ -164,16 +177,17 @@ void exitSystemRuthless(BYTE errorCode){
     custom.intreq = oldintreq;
     custom.adkcon = 0x7fff;
     custom.adkcon = oldadkcon;
-    
     custom.cop1lc = oldcopper;
     
-    WaitTOF();
-    LoadView((struct View*) oldview);
-    WaitTOF();
-    WaitTOF();
+    // free blitter
     WaitBlit();
     DisownBlitter();
     Permit();
+
+    // os is running again, we can restore workbench screen now
+    WaitTOF();
+    LoadView((struct View*) oldview);
+    WaitTOF();
 
     writeLogFS("Ruthless reset shutdown with return code %d\n", errorCode);
 }
