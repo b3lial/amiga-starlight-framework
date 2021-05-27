@@ -18,7 +18,6 @@
 #define VIEW_TWOPLANES_VP2_X 0
 #define VIEW_TWOPLANES_VP2_Y (VIEW_TWOPLANES_HEIGHT/2+1)
 
-WORD fsmTwoPlanes(void);
 void initTwoPlanes(void);
 BOOL executeTwoPlanes(void);
 void exitTwoPlanes(void);

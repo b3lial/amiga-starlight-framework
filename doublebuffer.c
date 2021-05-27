@@ -101,12 +101,7 @@ BOOL executeDoubleBuffer(void){
     squarePointerY+=directionY;
 
     //abort this view?
-    if(mouseClick()){
-        return FALSE;
-    }
-    else{
-        return TRUE;
-    }
+    return !mouseClick();
 }
 
 void exitDoubleBuffer(void){

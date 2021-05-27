@@ -11,7 +11,6 @@
 
 #define VIEW_DOUBLEBUFFER_SQUARESIZE 64 
 
-WORD fsmDoubleBuffer(void);
 void initDoubleBuffer(void);
 BOOL executeDoubleBuffer(void);
 void exitDoubleBuffer(void);

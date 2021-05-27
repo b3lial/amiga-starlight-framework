@@ -12,7 +12,6 @@
 #define VIEW_BALLBLOB_BALL_WIDTH 207 //24  
 #define VIEW_BALLBLOB_BALL_HEIGHT 207 //207 
 
-WORD fsmBallBlob(void);
 void initBallBlob(void);
 BOOL executeBallBlob(void);
 void exitBallBlob(void);

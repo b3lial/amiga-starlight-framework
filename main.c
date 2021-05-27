@@ -25,12 +25,7 @@ int main(void)
                 break;
 
             case FSM_TWOPLANES_RUN:
-                if(!executeTwoPlanes()){
-                    fsmNextState = FSM_BALLBLOB_INIT;
-                }
-                else{
-                    fsmNextState = FSM_TWOPLANES_RUN;
-                }
+                fsmNextState = executeTwoPlanes() ? FSM_TWOPLANES_RUN : FSM_BALLBLOB_INIT;
                 break;
             
             case FSM_BALLBLOB_INIT:
@@ -40,12 +35,7 @@ int main(void)
                 break;
 
             case FSM_BALLBLOB_RUN:
-                if(!executeBallBlob()){
-                    fsmNextState = FSM_DOUBLEBUFFER_INIT;
-                }
-                else{
-                    fsmNextState = FSM_BALLBLOB_RUN;
-                }
+                fsmNextState = executeBallBlob() ? FSM_BALLBLOB_RUN : FSM_DOUBLEBUFFER_INIT;
                 break;
 
             case FSM_DOUBLEBUFFER_INIT:
@@ -55,12 +45,7 @@ int main(void)
                 break;
 
             case FSM_DOUBLEBUFFER_RUN:
-                if(executeDoubleBuffer()){
-                    fsmNextState = FSM_STOP;
-                }
-                else{
-                    fsmNextState = FSM_DOUBLEBUFFER_RUN;
-                }
+                fsmNextState = executeDoubleBuffer() ? FSM_DOUBLEBUFFER_RUN : FSM_STOP;
                 break;
 
             case FSM_STOP:

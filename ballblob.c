@@ -59,13 +59,10 @@ void initBallBlob(void){
     startView();
 }
 
+// just a wrapper because we do not have business logic here
+// just quit on mouse click
 BOOL executeBallBlob(void){
-    if(mouseClick()){
-        return FALSE;
-    }
-    else{
-        return TRUE;
-    }
+    return !mouseClick();
 }
 
 void exitBallBlob(void){
