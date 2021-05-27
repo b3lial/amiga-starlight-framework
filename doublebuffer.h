@@ -4,10 +4,6 @@
 #include <exec/types.h>
 #include <proto/graphics.h>
 
-#define VIEW_DOUBLEBUFFER_INIT 0
-#define VIEW_DOUBLEBUFFER_RUNNING 1 
-#define VIEW_DOUBLEBUFFER_SHUTDOWN 2
-
 #define VIEW_DOUBLEBUFFER_DEPTH  1 
 #define VIEW_DOUBLEBUFFER_COLORS 2 
 #define VIEW_DOUBLEBUFFER_WIDTH  320

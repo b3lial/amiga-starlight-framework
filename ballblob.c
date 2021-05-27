@@ -12,30 +12,8 @@
 #include "ballblob.h"
 #include "main.h"
 
-WORD payloadBallBlobState = VIEW_BALLBLOB_INIT;
 struct BitMap* ballBlob = NULL;
 struct BitMap* ballBlobScreen = NULL;
-
-WORD fsmBallBlob(void){
-    switch(payloadBallBlobState){
-        case VIEW_BALLBLOB_INIT:
-            initBallBlob();
-            payloadBallBlobState = VIEW_BALLBLOB_RUNNING;
-            break;
-
-        case VIEW_BALLBLOB_RUNNING:
-            if(!executeBallBlob()){
-                payloadBallBlobState = VIEW_BALLBLOB_SHUTDOWN;
-            }
-            break;
-
-        case VIEW_BALLBLOB_SHUTDOWN:
-            exitBallBlob();
-            return MODULE_FINISHED;
-    }
-    
-    return MODULE_CONTINUE;
-}
 
 void initBallBlob(void){
     UWORD colortable0[] = { BLACK, RED, GREEN, BLUE, BLACK, RED, GREEN, BLUE };

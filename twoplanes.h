@@ -4,10 +4,6 @@
 #include <exec/types.h>
 #include <proto/graphics.h>
 
-#define VIEW_TWOPLANES_INIT 0
-#define VIEW_TWOPLANES_RUNNING 1 
-#define VIEW_TWOPLANES_SHUTDOWN 2
-
 #define VIEW_TWOPLANES_DEPTH  1
 #define VIEW_TWOPLANES_COLORS 2 
 #define VIEW_TWOPLANES_WIDTH  320

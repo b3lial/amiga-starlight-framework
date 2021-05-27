@@ -4,10 +4,6 @@
 #include <exec/types.h>
 #include <proto/graphics.h>
 
-#define VIEW_BALLBLOB_INIT 0
-#define VIEW_BALLBLOB_RUNNING 1 
-#define VIEW_BALLBLOB_SHUTDOWN 2
-
 #define VIEW_BALLBLOB_DEPTH  3 
 #define VIEW_BALLBLOB_COLORS 8 
 #define VIEW_BALLBLOB_WIDTH  320

@@ -13,45 +13,58 @@ WORD fsmNextState = -1;
 int main(void)
 {
     while(fsmCurrentState!=FSM_QUIT){
-        UWORD moduleStatus = NULL;
-        
         switch(fsmCurrentState){
             case FSM_START:
                 initSystem(TRUE);
-                fsmNextState = FSM_TWOPLANES;
+                fsmNextState = FSM_TWOPLANES_INIT;
                 break;
             
-            case FSM_TWOPLANES:
-                moduleStatus = fsmTwoPlanes();
-                if(moduleStatus==MODULE_CONTINUE){
-                    fsmNextState = FSM_TWOPLANES;
+            case FSM_TWOPLANES_INIT:
+                initTwoPlanes();
+                fsmNextState = FSM_TWOPLANES_RUN;
+                break;
+
+            case FSM_TWOPLANES_RUN:
+                if(!executeTwoPlanes()){
+                    fsmNextState = FSM_BALLBLOB_INIT;
                 }
                 else{
-                    fsmNextState = FSM_BALLBLOB;
+                    fsmNextState = FSM_TWOPLANES_RUN;
                 }
                 break;
             
-            case FSM_BALLBLOB:
-                moduleStatus = fsmBallBlob();
-                if(moduleStatus==MODULE_CONTINUE){
-                    fsmNextState = FSM_BALLBLOB;
+            case FSM_BALLBLOB_INIT:
+                initBallBlob();
+                exitTwoPlanes();
+                fsmNextState = FSM_BALLBLOB_RUN;
+                break;
+
+            case FSM_BALLBLOB_RUN:
+                if(!executeBallBlob()){
+                    fsmNextState = FSM_DOUBLEBUFFER_INIT;
                 }
                 else{
-                    fsmNextState = FSM_DOUBLEBUFFER;
+                    fsmNextState = FSM_BALLBLOB_RUN;
                 }
                 break;
 
-            case FSM_DOUBLEBUFFER:
-                moduleStatus = fsmDoubleBuffer();
-                if(moduleStatus==MODULE_CONTINUE){
-                    fsmNextState = FSM_DOUBLEBUFFER;
+            case FSM_DOUBLEBUFFER_INIT:
+                initDoubleBuffer();
+                exitBallBlob();
+                fsmNextState = FSM_DOUBLEBUFFER_RUN;
+                break;
+
+            case FSM_DOUBLEBUFFER_RUN:
+                if(executeDoubleBuffer()){
+                    fsmNextState = FSM_STOP;
                 }
                 else{
-                    fsmNextState = FSM_STOP;
+                    fsmNextState = FSM_DOUBLEBUFFER_RUN;
                 }
                 break;
 
             case FSM_STOP:
+                exitDoubleBuffer();
                 fsmNextState = FSM_QUIT;
                 break;
             

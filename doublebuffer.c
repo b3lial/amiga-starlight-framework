@@ -13,7 +13,6 @@
 #include "doublebuffer.h"
 #include "main.h"
 
-WORD payloadDoubleBufferState = VIEW_DOUBLEBUFFER_INIT;
 struct BitMap* doubleBufferScreen0 = NULL;
 struct BitMap* doubleBufferScreen1 = NULL;
 
@@ -22,27 +21,6 @@ UWORD squarePointerY = 0;
 BYTE directionX = 1;
 BYTE directionY = 1;
 UBYTE currentBitmap = 0;
-
-WORD fsmDoubleBuffer(void){
-    switch(payloadDoubleBufferState){
-        case VIEW_DOUBLEBUFFER_INIT:
-            initDoubleBuffer();
-            payloadDoubleBufferState = VIEW_DOUBLEBUFFER_RUNNING;
-            break;
-
-        case VIEW_DOUBLEBUFFER_RUNNING:
-            if(!executeDoubleBuffer()){
-                payloadDoubleBufferState = VIEW_DOUBLEBUFFER_SHUTDOWN;
-            }
-            break;
-
-        case VIEW_DOUBLEBUFFER_SHUTDOWN:
-            exitDoubleBuffer();
-            return MODULE_FINISHED;
-    }
-    
-    return MODULE_CONTINUE;
-}
 
 void initDoubleBuffer(void){
     UWORD colortable0[] = { BLACK, WHITE };

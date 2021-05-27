@@ -16,7 +16,6 @@
 #include "main.h"
 #include "twoplanes.h"
 
-WORD payloadTwoPlanesState = VIEW_TWOPLANES_INIT;
 struct BitMap* bitMap0;
 struct BitMap* bitMap1;
 BOOL mouseDown = FALSE;
@@ -27,27 +26,6 @@ UWORD colortable2[] = { BLACK, DARKBLUE };
 WORD redCounter = 0x0100;
 WORD blueCounter = 0x0001;
 UBYTE dimCounter = 0;
-
-WORD fsmTwoPlanes(void){
-    switch(payloadTwoPlanesState){
-        case VIEW_TWOPLANES_INIT:
-            initTwoPlanes();
-            payloadTwoPlanesState = VIEW_TWOPLANES_RUNNING;
-            break;
-
-        case VIEW_TWOPLANES_RUNNING:
-            if(!executeTwoPlanes()){
-                payloadTwoPlanesState = VIEW_TWOPLANES_SHUTDOWN;
-            }
-            break;
-
-        case VIEW_TWOPLANES_SHUTDOWN:
-            exitTwoPlanes();
-            return MODULE_FINISHED;
-    }
-    
-    return MODULE_CONTINUE;
-}
 
 void initTwoPlanes(void){
     
