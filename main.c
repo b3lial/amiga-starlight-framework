@@ -15,7 +15,7 @@ int main(void)
     while(fsmCurrentState!=FSM_QUIT){
         switch(fsmCurrentState){
             case FSM_START:
-                initSystem(TRUE);
+                initStarlight(TRUE);
                 fsmNextState = FSM_TWOPLANES_INIT;
                 break;
             
@@ -64,5 +64,5 @@ int main(void)
         fsmCurrentState = fsmNextState;        
     }
 
-    exitSystem(RETURN_OK);
+    exitStarlight(RETURN_OK);
 }

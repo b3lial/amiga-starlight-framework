@@ -3,13 +3,13 @@
 
 #include <exec/types.h>
 
-void initSystem(BOOL softInit);
-void exitSystem(BYTE);
+void initStarlight(BOOL softInit);
+void exitStarlight(BYTE);
 
 void initSystemRuthless(void);
-void exitSystemRuthless(BYTE);
+void exitSystemRuthless(void);
 
 void initSystemSoft(void);
-void exitSystemSoft(BYTE);
+void exitSystemSoft(void);
 
 #endif

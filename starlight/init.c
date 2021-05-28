@@ -28,7 +28,11 @@ ULONG oldcopper;
 //remember init method chosen by user
 BOOL hasChosenSoftInit = FALSE;
 
-void initSystem(BOOL softInit){
+/**
+ * Disable Sprites, store old View, init logger.
+ * Has to be called before using starlight framework. 
+ */
+void initStarlight(BOOL softInit){
     hasChosenSoftInit = softInit;
     if(softInit){
         initSystemSoft();
@@ -38,12 +42,16 @@ void initSystem(BOOL softInit){
     }
 }
 
-void exitSystem(BYTE errorCode){
+/**
+ * Restores old View and frees memory. Must be called
+ * before exiting. 
+ */
+void exitStarlight(BYTE errorCode){
     if(hasChosenSoftInit){
-        exitSystemSoft(errorCode);
+        exitSystemSoft();
     }
     else{
-        exitSystemRuthless(errorCode);
+        exitSystemRuthless();
     }
 
     // we switched back to the old view, so we can now delete
@@ -142,7 +150,7 @@ void initSystemRuthless(void){
 /**
  * Restore old view and exit program
  */
-void exitSystemSoft(BYTE errorCode){
+void exitSystemSoft(void){
     // null view and double wait for dma before dma access
     WaitTOF();
     LoadView(NULL);
@@ -154,14 +162,14 @@ void exitSystemSoft(BYTE errorCode){
     LoadView((struct View*) oldview); 
     WaitTOF();
     
-    writeLogFS("Soft reset shutdown with return code %d\n", errorCode);
+    writeLogFS("Soft Starlight Shutdown successfully\n");
 }
 
 /**
  * Restore Interrupts, DMA configuration, Copper
  * and exit program.
  */
-void exitSystemRuthless(BYTE errorCode){
+void exitSystemRuthless(void){
     // null view and double wait for dma before dma access
     WaitTOF();
     LoadView(NULL);
@@ -189,5 +197,5 @@ void exitSystemRuthless(BYTE errorCode){
     LoadView((struct View*) oldview);
     WaitTOF();
 
-    writeLogFS("Ruthless reset shutdown with return code %d\n", errorCode);
+    writeLogFS("Ruthless Starlight Shutdown successfully\n");
 }
