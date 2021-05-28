@@ -25,8 +25,8 @@ void initBallBlob(void){
             VIEW_BALLBLOB_BALL_WIDTH, VIEW_BALLBLOB_BALL_HEIGHT);
     if(ballBlob == NULL){
         writeLog("Error: Payload BallBlob, could not load ball blob\n");
-        exitBallBlob();
         exitStarlight(); 
+        exitBallBlob();
         exit(RETURN_ERROR);
     }
     writeLogFS("Ballblob BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
