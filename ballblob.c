@@ -26,7 +26,8 @@ void initBallBlob(void){
     if(ballBlob == NULL){
         writeLog("Error: Payload BallBlob, could not load ball blob\n");
         exitBallBlob();
-        exitStarlight(RETURN_ERROR); 
+        exitStarlight(); 
+        exit(RETURN_ERROR);
     }
     writeLogFS("Ballblob BitMap: BytesPerRow: %d, Rows: %d, Flags: %d, pad: %d\n",
             ballBlob->BytesPerRow, ballBlob->Rows, ballBlob->Flags, 

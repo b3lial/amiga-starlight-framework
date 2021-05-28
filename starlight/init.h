@@ -4,7 +4,7 @@
 #include <exec/types.h>
 
 void initStarlight(BOOL softInit);
-void exitStarlight(BYTE);
+void exitStarlight(void);
 
 void initSystemRuthless(void);
 void exitSystemRuthless(void);

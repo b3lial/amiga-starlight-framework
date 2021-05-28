@@ -46,7 +46,7 @@ void initStarlight(BOOL softInit){
  * Restores old View and frees memory. Must be called
  * before exiting. 
  */
-void exitStarlight(BYTE errorCode){
+void exitStarlight(void){
     if(hasChosenSoftInit){
         exitSystemSoft();
     }
@@ -61,7 +61,6 @@ void exitStarlight(BYTE errorCode){
     // final cleanup and we're gone
     CloseLibrary((struct Library*) GfxBase);
     CloseLibrary((struct Library*) DOSBase);
-    exit(errorCode);
 }
 
 /**

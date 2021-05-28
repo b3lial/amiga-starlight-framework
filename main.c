@@ -49,6 +49,8 @@ int main(void)
                 break;
 
             case FSM_STOP:
+                // first switch to null view, then free double buffer bitplanes
+                exitStarlight();
                 exitDoubleBuffer();
                 fsmNextState = FSM_QUIT;
                 break;
@@ -64,5 +66,5 @@ int main(void)
         fsmCurrentState = fsmNextState;        
     }
 
-    exitStarlight(RETURN_OK);
+    exit(RETURN_OK);
 }

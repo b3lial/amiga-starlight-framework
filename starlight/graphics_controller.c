@@ -27,7 +27,8 @@ void createNewView(void){
     // Abort, if an old View exists which was not deleted before
     if(oldVd.view){
         writeLog("Error: Graphics Controller, create new View because old View exists\n");
-        exitStarlight(RETURN_ERROR); 
+        exitStarlight(); 
+        exit(RETURN_ERROR);
     }
 
     // Backup current View into old View and delete current View structure
@@ -39,7 +40,8 @@ void createNewView(void){
     if(!vd.view)
     {
         writeLog("Error: Graphics Controller, could not allocate View memory\n");
-        exitStarlight(RETURN_ERROR); 
+        exitStarlight(); 
+        exit(RETURN_ERROR);
     }
     InitView(vd.view);
 
@@ -61,12 +63,14 @@ void createNewView(void){
             }
             else{
                 writeLog("Error: Payload Intro, could not get MonitorSpec\n");
-                exitStarlight(RETURN_ERROR); 
+                exitStarlight(); 
+                exit(RETURN_ERROR);
             }    
         }
         else{
             writeLog("Error: Payload Intro, could not get ViewExtra\n");
-            exitStarlight(RETURN_ERROR); 
+            exitStarlight(); 
+            exit(RETURN_ERROR);
         }
     }
     
@@ -88,7 +92,8 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
     if(useColorMap32 && GfxBase->LibNode.lib_Version < 39){
         writeLogFS("Error: Requesting 24 bit color depth but Kickstart Gfx version is %d\n",
         		GfxBase->LibNode.lib_Version);
-        exitStarlight(RETURN_ERROR);
+        exitStarlight(); 
+        exit(RETURN_ERROR);
     }
 
     writeLogFS("Creating Viewport: %d\n", vpPointer);
@@ -101,7 +106,8 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
     //Is this a double buffered ViewPort?
     if(vd.dbControl.active && doubleBuffer!=NULL){
         writeLog("Error: Only one double buffered ViewPort allowed\n");
-        exitStarlight(RETURN_ERROR); 
+        exitStarlight(); 
+        exit(RETURN_ERROR);
     }
     else if(!vd.dbControl.active && doubleBuffer!=NULL){
         writeLog("Double buffered ViewPort detected\n");
@@ -117,7 +123,8 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
     {
         writeLogFS("Error: Graphics Controller, could not allocate RasInfo %d memory\n", 
                 vpPointer);
-        exitStarlight(RETURN_ERROR); 
+        exitStarlight(); 
+        exit(RETURN_ERROR);
     }
 
     //Init RasInfo and add Bitmap
@@ -132,7 +139,8 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
     {
         writeLogFS("Error: Graphics Controller, could not allocate ViewPort %d memory\n", 
                 vpPointer);
-        exitStarlight(RETURN_ERROR); 
+        exitStarlight(); 
+        exit(RETURN_ERROR);
     }
     InitVPort(vd.viewPorts[vpPointer]);
     vd.viewPorts[vpPointer]->RasInfo = vd.rasInfos[vpPointer];
@@ -168,18 +176,21 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
                 /* Make a DisplayInfo and get ready to attach it */
                 if( !(vcTags[2].ti_Data = (ULONG) FindDisplayInfo(modeID)) ){
                     writeLog("Error: Could not get DisplayInfo\n");
-                    exitStarlight(RETURN_ERROR); 
+                    exitStarlight(); 
+                    exit(RETURN_ERROR);
                 }
             }
             else
             {
                 writeLog("Could not get DimensionInfo \n");
-                exitStarlight(RETURN_ERROR); 
+                exitStarlight(); 
+                exit(RETURN_ERROR);
             }
         }
         else{
             writeLogFS("Could not get ViewPortExtra %d\n", vpPointer);
-            exitStarlight(RETURN_ERROR); 
+            exitStarlight(); 
+            exit(RETURN_ERROR);
         }
     }
 
@@ -191,7 +202,8 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
     vd.colormaps[vpPointer] = GetColorMap(colortableSize);
     if(!vd.colormaps[vpPointer]){
         writeLog("Could not get ColorMap\n");
-        exitStarlight(RETURN_ERROR); 
+        exitStarlight(); 
+        exit(RETURN_ERROR);
     }
     writeLogFS("Created a ColorMap with type %d\n", vd.colormaps[vpPointer]->Type);
 
@@ -199,7 +211,8 @@ void addViewPort(struct BitMap *bitMap, struct BitMap *doubleBuffer,
         vcTags[0].ti_Data = (ULONG) vd.viewPorts[vpPointer];
         if( VideoControl(vd.colormaps[vpPointer], vcTags) ){
             writeLog("Could not attach extended structures\n");
-            exitStarlight(RETURN_ERROR); 
+            exitStarlight(); 
+            exit(RETURN_ERROR);
         }
     }
     else{
