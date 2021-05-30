@@ -6,21 +6,50 @@ Avoids direct hardware access and uses AmigaOS APIs.
 As a kid, I loved the Amiga but was not able to write code for this platform. In 2017, I planned a little demo project 
 and read lots of tutorials. Nearly everybody used assembler and direct hardware access. Although this produced amazing demos,
 I wanted to try something different: Using a C compiler and the AmigaOS APIs. To speed up development, I am working at 
-this little framework which allows me to create video buffers, load images, etc. with a few lines of C code
-and therefore to focus on the demo effects and not the Amiga hardware.
+this little framework which allows me to 
 
-## Features
-Main.c contains a demo project which uses the Starlight Framework. It is implemented as a finite state machine because I
+* set up the screen
+* create and display video buffers 
+* load images
+* etc. 
+
+with a few lines of C code and therefore to focus on the demo effects and not the boilerplate code.
+
+## Structure
+This Git repository contains the framework and an example project. 
+The framework itself resides in the __starlight__ folder. 
+Main.c in root directory contains a demo project which uses Starlight to display some
+graphics and animations. It is implemented as a finite state machine because I
 wanted an easy way to concatenate different effects (text scroller, rotating cube, etc). Each effect is a seperate 
 [View](http://wiki.amigaos.net/wiki/Classic_Graphics_Primitives) and called after a mouse click:
+
 * TwoPlanes demonstrates how to create two ViewPorts and change color sets at runtime.
 * Ballblob loads a boing ball image into memory and displays it on screen. It demonstrates image loading from file.
 * DoubleBuffer moves a square around the screen. It demonstrates how to use double video buffering.
 
+## General Usage
+The main idea of Starlight is
+
+* Initialise the framework
+* Create a new __View__ for your demo effect
+* Allocate __BitPlanes__ which represent your video buffer
+* Allocate color table arrays
+* Create a set of __ViewPorts__ and add them to your __View__
+* Display the __View__
+* When the effect has finished, create and display a second __View__
+* Free your previously allocated __BitPlanes__
+* etc.
+* Shutdown the framework
+
+Starlight works as kind of state machine. Create a view, add Viewports, display View, create
+next View, etc. It always stores the old View which is deleted AFTER you switch to the
+new View. This allows a flicker free View switch mechanism.
+
+## APIs
 The following features are provided by my framework:
 
 ### Initialisation
-The method **initSystem(BOOL softInit)** takes over the graphical hardware. It has two modes:
+The method **initStarlight(BOOL softInit)** takes over the graphical hardware. It has two modes:
 * *softInit*: Stores the old View (usually the workbench screen), switches to a blank screen, loads neccessary libraries
 and deactivates sprites. The Amiga operating system is still running.
 * *ruthless*: Stores the old View (usually the workbench screen), its copper list, switches to a blank screen, loads 
@@ -28,16 +57,15 @@ neccessary libraries and deactivates sprites. The AmigaOS is halted (correspondi
 are reprogrammed. This is the only part of the framework which needs direct hardware access and its there due to historical
 reasons.
 
-When your program has finished, a call to **exitSystemSoft(BYTE errorCode)** restores the Workbench screen.
+When your program has finished, a call to **exitStarlight(BYTE errorCode)** restores the Workbench screen.
 
 ### Graphics
 The graphics controller allows you to create a view, add ViewPorts to the View, display the View and destroy the View freeing
 the previously allocated memory:
-* **initView(void)**: Creates a low resolution screen.
+* **createNewView(void)**: Creates a low resolution screen.
 * **addViewPort(struct BitMap *bitMap, struct BitMap *dBuffer, UWORD *colortable, WORD colortableSize, BOOL colormap32support, WORD x, WORD y, WORD width, WORD height, rX, rY)**: Adds
 a ViewPort to the View. Parameters are the raster itself, its color table, position of the raster on screen and its size. Colormap32Support uses AGA for 24 bit color depth. Relative x and y coordinates can be used to set the position of a bitmap to the view port.
 * **startView(void)**: Merges the copper list and displays the previously created View.
-* **stopView(void)**: Frees memory and destroys the current View.
 * **changeBuffer(UBYTE bufferIndex)**: Display first or second video buffer. 
 
 ### Bitmaps
