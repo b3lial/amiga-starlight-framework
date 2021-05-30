@@ -49,15 +49,11 @@ new View. This allows a flicker free View switch mechanism.
 The following features are provided by my framework:
 
 ### Initialisation
-The method **initStarlight(BOOL softInit)** takes over the graphical hardware. It has two modes:
-* *softInit*: Stores the old View (usually the workbench screen), switches to a blank screen, loads neccessary libraries
-and deactivates sprites. The Amiga operating system is still running.
-* *ruthless*: Stores the old View (usually the workbench screen), its copper list, switches to a blank screen, loads 
-neccessary libraries and deactivates sprites. The AmigaOS is halted (corresponding interrupts are disabled) and DMA channels 
-are reprogrammed. This is the only part of the framework which needs direct hardware access and its there due to historical
-reasons.
-
-When your program has finished, a call to **exitStarlight(BYTE errorCode)** restores the Workbench screen.
+The method **initStarlight(BOOL softInit)** takes over the graphical hardware. It 
+stores the old View (usually the workbench screen), switches to a blank screen, loads neccessary libraries
+and deactivates sprites. The Amiga operating system is still running. When your program has finished, a 
+call to **exitStarlight()** restores the Workbench screen and deallocates
+__View__, __ViewPort__, etc. data structures.
 
 ### Graphics
 The graphics controller allows you to create a view, add ViewPorts to the View, display the View and destroy the View freeing
