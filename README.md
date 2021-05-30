@@ -49,7 +49,7 @@ new View. This allows a flicker free View switch mechanism.
 The following features are provided by my framework:
 
 ### Initialisation
-The method **initStarlight(BOOL softInit)** takes over the graphical hardware. It 
+The method **initStarlight()** takes over the graphical hardware. It 
 stores the old View (usually the workbench screen), switches to a blank screen, loads neccessary libraries
 and deactivates sprites. The Amiga operating system is still running. When your program has finished, a 
 call to **exitStarlight()** restores the Workbench screen and deallocates
