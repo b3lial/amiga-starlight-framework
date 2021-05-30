@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <exec/types.h>
 #include <proto/graphics.h>
 #include <proto/exec.h>
@@ -63,7 +64,7 @@ void initBallBlob(void){
 // just a wrapper because we do not have business logic here
 // just quit on mouse click
 BOOL executeBallBlob(void){
-    return !mouseClick();
+    return ((BOOL) !mouseClick());
 }
 
 void exitBallBlob(void){

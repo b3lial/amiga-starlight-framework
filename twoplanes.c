@@ -106,7 +106,7 @@ BOOL executeTwoPlanes(void){
     }
 
     //abort upon mouse click
-    return !mouseClick();
+    return ((BOOL) !mouseClick());
 }
 
 void exitTwoPlanes(void){

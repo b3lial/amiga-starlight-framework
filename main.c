@@ -1,5 +1,6 @@
 #include <exec/types.h>
 #include <dos/dos.h>
+#include <stdlib.h>
 
 #include "starlight/starlight.h"
 #include "twoplanes.h"
